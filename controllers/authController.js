@@ -7,6 +7,7 @@ const verifyAccountEligibility = require('../utils/verifyAccountEligibility');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
+const welcomeEmailTemplate = require('../utils/emailTemplates/welcomeEmailTemplate');
 
 const generateJWT = (id, role) =>
   jwt.sign({ id, role }, process.env.JWT_SECRET_KEY, {
@@ -49,6 +50,21 @@ exports.signup = (Model) =>
         new AppError('Failed to create user. Please try again.', 500),
       );
     newUser.password = undefined; // Remove password from response
+
+    // send a welcome email for the newly registered user
+    const html = welcomeEmailTemplate({
+      userName: newUser.fullName,
+      emailVerificationLink: `${process.env.FRONTEND_URL}/email-verification`,
+    });
+    try {
+      await sendEmail({
+        to: newUser.email,
+        subject: 'Welcome to DocPatient Nexus application',
+        html,
+      });
+    } catch (err) {
+      console.error('❌ Failed to send welcome email:', err.message);
+    }
 
     const resourceName = `${Model.modelName}`;
     const token = generateJWT(newUser._id, newUser.role);

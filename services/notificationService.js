@@ -2,12 +2,13 @@
 const Notification = require('../models/notificationModel');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
+const Admin = require('../models/adminModel');
+const Doctor = require('../models/doctorModel');
+const Patient = require('../models/patientModel');
 
-const Models = {
-  Admin: require('../models/adminModel'),
-  Doctor: require('../models/doctorModel'),
-  Patient: require('../models/patientModel'),
-};
+// Models
+// Admin, Doctor, Patient
+const Models = { Admin, Doctor, Patient };
 const sendNotification = async ({
   recipient,
   recipientModel,
@@ -39,7 +40,11 @@ const sendNotification = async ({
       metadata,
     });
     console.info(`✅ Notification stored for ${recipientModel} ${user._id}.`);
-    await sendEmail({ to: user.email, subject: title, message });
+    await sendEmail({
+      to: user.email,
+      subject: title,
+      message,
+    });
     return notification;
   } catch (error) {
     console.error('❌ Failed to create notification:', error.message);

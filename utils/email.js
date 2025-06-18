@@ -15,8 +15,8 @@ const sendEmail = async (options) => {
     from: 'DocPatient Nexus" <no-reply@docpatientnexus.com>',
     to: options.to,
     subject: options.subject,
-    message: options.message,
-    html: options.message,
+    message: options.message || '',
+    html: options.html || null,
   };
 
   await transporter.sendMail(emailOptions);

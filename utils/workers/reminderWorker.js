@@ -3,8 +3,9 @@ const redis = require('../redisClient');
 const sendEmail = require('../email');
 
 const reminderWorker = new Worker(
-  'medicationReminderQueue',
+  'medicationReminderQueue', // Queue name
   async (job) => {
+    // Job handler
     const { to, subject, message } = job.data;
     if (!to || !subject || !message) {
       console.log('❌ Invalid job data:', job.data);
@@ -18,6 +19,7 @@ const reminderWorker = new Worker(
       console.error('Interneal error! Error sending email.');
     }
   },
+  // Redis connection
   {
     connection: redis,
   },

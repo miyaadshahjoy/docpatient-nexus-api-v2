@@ -13,11 +13,14 @@ const scheduleMedicationReminder = ({ to, subject, message, sendAt }) => {
   }
   reminderQueue.add(
     'sendMedicationReminder',
+    // Joba Data / Payload
     {
       to,
       subject,
       message,
     },
+
+    // Job Options
     {
       delay,
       attempts: 3,
