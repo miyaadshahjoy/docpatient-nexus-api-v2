@@ -16,6 +16,18 @@ const reviewRouter = require('./routes/reviewRoutes');
 // Initialize express app
 const app = express();
 
+///////////////////////////////////////////////
+
+// const reminderService = require('./services/reminderService');
+
+// reminderService({
+//   to: 'farzana.nahar@example.com',
+//   subject: 'Take your medicine',
+//   message: 'It is time for you to take your medicines.',
+//   sendAt: 60 * 1000,
+// });
+//////////////////////////////////////////////
+
 app.get('/', (req, res) => {
   res.status(200);
   res.json({

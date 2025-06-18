@@ -12,10 +12,12 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bullmq": "^5.54.1",
     "cors": "^2.8.5",
     "docusaurus-plugin-openapi": "^0.7.6",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.6.1",
     "mongodb": "^6.16.0",

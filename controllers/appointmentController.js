@@ -7,6 +7,9 @@ const Patient = require('../models/patientModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const { getAvailableSlots } = require('../services/appointmentService');
+const {
+  sendAppointmentNotification,
+} = require('../services/notificationService');
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 exports.checkVisitingHours = catchAsync(async (req, res, next) => {
@@ -42,7 +45,6 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
   const patient = await Patient.findById(patientId);
   if (!patient)
     return next(new AppError('No patient exists with this Id', 404));
-
   req.body.patient = patient._id;
 
   const date = req.body.appointmentDate;
@@ -67,15 +69,28 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
         400,
       ),
     );
-  const appointment = await Appointment.create(req.body);
+  // Book the appointment
+  try {
+    const appointment = await Appointment.create(req.body);
 
-  res.status(201).json({
-    status: 'success',
-    message: 'Appointment created successfully',
-    data: {
-      appointment,
-    },
-  });
+    try {
+      await sendAppointmentNotification(appointment, doctor, patient);
+    } catch (err) {
+      console.error('❌ Failed to send appointment notification:', err.message);
+    }
+    res.status(201).json({
+      status: 'success',
+      message: 'Appointment created successfully',
+      data: {
+        appointment,
+      },
+    });
+  } catch (err) {
+    console.error('❌ Failed to book an appointment:', err);
+    return next(
+      new AppError('Internal error. Failed to book an appointment', 500),
+    );
+  }
 });
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
