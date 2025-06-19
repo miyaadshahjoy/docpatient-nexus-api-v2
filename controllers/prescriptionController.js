@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const Patient = require('../models/patientModel');
 
-const reminderService = require('../services/reminderService');
+const { scheduleMedicationReminder } = require('../services/reminderService');
 const generateMedicationSchedule = require('../utils/generateMedicationSchedule');
 
 exports.createPrescription = catchAsync(async (req, res, next) => {
@@ -42,7 +42,7 @@ exports.createPrescription = catchAsync(async (req, res, next) => {
 
   for (const reminder of reminders) {
     if (!reminder) continue;
-    reminderService({
+    scheduleMedicationReminder({
       to: reminder.patient,
       subject: '💊 Medication reminder.',
       message: `Take your medication: ${reminder.name} at ${reminder.scheduledFor}. ${reminder.instruction}. Follow your doctor's instructions.`,

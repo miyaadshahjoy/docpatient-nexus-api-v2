@@ -17,7 +17,7 @@ const generateTimeSlots = (schedule, appointmentDuration) => {
   const startMinutes = startHour * 60 + startMin;
   const endMinutes = endHour * 60 + endMin;
 
-  const availableMinutes = endMinutes - startMinutes;
+  const availableMinutes = endMinutes - startMinutes + 1;
   if (availableMinutes < appointmentDuration)
     throw new AppError(
       'The appointment duration exceeds available visiting time',

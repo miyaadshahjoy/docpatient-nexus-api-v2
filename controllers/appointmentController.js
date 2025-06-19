@@ -10,6 +10,8 @@ const { getAvailableSlots } = require('../services/appointmentService');
 const {
   sendAppointmentNotification,
 } = require('../services/notificationService');
+const { scheduleAppointmentReminder } = require('../services/reminderService');
+
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 exports.checkVisitingHours = catchAsync(async (req, res, next) => {
@@ -69,6 +71,24 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
         400,
       ),
     );
+
+  // Impl: You must book an appointment 24 hours in advance
+  // Check if the requested time slot is at least 24 hours from now
+  // const now = new Date();
+  const requestedDate = new Date(date);
+
+  const requestedTime = new Date(
+    requestedDate.setHours(
+      ...requestedSlot.hours.from.split(':').map(Number),
+      0,
+      0,
+    ),
+  );
+  console.log(requestedDate, new Date());
+  if (requestedDate.getTime() - Date.now() < 86400000)
+    return next(
+      new AppError('❌ You must book an appointment 24 hours in advance', 400),
+    );
   // Book the appointment
   try {
     const appointment = await Appointment.create(req.body);
@@ -78,6 +98,21 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
     } catch (err) {
       console.error('❌ Failed to send appointment notification:', err.message);
     }
+
+    // Schedule appointment reminder
+    // TODO: We have to test it
+    scheduleAppointmentReminder({
+      to: patient.email,
+      subject: 'Your appointment is scheduled',
+      message: `Your appointment with Dr. ${doctor.name} is scheduled for ${date} at ${requestedSlot.hours.from}-${requestedSlot.hours.to}.`,
+      sendAt: new Date(appointment.appointmentDate),
+    });
+    scheduleAppointmentReminder({
+      to: doctor.email,
+      subject: 'New appointment scheduled',
+      message: `A new appointment with ${patient.name} is scheduled for ${date} at ${requestedSlot.hours.from}-${requestedSlot.hours.to}.`,
+      sendAt: new Date(appointment.appointmentDate),
+    });
     res.status(201).json({
       status: 'success',
       message: 'Appointment created successfully',

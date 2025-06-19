@@ -2,7 +2,7 @@ const { Worker } = require('bullmq');
 const redis = require('../redisClient');
 const sendEmail = require('../email');
 
-const reminderWorker = new Worker(
+const medicationReminderWorker = new Worker(
   'medicationReminderQueue', // Queue name
   async (job) => {
     // Job handler
@@ -25,16 +25,18 @@ const reminderWorker = new Worker(
   },
 );
 
-reminderWorker.on('completed', () => console.log('✅ Job completed.'));
+medicationReminderWorker.on('completed', () =>
+  console.log('✅ Job completed.'),
+);
 
-reminderWorker.on('failed', (job, error) =>
+medicationReminderWorker.on('failed', (job, error) =>
   console.log(`❌ Job ${job.id} failed. Reason: `, error.message),
 );
 
-reminderWorker.on('error', (error) =>
+medicationReminderWorker.on('error', (error) =>
   console.error('❌ Worker error (connection or config issue):', error.message),
 );
 
 // pm2 start utils/workers/emailWorker.js --name email-worker
 //
-module.exports = reminderWorker;
+module.exports = medicationReminderWorker;
