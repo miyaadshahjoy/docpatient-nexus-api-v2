@@ -101,6 +101,7 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
 
     // Schedule appointment reminder
     // TODO: We have to test it
+    /*
     scheduleAppointmentReminder({
       to: patient.email,
       subject: 'Your appointment is scheduled',
@@ -113,6 +114,7 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
       message: `A new appointment with ${patient.name} is scheduled for ${date} at ${requestedSlot.hours.from}-${requestedSlot.hours.to}.`,
       sendAt: new Date(appointment.appointmentDate),
     });
+    */
     res.status(201).json({
       status: 'success',
       message: 'Appointment created successfully',
@@ -128,7 +130,7 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.getCheckoutSession = catchAsync(async (req, res, next) => {
+exports.createCheckoutSession = catchAsync(async (req, res, next) => {
   // 1) Get currently booked appointment
   const appointmentId = req.params.id;
   const appointment = await Appointment.findById(appointmentId);
@@ -170,6 +172,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // 3) Send session as response
   res.status(200).json({
     status: 'success',
+    message: 'Checkout session created successfully',
     data: {
       session,
     },

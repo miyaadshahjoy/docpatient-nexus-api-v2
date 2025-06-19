@@ -19,8 +19,8 @@ const router = express.Router({ mergeParams: true });
 router.use('/doctors', doctorRouter);
 
 // patients/appointments/:id/cancel-appointment
-// patients/appointments/:id/checkout-session
 // POST/patients/appointments/{appointmentId}/reviews
+// POST/patients/appointments/{appointmentId}/checkout-session
 router.use('/appointments', appointmentRouter);
 
 router.post('/forgot-password', authController.forgotPassword(Patient));
@@ -63,7 +63,6 @@ router.delete(
 );
 
 // Get all patietns
-// TODO: Add pagination, filtering, sorting and field selection
 router.route('/').get(
   authController.protect(),
   checkAccountEligibility(),

@@ -13,10 +13,12 @@ router.use('/:id/reviews', reviewRouter);
 // POST/doctors/appointments/:id/prescription
 router.use('/:id/prescription', prescriptionRouter);
 
+// POST/patients/appointments/{appointmentId}/checkout-session
 router.get(
   '/:id/checkout-session',
-  authController.protect('patient'),
-  appointmentController.getCheckoutSession,
+  authController.protect(),
+  authController.restrictTo('patient'),
+  appointmentController.createCheckoutSession,
 );
 
 // Cancel Appointment

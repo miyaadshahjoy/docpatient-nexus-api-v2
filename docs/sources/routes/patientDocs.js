@@ -1740,5 +1740,59 @@ module.exports = {
         },
       },
     },
+    '/api/v2/patients/appointments/{appointmentId}/checkout-session': {
+      get: {
+        tags: ['Patients'],
+        summary: 'Get a checkout session for an appointment.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows a patient to get a checkout session for an appointment. The patient must be `logged in` to use this route. Log in with a valid `jwt` token.',
+      },
+      operationId: 'getCheckoutSession',
+      parameters: [
+        {
+          name: 'appointmentId',
+          in: 'path',
+          description: 'ID of the appointment to get a checkout session for.',
+          required: true,
+          schema: {
+            type: 'string',
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: 'Checkout session retrieved successfully.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  status: {
+                    type: 'string',
+                    example: 'success',
+                  },
+                  message: {
+                    type: 'string',
+                    example: 'Checkout session retrieved successfully.',
+                  },
+                  data: {
+                    type: 'object',
+                    properties: {
+                      sessionId: {
+                        type: 'string',
+                        example:
+        },
+        400: {},
+        401: {},
+        403: {},
+        404: {},
+        500: responses.InternalServerError,
+      },
+    },
   },
 };
