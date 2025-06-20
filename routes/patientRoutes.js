@@ -3,7 +3,7 @@ const authController = require('../controllers/authController');
 const handlerFactory = require('../controllers/handlerFactory');
 const currentUserController = require('../controllers/currentUserController');
 
-const appointmentRouter = require('./appointmentRoutes');
+const paymentRouter = require('./paymentRoutes');
 
 const {
   checkAccountEligibility,
@@ -20,8 +20,8 @@ router.use('/doctors', doctorRouter);
 
 // patients/appointments/:id/cancel-appointment
 // POST/patients/appointments/{appointmentId}/reviews
-// POST/patients/appointments/{appointmentId}/checkout-session
-router.use('/appointments', appointmentRouter);
+// POST/patients/payments/checkout-session
+router.use('/payments', paymentRouter);
 
 router.post('/forgot-password', authController.forgotPassword(Patient));
 router.post(

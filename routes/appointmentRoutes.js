@@ -1,9 +1,10 @@
 const express = require('express');
 const authController = require('../controllers/authController');
 const appointmentController = require('../controllers/appointmentController');
-
+const handlerFactory = require('../controllers/handlerFactory');
 const reviewRouter = require('./reviewRoutes');
 const prescriptionRouter = require('./prescriptionRoutes');
+const Appointment = require('../models/appointmentModel');
 
 const router = express.Router({ mergeParams: true });
 
@@ -13,14 +14,6 @@ router.use('/:id/reviews', reviewRouter);
 // POST/doctors/appointments/:id/prescription
 router.use('/:id/prescription', prescriptionRouter);
 
-// POST/patients/appointments/{appointmentId}/checkout-session
-router.get(
-  '/:id/checkout-session',
-  authController.protect(),
-  authController.restrictTo('patient'),
-  appointmentController.createCheckoutSession,
-);
-
 // Cancel Appointment
 router.patch(
   '/:id/cancel-appointment',
@@ -28,4 +21,24 @@ router.patch(
   appointmentController.cancelAppointment,
 );
 
+// Get all appointments
+router.get(
+  '/',
+  authController.protect(),
+  authController.restrictTo('admin', 'appointment-manager'),
+  handlerFactory.readAll(Appointment),
+);
+
+router
+  .route('/:id')
+  .get(
+    authController.protect(),
+    authController.restrictTo('admin', 'appointment-manager'),
+    handlerFactory.readOne(Appointment),
+  )
+  .patch(
+    authController.protect(),
+    authController.restrictTo('admin', 'appointment-manager'),
+    handlerFactory.updateOne(Appointment),
+  );
 module.exports = router;

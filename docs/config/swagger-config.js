@@ -6,6 +6,8 @@ const doctorDocs = require('../sources/routes/doctorDocs');
 const patientDocs = require('../sources/routes/patientDocs');
 const prescriptionDocs = require('../sources/routes/prescriptionDocs');
 const reviewDocs = require('../sources/routes/reviewDocs');
+const paymentDocs = require('../sources/routes/paymentDocs');
+
 const schemas = require('../sources/components/schemas');
 const responses = require('../sources/components/responses');
 
@@ -73,6 +75,10 @@ const options = {
         name: 'Reviews',
         description: 'Operations related to reviews',
       },
+      {
+        name: 'Payments',
+        description: 'Operations related to payments',
+      },
     ],
   },
   apis: [
@@ -89,6 +95,7 @@ swaggerSpec.paths = {
   ...doctorDocs.paths,
   ...patientDocs.paths,
   ...prescriptionDocs.paths,
-  ...reviewDocs.paths, // Merging doctorDocs paths into swaggerSpec
+  ...reviewDocs.paths,
+  ...paymentDocs.paths, // Merging doctorDocs paths into swaggerSpec
 };
 module.exports = swaggerSpec;

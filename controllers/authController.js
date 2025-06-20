@@ -9,10 +9,23 @@ const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 const welcomeEmailTemplate = require('../utils/emailTemplates/welcomeEmailTemplate');
 
-const generateJWT = (id, role) =>
-  jwt.sign({ id, role }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '30d',
-  });
+const generateJWT = (id, user) => {
+  let role;
+  // admins can have multiple roles
+  if (user.roles && Array.isArray(user.roles) && user.roles.includes('admin'))
+    role = 'admin';
+  else role = user.role;
+  jwt.sign(
+    {
+      id,
+      role,
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN || '30d',
+    },
+  );
+};
 
 // Impl: SIGN UP -
 // Implemented the signup function
@@ -67,7 +80,7 @@ exports.signup = (Model) =>
     }
 
     const resourceName = `${Model.modelName}`;
-    const token = generateJWT(newUser._id, newUser.role);
+
     res.status(201);
     res.json({
       status: 'success',
@@ -103,7 +116,8 @@ exports.signin = (Model) =>
     // checking account eligibility
     verifyAccountEligibility(user);
     // 3) If everything is ok, return jwt token
-    const token = generateJWT(user._id, user.role);
+
+    const token = generateJWT(user._id, user);
     const resourceName = `${Model.modelName}`;
     user.password = undefined; // Remove password from response
     // 4) Send response
@@ -143,8 +157,8 @@ exports.protect = () =>
 
     // Dynamically import the model based on user role
     // This assumes that the role is one of 'admin', 'doctor', or 'patient'
-    const role = decoded.role === 'super-admin' ? 'admin' : decoded.role;
-    const Model = getModel(role);
+
+    const Model = getModel(decoded.role);
 
     // 3) Check if user still exists
     const user = await Model.findById(decoded.id);
@@ -172,10 +186,15 @@ exports.protect = () =>
 exports.restrictTo =
   (...allowedRoles) =>
   (req, res, next) => {
-    if (!allowedRoles.includes(req.user.role))
+    let allowed;
+    if (req.user.roles && Array.isArray(req.user.roles))
+      allowed = req.user.roles.every((role) => allowedRoles.includes(role));
+    else allowed = allowedRoles.includes(req.user.role);
+    if (!allowed)
       return next(
         new AppError('You do not have permission to perform this action', 403),
       );
+
     next();
   };
 
@@ -252,7 +271,7 @@ exports.resetPassword = (Model) =>
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
     // 4) Log the user in, send JWT
-    const token = generateJWT(user._id, user.role);
+    const token = generateJWT(user._id, user);
     res.status(200).json({
       status: 'success',
       jwt: token,

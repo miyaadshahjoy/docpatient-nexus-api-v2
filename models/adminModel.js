@@ -55,11 +55,17 @@ const adminSchema = new mongoose.Schema(
       },
       select: false,
     },
-    role: {
-      type: String,
-      enum: ['admin', 'super-admin'],
-      default: 'admin',
-      immutable: true,
+    roles: {
+      type: [String],
+      enum: [
+        'admin',
+        'super-admin',
+        'appointment-manager',
+        'doctor-manager',
+        'patient-manager',
+      ],
+      default: ['admin'],
+      // immutable: true,
     },
     status: {
       type: String,

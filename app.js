@@ -5,7 +5,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/config/swagger-config');
 // Importing routes and controllers
 const globalErrorHandler = require('./controllers/errorController');
-const appointmentController = require('./controllers/appointmentController');
+const paymentController = require('./controllers/paymentController');
 const superAdminRouter = require('./routes/superAdminRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const doctorRouter = require('./routes/doctorRoutes');
@@ -25,9 +25,9 @@ app.get('/', (req, res) => {
 });
 // Webhook Route
 app.post(
-  '/api/v2/appointments/webhooks',
+  '/api/v2/payments/webhooks',
   express.raw({ type: 'application/json' }),
-  appointmentController.stripeWebhookHandler,
+  paymentController.stripeWebhookHandler,
 );
 
 // middlewares
