@@ -1,15 +1,13 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
-  const testAccount = await nodemailer.createTestAccount();
   // 1) Create a transporter
   const transporter = nodemailer.createTransport({
-    host: testAccount.smtp.host,
-    port: testAccount.smtp.port,
-    secure: testAccount.smtp.secure,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
+    host: '127.0.0.1',
+    port: 2025,
+    secure: false,
+    tls: {
+      rejectUnauthorized: false,
     },
   });
   // 2) Define the email options
@@ -22,8 +20,7 @@ const sendEmail = async (options) => {
   };
 
   const info = await transporter.sendMail(emailOptions);
-  console.log('📨 Message sent:', info.messageId);
-  console.log('🔍 Preview URL:', nodemailer.getTestMessageUrl(info));
+  console.log('📨 Email sent', info.messageId);
 };
 
 module.exports = sendEmail;

@@ -9,15 +9,15 @@ const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 const welcomeEmailTemplate = require('../utils/emailTemplates/welcomeEmailTemplate');
 
-const generateJWT = (id, user) => {
+const generateJWT = (user) => {
   let role;
   // admins can have multiple roles
   if (user.roles && Array.isArray(user.roles) && user.roles.includes('admin'))
     role = 'admin';
   else role = user.role;
-  jwt.sign(
+  return jwt.sign(
     {
-      id,
+      id: user._id,
       role,
     },
     process.env.JWT_SECRET_KEY,
@@ -117,7 +117,8 @@ exports.signin = (Model) =>
     verifyAccountEligibility(user);
     // 3) If everything is ok, return jwt token
 
-    const token = generateJWT(user._id, user);
+    const token = generateJWT(user);
+    console.log(token);
     const resourceName = `${Model.modelName}`;
     user.password = undefined; // Remove password from response
     // 4) Send response
@@ -271,7 +272,7 @@ exports.resetPassword = (Model) =>
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
     // 4) Log the user in, send JWT
-    const token = generateJWT(user._id, user);
+    const token = generateJWT(user);
     res.status(200).json({
       status: 'success',
       jwt: token,

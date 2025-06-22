@@ -6,17 +6,18 @@ const medicationReminderWorker = new Worker(
   'medicationReminderQueue', // Queue name
   async (job) => {
     // Job handler
-    const { to, subject, message } = job.data;
-    if (!to || !subject || !message) {
+    const { to, subject, message, html } = job.data;
+    if (!to || !subject || !message || !html) {
       console.log('❌ Invalid job data:', job.data);
       throw new Error('Invalid email data. to, subject, message are required.');
     }
     try {
       console.log(`📤 Sending email to ${to}`);
-      await sendEmail({ to, subject, message });
+
+      await sendEmail({ to, subject, message, html });
       console.log(`✅ Email sent to ${to}`);
     } catch (err) {
-      console.error('Interneal error! Error sending email.');
+      console.error('Interneal error! Error sending email.', err);
     }
   },
   // Redis connection

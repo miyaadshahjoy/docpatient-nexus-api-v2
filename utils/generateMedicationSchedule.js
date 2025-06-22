@@ -1,8 +1,10 @@
 // utils/generateMedicationSchedule.js
 // Generate medication schedule from a prescription
+const medicationReminderTemplate = require('./emailTemplates/medicationReminderEmailTemplate');
 
 const generateMedicationSchedule = (prescription, patient) => {
-  const reminders = [];
+  const reminders = []; // Array to store reminders for each medication
+
   const startDate = new Date(prescription.createdAt || Date.now());
   if (
     !prescription ||
@@ -37,6 +39,7 @@ const generateMedicationSchedule = (prescription, patient) => {
       // "frequency": ["08:00", "14:00", "20:00"],
       for (const timeStr of frequency) {
         if (!/^\d{2}:\d{2}$/.test(timeStr)) {
+          // Check if timeStr is in HH:mm format
           console.warn(`⚠ Invalid time format ${timeStr}. Skipping...`);
 
           continue;
@@ -48,11 +51,21 @@ const generateMedicationSchedule = (prescription, patient) => {
         reminderDate.setDate(reminderDate.getDate() + day);
         reminderDate.setHours(hour, minute, 0, 0);
 
+        //
+        const html = medicationReminderTemplate({
+          userName: patient.fullName,
+          medicationName: name,
+          dosage,
+          instruction,
+          time: timeStr,
+        });
+
         reminders.push({
           name,
           dosage,
           instruction,
           patient: patient.email,
+          html,
           scheduledFor: reminderDate,
         });
       }

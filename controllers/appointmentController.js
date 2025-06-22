@@ -97,22 +97,6 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
       console.error('❌ Failed to send appointment notification:', err.message);
     }
 
-    // Schedule appointment reminder
-    // TODO: We have to test it
-    /*
-    scheduleAppointmentReminder({
-      to: patient.email,
-      subject: 'Your appointment is scheduled',
-      message: `Your appointment with Dr. ${doctor.name} is scheduled for ${date} at ${requestedSlot.hours.from}-${requestedSlot.hours.to}.`,
-      sendAt: new Date(appointment.appointmentDate),
-    });
-    scheduleAppointmentReminder({
-      to: doctor.email,
-      subject: 'New appointment scheduled',
-      message: `A new appointment with ${patient.name} is scheduled for ${date} at ${requestedSlot.hours.from}-${requestedSlot.hours.to}.`,
-      sendAt: new Date(appointment.appointmentDate),
-    });
-    */
     res.status(201).json({
       status: 'success',
       message: 'Appointment created successfully',

@@ -1,13 +1,14 @@
 const medicationReminderQueue = require('../utils/queues/medicationReminderQueue');
 const appointmentReminderQueue = require('../utils/queues/appointmentReminderQueue');
 
-const scheduleMedicationReminder = ({ to, subject, message, sendAt }) => {
-  if (!to || !subject || !message || !sendAt) {
+const scheduleMedicationReminder = ({ to, subject, message, html, sendAt }) => {
+  if (!to || !subject || !message || !html || !sendAt) {
     console.warn('⚠ Missing required fields for medication reminder.');
     return;
   }
 
   const delay = sendAt instanceof Date ? sendAt.getTime() - Date.now() : sendAt;
+
   if (delay < 0) {
     console.warn('⚠ Cannot schedule past reminders. Skipping...');
     return;
@@ -19,6 +20,7 @@ const scheduleMedicationReminder = ({ to, subject, message, sendAt }) => {
       to,
       subject,
       message,
+      html,
     },
 
     // Job Options

@@ -23,7 +23,6 @@ exports.createPrescription = catchAsync(async (req, res, next) => {
     );
 
   req.body.doctor = appointment.doctor;
-  // req.body.patient = appointment.patient;
   req.body.appointment = appointment._id;
   const patient = await Patient.findById(appointment.patient);
   let newPrescription;
@@ -42,10 +41,12 @@ exports.createPrescription = catchAsync(async (req, res, next) => {
 
   for (const reminder of reminders) {
     if (!reminder) continue;
+    reminder.scheduledFor.setMinutes(reminder.scheduledFor.getMinutes() - 10);
     scheduleMedicationReminder({
       to: reminder.patient,
       subject: '💊 Medication reminder.',
       message: `Take your medication: ${reminder.name} at ${reminder.scheduledFor}. ${reminder.instruction}. Follow your doctor's instructions.`,
+      html: reminder.html,
       sendAt: reminder.scheduledFor,
     });
   }
