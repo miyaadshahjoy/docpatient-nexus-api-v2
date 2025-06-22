@@ -15,9 +15,11 @@ router.use('/:id/reviews', reviewRouter);
 router.use('/:id/prescription', prescriptionRouter);
 
 // Cancel Appointment
+// PATCH /patients/appointments/{appointmentId}/cancel-appointment
 router.patch(
   '/:id/cancel-appointment',
-  authController.protect('patient'),
+  authController.protect(),
+  authController.restrictTo('patient'),
   appointmentController.cancelAppointment,
 );
 

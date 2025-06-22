@@ -10,7 +10,10 @@ const { getAvailableSlots } = require('../services/appointmentService');
 const {
   sendAppointmentNotification,
 } = require('../services/notificationService');
-const { scheduleAppointmentReminder } = require('../services/reminderService');
+const {
+  sendAppointmentCancellationNotification,
+} = require('../services/notificationService');
+const Admin = require('../models/adminModel');
 
 exports.checkVisitingHours = catchAsync(async (req, res, next) => {
   const { date } = req.body;
@@ -119,9 +122,11 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
 });
 
 exports.cancelAppointment = catchAsync(async (req, res, next) => {
-  // 1) Check if the appointment exists with the id
+  if (!req.params.id)
+    return next(new AppError('Please provide an appointment Id', 400));
   const appointmentId = req.params.id;
   const appointment = await Appointment.findById(appointmentId);
+  // 1) Check if the appointment exists with the provided id
   if (!appointment)
     return next(new AppError('No appointment found with the provided Id', 404));
   // 2) Check if the doctor exists in the DB
@@ -130,12 +135,8 @@ exports.cancelAppointment = catchAsync(async (req, res, next) => {
     return next(
       new AppError(`The doctor of this appointment no longer exists.`, 404),
     );
-  // 3) Check if the patient exists in the DB
 
-  if (!appointment.patient.equals(req.user._id))
-    return next(
-      new AppError('You are not authorized to perform this action', 403),
-    );
+  // 3) Check if the patient exists in the DB
   const patient = await Patient.findById(appointment.patient);
   if (!patient)
     return next(
@@ -153,8 +154,9 @@ exports.cancelAppointment = catchAsync(async (req, res, next) => {
 
   // 6) Check if appointment is confirmed or pending
   if (appointment.status === 'confirmed') {
-    // a) check if it is <= 24 hours before the appointment time
-    const timeRemaining = appointment.appointmentDate.getTime() - Date.now();
+    // a) check if it is <= 24 hours before the appointment time -> you have to cancel it 24 hours in advance
+    const timeRemaining =
+      new Date(appointment.appointmentDate).getTime() - Date.now();
     // const _24HoursInMillis = 24 * 60 * 60 * 1000;
     console.log(appointment.appointmentDate, new Date(Date.now()));
     if (timeRemaining < 24 * 60 * 60 * 1000)
@@ -164,48 +166,51 @@ exports.cancelAppointment = catchAsync(async (req, res, next) => {
           400,
         ),
       );
-  }
-  // b) Allow cancellation
-  // b.1) Trigger refund
 
-  if (!appointment.paymentIntent)
-    return next(new AppError('Missing payment intent.', 404));
+    // b) Allow cancellation
+    // b.1) Trigger refund
 
-  try {
-    const refund = await stripe.refunds.create({
-      payment_intent: appointment.paymentIntent,
-    });
+    if (!appointment.paymentIntent)
+      return next(new AppError('Missing payment intent.', 404));
 
-    if (refund.status !== 'succeeded')
+    try {
+      const refund = await stripe.refunds.create({
+        payment_intent: appointment.paymentIntent,
+      });
+
+      if (refund.status !== 'succeeded')
+        return next(
+          new AppError('Refund process failed. Please try again later', 502),
+        );
+    } catch (err) {
+      console.error('❌ Stripe refund failed:', err.message);
       return next(
-        new AppError('Refund process failed. Please try again later', 502),
+        new AppError(
+          'We were unable to process your refund at this time. Please contact support.',
+          502,
+        ),
       );
-  } catch (err) {
-    console.error('❌ Stripe refund failed:', err.message);
-    return next(
-      new AppError(
-        'We were unable to process your refund at this time. Please contact support.',
-        502,
-      ),
-    );
+    }
   }
   // b.2) Notify doctors and patients via email
 
   try {
-    await Promise.all([
-      (email({
-        to: patient.email,
-        subject: 'Appointment payment refund ',
-        message: `Hello ${patient.fullName}. Your request for payment refund has been initiated successfully. It might take few days for the refund process to complete.`,
-      }),
-      email({
-        to: doctor.email,
-        subject: `Patient requested appointment cancellation`,
-        message: `Hello Dr. ${doctor.fullName}. ${patient.fullName} requested to cancel the appointment on ${appointment.appointmentDate} at ${appointment.appointmentSchedule.hours.from} to ${appointment.appointmentSchedule.hours.to}. The request is accepted and a full refund is initiated successfully`,
-      })),
-    ]);
+    const appointmentManager = await Admin.findOne({
+      roles: 'appointment-manager',
+    });
+    if (!appointmentManager)
+      throw new Error('❌ No appointment manager found in the database.');
+    await sendAppointmentCancellationNotification(
+      appointment,
+      doctor,
+      patient,
+      appointmentManager,
+    );
   } catch (err) {
-    console.error('⚠️ Email dispatch failed:', err.message);
+    console.error(
+      '⚠️ Email notification for cancellation failed: ',
+      err.message,
+    );
   }
   // b.3) Mark booked slot as available
   // when the appointment status is updated to cancelled the booked slot will be available automatically
@@ -228,6 +233,7 @@ exports.cancelAppointment = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    message: 'Your appointment has been successfully cancelled and refunded',
+    message:
+      'Your appointment has been successfully cancelled and refund is in the process',
   });
 });

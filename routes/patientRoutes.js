@@ -2,7 +2,7 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const handlerFactory = require('../controllers/handlerFactory');
 const currentUserController = require('../controllers/currentUserController');
-
+const appointmentRouter = require('./appointmentRoutes');
 const paymentRouter = require('./paymentRoutes');
 
 const {
@@ -18,8 +18,10 @@ const router = express.Router({ mergeParams: true });
 // POST/patients/doctors/{doctorId}/book-appointment
 router.use('/doctors', doctorRouter);
 
-// patients/appointments/:id/cancel-appointment
+// PATCH /patients/appointments/{appointmentId}/cancel-appointment
 // POST/patients/appointments/{appointmentId}/reviews
+router.use('/appointments', appointmentRouter);
+
 // POST/patients/payments/checkout-session
 router.use('/payments', paymentRouter);
 
