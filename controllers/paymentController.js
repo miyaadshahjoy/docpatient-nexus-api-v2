@@ -4,7 +4,11 @@ const catchAsync = require('../utils/catchAsync');
 const Appointment = require('../models/appointmentModel');
 const Admin = require('../models/adminModel');
 const Doctor = require('../models/doctorModel');
-const sendEmail = require('../utils/email');
+const Patient = require('../models/patientModel');
+
+const {
+  sendAppointmentNotificationToManager,
+} = require('../services/notificationService');
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -91,13 +95,14 @@ exports.stripeWebhookHandler = async (req, res, next) => {
       message: 'Invalid stripe webhook signature',
     });
   }
-
+  // 3) Handle the event -> checkout.session.completed
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const appointmentId = session.client_reference_id;
 
     console.log(`✅ Payment succeeded for appointment: ${appointmentId}`);
 
+    // 4) Update the appointment
     try {
       const appointment = await Appointment.findById(appointmentId);
       if (!appointment) {
@@ -107,7 +112,6 @@ exports.stripeWebhookHandler = async (req, res, next) => {
           message: 'Appointment not found in the database.',
         });
       }
-
       appointment.paymentStatus = 'paid';
       appointment.paymentMethod = session.payment_method_types[0] || 'unknown';
       appointment.paymentIntent = session.payment_intent;
@@ -120,13 +124,30 @@ exports.stripeWebhookHandler = async (req, res, next) => {
         });
         if (!appointmentManager)
           throw new Error('❌ No appointment manager found in the database.');
-        await sendEmail({
-          to: appointmentManager.email,
-          subject: 'New Appointment',
-          message: `You have a new appointment request. Please check the dashboard for more details.`,
-        });
+
+        // Sending email to the appointment manager
+        const doctor = await Doctor.findById(appointment.doctor);
+        if (!doctor)
+          throw new Error(
+            '❌ The doctor of this appointment no longer exists.',
+          );
+        const patient = await Patient.findById(appointment.patient);
+        if (!patient)
+          throw new Error(
+            '❌ The patient who booked this appointment no longer exists.',
+          );
+
+        await sendAppointmentNotificationToManager(
+          appointment,
+          doctor,
+          patient,
+          appointmentManager,
+        );
       } catch (err) {
-        console.error('❌ Failed to send email notification:', err.message);
+        console.error(
+          '❌ Failed to send appointment notification:',
+          err.message,
+        );
       }
 
       console.log(`🥳 Appointment updated successfully.`);

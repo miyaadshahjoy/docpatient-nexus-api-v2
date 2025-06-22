@@ -36,27 +36,41 @@ exports.checkVisitingHours = catchAsync(async (req, res, next) => {
 
 // Booking appointments
 exports.bookAppointment = catchAsync(async (req, res, next) => {
+  // Check if the doctor exists in the DB
   const doctorId = req.params.id;
   const doctor = await Doctor.findById(doctorId);
   if (!doctor) return next(new AppError('No doctor exists with this Id', 404));
+  // attach the doctor to the request body
   req.body.doctor = doctor._id;
 
+  // Check if the patient exists in the DB
   const patientId = req.user._id;
   const patient = await Patient.findById(patientId);
   if (!patient)
     return next(new AppError('No patient exists with this Id', 404));
+  // attach the patient to the request body
   req.body.patient = patient._id;
 
   const date = req.body.appointmentDate;
   if (!date)
     return next(new AppError('Please provide an appointment date', 400));
-
+  const dayOfWeek = req.body.appointmentSchedule.day;
+  if (!dayOfWeek)
+    return next(new AppError('Please provide an appointment day', 400));
+  if (
+    dayOfWeek.toLowerCase() !==
+    DateTime.fromISO(date).toFormat('cccc').toLowerCase()
+  )
+    return next(
+      new AppError('Please provide an appointment for the correct day', 400),
+    );
   const availableSlots = await getAvailableSlots(doctor, date);
 
   const requestedSlot = req.body.appointmentSchedule;
   if (!requestedSlot?.hours?.from || !requestedSlot?.hours?.to) {
     return next(new AppError('Invalid appointment schedule provided', 400));
   }
+  // Check if the requested time slot is available
   const isSlotAvailable = availableSlots.some(
     (s) =>
       s.from === requestedSlot.hours.from && s.to === requestedSlot.hours.to,
@@ -72,17 +86,15 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
 
   // Impl: You must book an appointment 24 hours in advance
   // Check if the requested time slot is at least 24 hours from now
-  // const now = new Date();
+
   const requestedDate = new Date(date);
 
-  const requestedTime = new Date(
-    requestedDate.setHours(
-      ...requestedSlot.hours.from.split(':').map(Number),
-      0,
-      0,
-    ),
-  );
-  console.log(requestedDate, new Date());
+  requestedDate.setHours(
+    ...requestedSlot.hours.from.split(':').map(Number),
+    0,
+    0,
+  ),
+    console.log(requestedDate, new Date());
   if (requestedDate.getTime() - Date.now() < 86400000)
     return next(
       new AppError('❌ You must book an appointment 24 hours in advance', 400),
@@ -90,12 +102,6 @@ exports.bookAppointment = catchAsync(async (req, res, next) => {
   // Book the appointment
   try {
     const appointment = await Appointment.create(req.body);
-
-    try {
-      await sendAppointmentNotification(appointment, doctor, patient);
-    } catch (err) {
-      console.error('❌ Failed to send appointment notification:', err.message);
-    }
 
     res.status(201).json({
       status: 'success',

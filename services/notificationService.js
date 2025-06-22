@@ -6,6 +6,8 @@ const Admin = require('../models/adminModel');
 const Doctor = require('../models/doctorModel');
 const Patient = require('../models/patientModel');
 
+const appointmentNotificationTemplate = require('../utils/emailTemplates/appointmentNotificationEmailTemplate');
+
 // Models
 // Admin, Doctor, Patient
 const Models = { Admin, Doctor, Patient };
@@ -15,6 +17,7 @@ const sendNotification = async ({
   type,
   title,
   message,
+  html,
   metadata = {},
 }) => {
   if (!recipient || !recipientModel || !type || !title || !message)
@@ -31,6 +34,7 @@ const sendNotification = async ({
 
   if (!user.email) throw new AppError('User does not have an email.', 400);
   try {
+    // create notification
     const notification = await Notification.create({
       recipient,
       recipientModel,
@@ -40,10 +44,12 @@ const sendNotification = async ({
       metadata,
     });
     console.info(`✅ Notification stored for ${recipientModel} ${user._id}.`);
+    // send appointment notification email
     await sendEmail({
       to: user.email,
       subject: title,
       message,
+      html,
     });
     return notification;
   } catch (error) {
@@ -53,19 +59,33 @@ const sendNotification = async ({
 };
 
 const sendAppointmentNotification = async (appointment, doctor, patient) => {
-  const date = `${appointment.appointmentDate.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })}`;
+  const date = `${new Date(appointment.appointmentDate).toLocaleDateString(
+    'en-US',
+    {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    },
+  )}`;
   const time = `${appointment.appointmentSchedule.hours.from}-${appointment.appointmentSchedule.hours.to}`;
+
   try {
+    const html = appointmentNotificationTemplate({
+      recipientName: patient.fullName,
+      role: 'patient',
+      doctorName: doctor.fullName,
+      patientName: patient.fullName,
+      appointmentDate: date,
+      timeRange: time,
+      appointmentId: appointment._id,
+    });
     await sendNotification({
       recipient: patient._id,
       recipientModel: 'Patient',
       type: 'appointment',
       title: 'Appointment Booked',
       message: `Your appointment with Dr. ${doctor.fullName} on ${date} at ${time} is booked successfully`,
+      html,
       metadata: {
         appointmentId: appointment._id,
       },
@@ -74,12 +94,22 @@ const sendAppointmentNotification = async (appointment, doctor, patient) => {
     console.error('❌ Failed to send an email to the patient:', err.message);
   }
   try {
+    const html = appointmentNotificationTemplate({
+      recipientName: doctor.fullName,
+      role: 'doctor',
+      doctorName: doctor.fullName,
+      patientName: patient.fullName,
+      appointmentDate: date,
+      timeRange: time,
+      appointmentId: appointment._id,
+    });
     await sendNotification({
       recipient: doctor._id,
       recipientModel: 'Doctor',
       type: 'appointment',
       title: 'New Appointment scheduled',
       message: `${patient.fullName} scheduled an appointment with you on ${date} at ${time}.`,
+      html,
       metadata: {
         appointmentId: appointment._id,
       },
@@ -89,4 +119,51 @@ const sendAppointmentNotification = async (appointment, doctor, patient) => {
   }
 };
 
-module.exports = { sendAppointmentNotification };
+const sendAppointmentNotificationToManager = async (
+  appointment,
+  doctor,
+  patient,
+  appointmentManager,
+) => {
+  const date = `${new Date(appointment.appointmentDate).toLocaleDateString(
+    'en-US',
+    {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    },
+  )}`;
+  const time = `${appointment.appointmentSchedule.hours.from}-${appointment.appointmentSchedule.hours.to}`;
+  try {
+    const html = appointmentNotificationTemplate({
+      recipientName: appointmentManager.fullName,
+      role: 'appointment-manager',
+      doctorName: doctor.fullName,
+      patientName: patient.fullName,
+      appointmentDate: date,
+      timeRange: time,
+      appointmentId: appointment._id,
+    });
+    await sendNotification({
+      recipient: appointmentManager._id,
+      recipientModel: 'Admin',
+      type: 'appointment',
+      title: 'New Appointment Booked',
+      message: `A new appointment has been booked. Please check the dashboard for more details.`,
+      html,
+      metadata: {
+        appointmentId: appointment._id,
+      },
+    });
+  } catch (err) {
+    console.error(
+      '❌ Failed to send an email to the appointment-manager:',
+      err.message,
+    );
+  }
+};
+
+module.exports = {
+  sendAppointmentNotification,
+  sendAppointmentNotificationToManager,
+};

@@ -1,4 +1,11 @@
 const mongoose = require('mongoose');
+const Doctor = require('./doctorModel');
+const Patient = require('./patientModel');
+const {
+  sendAppointmentNotification,
+} = require('../services/notificationService');
+
+const sendAppointmentReminder = require('../utils/sendAppointmentReminder');
 
 const appointmentSchema = new mongoose.Schema(
   {
@@ -70,6 +77,31 @@ const appointmentSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+appointmentSchema.pre('findOneAndUpdate', async function (next) {
+  // 'this' points to the current query
+
+  this._oldDoc = await this.model.findOne(this.getFilter()); // this.getFilter() -> returns "{_id: '6854329adf383c789fe6d339'}"
+  next();
+});
+
+appointmentSchema.post('findOneAndUpdate', async function (doc) {
+  // 'this' points to the current query
+  if (!this._oldDoc || !doc) return;
+  if (this._oldDoc.status !== 'confirmed' && doc.status === 'confirmed') {
+    // appointment confirmed
+    console.log('🎉 Appointment confirmed!');
+    const doctor = await Doctor.findById(doc.doctor);
+    const patient = await Patient.findById(doc.patient);
+    const appointment = doc;
+
+    // Send email notifications to the doctor and patient
+    await sendAppointmentNotification(appointment, doctor, patient);
+
+    // send appointment reminder to the doctor and patient
+    sendAppointmentReminder(appointment, doctor, patient);
+  }
+});
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 

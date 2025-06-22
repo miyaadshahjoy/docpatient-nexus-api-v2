@@ -40,7 +40,13 @@ const scheduleMedicationReminder = ({ to, subject, message, html, sendAt }) => {
   );
 };
 
-const scheduleAppointmentReminder = ({ to, subject, message, sendAt }) => {
+const scheduleAppointmentReminder = ({
+  to,
+  subject,
+  message,
+  html,
+  sendAt,
+}) => {
   if (!to || !subject || !message || !sendAt) {
     console.warn('⚠ Missing required fields for appointment reminder.');
     return;
@@ -55,6 +61,7 @@ const scheduleAppointmentReminder = ({ to, subject, message, sendAt }) => {
       to,
       subject,
       message,
+      html,
     },
     // Job options
     {
