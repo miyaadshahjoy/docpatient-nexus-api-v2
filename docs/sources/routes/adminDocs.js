@@ -28,7 +28,7 @@ module.exports = {
         tags: ['Admins'],
         summary: 'Register a new admin account.',
         description:
-          'Allows a new admin to register by providing necessary credentials and profile details. After registration, you will have to verify your email through the `/api/v2/admins/email-verification` endpoint. Initially your account will be in a `pending` state. After verification, your account will be `active` and you can log in.',
+          'Allows a new admin to register by providing necessary credentials and profile details. After registration, you will have to verify your email through the `/api/v2/admins/email-verification` endpoint. Initially your account will be in a `pending` state. After verification, your account will be `active` and you can log in.<br><br><blockquote><span>ℹ</span><p>This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.This is some very important text.</p></blockquote>',
         operationId: 'signupAdmin',
         requestBody: {
           required: true,
