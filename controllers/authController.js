@@ -8,6 +8,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 const welcomeEmailTemplate = require('../utils/emailTemplates/welcomeEmailTemplate');
+const passwordResetTemplate = require('../utils/emailTemplates/passwordResetEmailTemplate');
 
 const generateJWT = (user) => {
   let role;
@@ -207,21 +208,34 @@ exports.forgotPassword = (Model) =>
     const user = await Model.findOne({ email });
     // console.log(user)
     if (!user)
-      return next(new AppError('No user exists with this email.', 400));
+      return next(
+        new AppError(
+          `No ${Model.modelName.toLowerCase()} found with this email.`,
+          400,
+        ),
+      );
 
     // 2) Generate the random reset token
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
     // 3) Send the reset token to users' email
+
+    const resetUrl = `https://docpatient-nexus.onrender.com/api/v2/patients/reset-password/${resetToken}`;
+
+    const html = passwordResetTemplate({
+      userName: user.fullName,
+      resetUrl,
+    });
     const options = {
       to: user.email,
       subject: 'Password reset token (Expires in 10 mins)',
       message: `
       You requested a password reset.\n\n
       Click the link below to reset your password. This link is valid for 10 minutes:\n
-      ${process.env.FRONTEND_URL}/reset-password/${resetToken}\n\n
+      ${resetUrl}\n\n
       If you didn’t request this, please ignore this email.
     `,
+      html,
     };
     try {
       await sendEmail(options);
@@ -260,7 +274,9 @@ exports.resetPassword = (Model) =>
     // 1) Get user based on the token
     const user = await Model.findOne({ passwordResetToken });
     if (!user || user.passwordResetExpires < Date.now())
-      return next(new AppError('Password reset token has expired', 400));
+      return next(
+        new AppError('Invalid password reset token or token has expired', 400),
+      );
 
     // 2) If token has not expired, and there is user, set the new password
     user.password = password;
@@ -271,12 +287,10 @@ exports.resetPassword = (Model) =>
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
-    // 4) Log the user in, send JWT
-    const token = generateJWT(user);
+
     res.status(200).json({
       status: 'success',
-      jwt: token,
-      message: 'Password updated successfully.',
+      message: 'Password reset successfully.',
     });
   });
 

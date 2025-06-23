@@ -25,7 +25,10 @@ router.use('/appointments', appointmentRouter);
 // POST/patients/payments/checkout-session
 router.use('/payments', paymentRouter);
 
+// POST/patients/forgot-password
 router.post('/forgot-password', authController.forgotPassword(Patient));
+
+// POST/patients/reset-password/{resetToken}
 router.post(
   '/reset-password/:resetToken',
   authController.resetPassword(Patient),

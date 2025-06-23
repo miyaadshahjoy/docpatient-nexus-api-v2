@@ -425,6 +425,192 @@ module.exports = {
         },
       },
     },
+    // POST/patients/forgot-password
+    '/api/v2/patients/forgot-password': {
+      post: {
+        tags: ['Patients'],
+        summary: 'Forgot password. Request for a password reset link.',
+        description:
+          'This endpoint allows patients to `request` for a `password reset link`. From the link collect the password reset `token` and use it to reset your password using the `/api/v2/patients/reset-password/{token}` endpoint.',
+        operationId: 'forgotPassword',
+        requestBody: {
+          required: true,
+
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['email'],
+                properties: {
+                  email: {
+                    type: 'string',
+                    format: 'email',
+                    example: 'farzana.nahar@example.com',
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description:
+              'Password reset link sent successfully. Please check your email.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Password reset token sent to your email.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Bad request. Possibly due to invalid email format or missing email.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Invalid email format or missing email.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description:
+              'No patient found with the provided email address. Please check the email and try again.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'No patient found with the provided email address. Please check the email and try again.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+    // POST/patients/reset-password/{resetToken}
+    '/api/v2/patients/reset-password/{resetToken}': {
+      post: {
+        tags: ['Patients'],
+        summary:
+          'Reset password. Use the password reset `token` to reset your password.',
+        description:
+          'This endpoint allows patients to `reset` their password using the `password reset token` collected from the `/api/v2/patients/forgot-password` endpoint.',
+        operationId: 'resetPassword',
+        parameters: [
+          {
+            name: 'resetToken',
+            in: 'path',
+            required: true,
+            description: 'Password reset token',
+            schema: {
+              type: 'string',
+              example: 'reset-token-here',
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['password', 'passwordConfirm'],
+                properties: {
+                  password: {
+                    type: 'string',
+                    example: 'pass1234',
+                  },
+                  passwordConfirm: {
+                    type: 'string',
+                    example: 'pass1234',
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Password reset successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Password reset successfully.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Bad request. Possibly due to invalid or mismatched password.Or password reset `token` has `expired`.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Password reset token has expired.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+
+          500: responses.InternalServerError,
+        },
+      },
+    },
     '/api/v2/patients': {
       // Only logged in Admins or Doctors can access this route
       get: {
