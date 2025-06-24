@@ -40,7 +40,7 @@ sidebarScript.onload = function () {
           const html = `
                 <div class="sidebar topbar">
                     <a href="https://docpatient-nexus.onrender.com"><img class="topbar__logo" src="https://docpatient-nexus.onrender.com/img/docpatient-nexus-icon.png" alt="DocPatient Nexus Logo"></a>
-                    <h2> DocPatient Nexus</h2>
+                    <h3> DocPatient Nexus</h3>
                 </div>
             
                 `;
