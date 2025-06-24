@@ -4,7 +4,7 @@ module.exports = {
   paths: {
     '/api/v2/doctors/appointments/{appointmentId}/prescription': {
       post: {
-        tags: ['Prescription'],
+        tags: ['Prescriptions'],
         summary: 'Create a prescription for a patient.',
         description:
           '**Allows a doctor to create a prescription for a patient after an appointment.**',

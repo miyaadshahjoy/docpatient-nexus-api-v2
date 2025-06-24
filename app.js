@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/config/swagger-config');
 // Importing routes and controllers
@@ -32,10 +33,16 @@ app.post(
 
 // middlewares
 // Serving static files from the 'public' directory
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
+
 // 3rd party middlewares
 // CORS middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }),
+);
 // body parser middleware
 app.use(express.json());
 app.use(morgan('dev'));
@@ -58,10 +65,10 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
     customSiteTitle: 'DocPatient Nexus API Docs',
-
-    customCss: `@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); @font-face { font-family: 'Operator Mono'; src: url(${__dirname}/public/assets/fonts/operator-mono-bold.woff2) format('woff2'); font-display: swap; } .swagger-ui .topbar { display: none !important;  } .swagger-ui .topbar::after { content: ''; position: absolute; height: 300px !important; width: 100% !important; background-color: black !important; top: 0 !important; } .swagger-ui .opblock-body pre.microlight { background-color: #1e1e2e !important; } .swagger-ui p, .swagger-ui h1, .swagger-ui h2, .swagger-ui h3, .swagger-ui h4, .swagger-ui ul li, .swagger-ui th, .swagger-ui a, .swagger-ui .parameter__name, .swagger-ui select, .swagger-ui input { font-family: 'Poppins', sans-serif !important; } .swagger-ui td, .swagger-ui p { font-size: 1rem !important; font-weight: 400 !important; line-height: 1.5 !important; } .swagger-ui pre, .swagger-ui code, .swagger-ui tr, .swagger-ui td, .swagger-ui span, .swagger-ui textarea, .swagger-ui .parameter__type { font-family: 'Operator Mono', monospace !important; } .swagger-ui pre, .swagger-ui code { font-size: 0.875rem !important; font-weight: 400 !important; } .swagger-ui button, .swagger-ui .btn, .swagger-ui .opblock .opblock-summary-method { font-family: 'Poppins', arial-sans !important; font-size: 1.125rem !important; font-weight: 400 !important; letter-spacing: 1px !important; padding: 7px 13.5px; } .swagger-ui b, .swagger-ui strong { font-size: 1.25rem !important; } .swagger-ui .opblock .opblock-section-header h4, .swagger-ui th { font-size: 1rem !important; } .swagger-ui .try-out__btn, .swagger-ui .execute { color: #ffffff !important; background-color: #f7345e !important; border-color: #f7345e !important; font-size: 1.125rem !important; margin-left: 5px !important; margin-right: 5px !important; } .swagger-ui .model-box-control:focus, .swagger-ui .models-control:focus, .swagger-ui .opblock-summary-control:focus { border: none !important; outline: none !important;} .swagger-ui .swagger-ui .auth-btn-wrapper .btn { color: #ffffff !important; background-color: #f7345e !important; border-color: #f7345e !important; font-size: 1.125rem !important; margin-left: 5px !important; margin-right: 5px !important; } .swagger-ui blockquote{ box-shadow: 0px 3.5px 0px 5px #005a6f; border-radius: 3px; padding: 15px; display: inline-flex !important; align-items: baseline !important; } .swagger-ui blockquote span { border: 2px solid #005a6f !important; padding: 4.5px 11px !important; border-radius: 50%!important; color: #005a6f !important; margin-right: 10px!important; } `,
-    customfavIcon: `${__dirname}/img/docpatient-nexus-icon.png`,
     layout: 'BaseLayout',
+    customCssUrl: `/css/swagger.css`,
+    customfavIcon: `/img/docpatient-nexus-icon.png`,
+    customJs: `/js/swagger.js`,
   }),
 );
 
