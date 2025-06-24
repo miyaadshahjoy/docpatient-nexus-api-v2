@@ -15,19 +15,16 @@ sidebarScript.onload = function () {
     const swaggerRoot = document.querySelector('#swagger-ui');
     const rendered = swaggerRoot && swaggerRoot.querySelector('.info');
 
-    console.log(swaggerRoot, rendered);
     if (rendered) {
       clearInterval(interval);
       if (typeof initSidebar === 'function') {
         initSidebar(document.body, swaggerRoot);
-        console.log('✅ Sidebar initialized');
         //////////////////////////////////////////////////////////////////////
         const sidebarEl = document.querySelector('#sidebar');
         const swaggerUiEl = document.querySelector('#swagger-ui');
         sidebarEl.style.display = 'none';
         setTimeout(() => {
           sidebarEl.style.display = 'block';
-          console.log(sidebarEl, sidebarEl.querySelectorAll('.sectionTitle'));
           const sectionTitles = sidebarEl.querySelectorAll('.sectionTitle');
           sectionTitles.forEach((title) => {
             title.style.cursor = 'pointer';
