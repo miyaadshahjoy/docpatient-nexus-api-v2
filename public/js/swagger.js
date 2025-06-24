@@ -36,23 +36,29 @@ sidebarScript.onload = function () {
             const firstPhrase = match ? match[0] : '';
             title.textContent = firstPhrase;
           });
-          console.log(
-            Array.from(
-              sidebarEl.querySelectorAll('.part .link.opblock'),
-            ).forEach((part) => {
-              console.log(part);
+          ////////////////////////////////////////
+          const html = `
+                <div class="sidebar topbar">
+                    <a href="https://docpatient-nexus.onrender.com"><img class="topbar__logo" src="https://docpatient-nexus.onrender.com/img/docpatient-nexus-icon.png" alt="DocPatient Nexus Logo"></a>
+                    <h2> DocPatient Nexus</h2>
+                </div>
+            
+            `;
+          sidebarEl.insertAdjacentHTML('afterbegin', html);
+
+          ////////////////////////////////////////
+
+          Array.from(sidebarEl.querySelectorAll('.part .link.opblock')).forEach(
+            (part) => {
               const opBlock = swaggerUiEl.querySelector(
                 `#${part.attributes.href.nodeValue.split('#')[1]}`,
               );
-              console.log(
-                opBlock.querySelector('.opblock-summary-description')
-                  .textContent,
-              );
+
               part.querySelector('.partPath').textContent =
                 opBlock.querySelector(
                   '.opblock-summary-description',
                 ).textContent;
-            }),
+            },
           );
         }, 101);
       } else {

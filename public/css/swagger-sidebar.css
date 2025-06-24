@@ -18,6 +18,16 @@
   border-right: 1px solid #e8edf1;
   z-index: 9999;
 }
+#sidebar .topbar {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#sidebar .topbar a img {
+  width: 100%;
+  height: 50px;
+}
 
 #sidebar .sectionTitle {
   font-family: 'Poppins', sans-serif;
