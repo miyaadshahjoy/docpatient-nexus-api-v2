@@ -17,12 +17,13 @@
   padding: 20px 10px;
   border-right: 1px solid #e8edf1;
   z-index: 9999;
+  font-family: 'Poppins', sans-serif;
 }
 #sidebar .topbar {
-  font-family: 'Poppins', sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 4.375rem;
 }
 #sidebar .topbar a img {
   width: 100%;

@@ -43,7 +43,14 @@ sidebarScript.onload = function () {
                     <h2> DocPatient Nexus</h2>
                 </div>
             
-            `;
+                `;
+          sidebarEl.insertAdjacentHTML(
+            'afterbegin',
+            `
+            <h3>Endpoints 👇🏻</h3>      
+            
+            `,
+          );
           sidebarEl.insertAdjacentHTML('afterbegin', html);
 
           ////////////////////////////////////////
