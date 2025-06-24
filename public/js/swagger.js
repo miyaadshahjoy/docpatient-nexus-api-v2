@@ -44,7 +44,7 @@ sidebarScript.onload = function () {
           sidebarEl.insertAdjacentHTML(
             'afterbegin',
             `
-            <h3>Endpoints 👇🏻</h3>      
+            <h4>Endpoints 👇🏻</h4>      
             
             `,
           );
