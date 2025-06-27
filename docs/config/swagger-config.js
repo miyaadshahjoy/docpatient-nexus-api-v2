@@ -168,7 +168,20 @@ Patients are authenticated using *JWT* tokens and protected routes ensure that u
       },
       {
         name: 'Reviews',
-        description: 'Operations related to reviews',
+        description: `
+Routes for managing patient-submitted reviews and ratings for doctors after a completed appointment.
+
+These endpoints allow:
+
+• Patients to leave a review and star rating after a completed appointment  
+• Doctors to receive feedback on their care and consultation experience  
+• The system to auto-update the doctor's average rating and review count  
+• Retrieval of all reviews for a doctor (public access, for profiles)  
+• Patients to fetch their own reviews for recordkeeping or editing (if allowed)
+
+Review creation is tightly scoped to completed appointments, ensuring only legitimate, verified patient-doctor interactions are rated. Reviews contribute to the doctor's public profile and help other patients make informed booking decisions.
+        
+          `,
       },
       {
         name: 'Payments',
