@@ -5,15 +5,16 @@ module.exports = {
     '/api/v2/super-admins/signin': {
       post: {
         tags: ['Super-Admins'],
-        summary: 'Super Admin Sign In',
+        summary: 'Super-Admin signin.',
         description:
-          'Allows a super-admin to sign in using email and password. After sigining in use the `jwt` token to access the protected routes.',
+          'Allows a super-admin to *signin* using *email* and *password*. After sigining in use the *jwt* token to access the protected routes.',
         requestBody: {
           required: true,
           content: {
             'application/json': {
               schema: {
                 type: 'object',
+                required: ['email', 'password'],
                 properties: {
                   email: {
                     type: 'string',
@@ -32,7 +33,7 @@ module.exports = {
         },
         responses: {
           200: {
-            description: 'Super-Admin signed in successfully',
+            description: 'Super-Admin signed in successfully.',
             content: {
               'application/json': {
                 schema: {
@@ -73,7 +74,7 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example: 'Enter correct email and password to sign in.',
+                      example: 'Enter correct email and password to signin.',
                     },
                   },
                 },

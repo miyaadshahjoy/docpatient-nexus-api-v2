@@ -7,6 +7,7 @@ module.exports = ({ userName, emailVerificationUrl }) => `
                 <img
                 src="https://docpatient-nexus.onrender.com/img/welcome.svg"
                 alt="WELCOME IMAGE"
+                onerror="this.onerror=null; this.src='/img/broken-image.png';"
                 style="width: 100%"
                 />
                 <h1>Welcome to DocPatient Nexus</h1>

@@ -28,7 +28,7 @@ module.exports = {
         tags: ['Admins'],
         summary: 'Register a new admin account.',
         description:
-          'Allows a new admin to register by providing necessary credentials and profile details. After registration, you will have to verify your email through the `/api/v2/admins/email-verification` endpoint. Initially your account will be in a `pending` state. After verification, your account will be `active` and you can log in.',
+          'Allows a new admin to register by providing necessary credentials and profile details. After registration, you will have to *verify* your *email* through the */api/v2/admins/email-verification* endpoint. Initially your account will be in a *pending* state. After *verification* or *approval*, your account will be *active* and you can log in.',
         operationId: 'signupAdmin',
         requestBody: {
           required: true,
@@ -36,6 +36,14 @@ module.exports = {
             'application/json': {
               schema: {
                 type: 'object',
+                required: [
+                  'fullName',
+                  'email',
+                  'phone',
+                  'gender',
+                  'password',
+                  'passwordConfirm',
+                ],
                 properties: {
                   fullName: {
                     type: 'string',
@@ -78,7 +86,7 @@ module.exports = {
 
         responses: {
           201: {
-            description: 'Admin registered successfully',
+            description: 'Admin registered successfully.',
             content: {
               'application/json': {
                 schema: {
@@ -99,17 +107,10 @@ module.exports = {
                 },
               },
             },
-
-            // link to email verification route
-            // links: {
-            //   emailVerification: {
-            //     description: 'Link to verify newly registered admin’s email.',
-            //     operationId: 'sendEmailVerification',
-            //   },
-            // },
           },
+
           400: {
-            description: 'Invalid input or validation failed',
+            description: 'Invalid input or validation failed.',
             content: {
               'application/json': {
                 schema: {
@@ -121,7 +122,7 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example: 'Passwords do not match',
+                      example: 'Passwords do not match.',
                     },
                   },
                 },
@@ -149,6 +150,7 @@ module.exports = {
               },
             },
           },
+
           500: responses.InternalServerError,
         },
       },
@@ -156,14 +158,16 @@ module.exports = {
     '/api/v2/admins/signin': {
       post: {
         tags: ['Admins'],
-        summary: 'Admin Sign In',
-        description: 'Allows an admin to sign in using email and password.',
+        summary: 'Admin signin',
+        description:
+          'Allows an admin to *signin* using *email* and *password*. After signing in, use the *jwt* token from the response to authenticate or authorize for accessing protected routes.',
         requestBody: {
           required: true,
           content: {
             'application/json': {
               schema: {
                 type: 'object',
+                required: ['email', 'password'],
                 properties: {
                   email: {
                     type: 'string',
@@ -182,7 +186,7 @@ module.exports = {
         },
         responses: {
           200: {
-            description: 'Admin signed in successfully',
+            description: 'Admin signed in successfully.',
             content: {
               'application/json': {
                 schema: {
@@ -215,7 +219,10 @@ module.exports = {
                 schema: {
                   type: 'object',
                   properties: {
-                    status: { type: 'string', example: 'fail' },
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
                     message: {
                       type: 'string',
                       example: 'Enter correct email and password to sign in.',
@@ -239,7 +246,7 @@ module.exports = {
                     message: {
                       type: 'string',
                       example:
-                        'Please verify your email before accessing the system',
+                        'Please verify your email before accessing the system.',
                     },
                   },
                 },

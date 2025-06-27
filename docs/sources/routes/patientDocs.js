@@ -47,13 +47,25 @@ module.exports = {
         tags: ['Patients'],
         summary: 'Register a new patient account.',
         description:
-          'Allows a new patient to register by providing necessary credentials and profile details. After registration, you will have to verify you email through the `/api/v2/patients/email-verification` endpoint. Initially your account will be in a `pending` state. After verification, your account will be `active` and you can log in.',
+          'Allows a new patient to register by providing necessary credentials and profile details. After registration, you will have to *verify* you *email* through the */api/v2/patients/email-verification* endpoint. Initially your account will be in a *pending* state. After *verification* or *approval*, your account will be *active* and you can log in.',
         operationId: 'signupPatient',
         requestBody: {
           required: true,
           content: {
             'application/json': {
               schema: {
+                type: 'object',
+                required: [
+                  'fullName',
+                  'email',
+                  'phone',
+                  'gender',
+                  'password',
+                  'passwordConfirm',
+                  'bloodGroup',
+                  'dateOfBirth',
+                  'location',
+                ],
                 $ref: '#/components/schemas/Patient',
               },
             },
@@ -97,7 +109,7 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example: 'Passwords do not match',
+                      example: 'Passwords do not match.',
                     },
                   },
                 },
@@ -134,7 +146,7 @@ module.exports = {
         tags: ['Patients'],
         summary: 'Patient Sign In',
         description:
-          'Allows a patient to sign in using email and password. If your email is `not verified`, you will not be able to sign in. Verify your email using the `/api/v2/patients/email-verification` endpoint. If your account is pending approval by the admin, you will not be able to sign in.<br><br>After successfully logging in use the `jwt` token from the response to authenticate or authorize for accessing protected routes.',
+          'Allows a patient to sign in using email and password. If your email is *not verified*, you will not be able to signin. Verify your email using the */api/v2/patients/email-verification* endpoint. If your account is pending approval by the admin, you will not be able to signin.<br><br>After successfully logging in use the *jwt* token from the response to authenticate or authorize for accessing protected routes.',
         operationId: 'signinPatient',
         requestBody: {
           required: true,

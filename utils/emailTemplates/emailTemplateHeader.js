@@ -78,6 +78,7 @@ module.exports = () => {
                   class="header__logo"
                   src="https://docpatient-nexus.onrender.com/img/docpatient-nexus-logo.png"
                   alt="DocPatient Nexus Logo"
+                  onerror="this.onerror=null; this.src='/img/broken-image.png';"
                   />
                   <div class="header__link">
                   <a href="https://docpatient-nexus.onrender.com">open in browser</a>

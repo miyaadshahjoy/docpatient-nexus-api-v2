@@ -2,6 +2,358 @@ const responses = require('../components/responses');
 
 module.exports = {
   paths: {
+    '/api/v2/doctors/signup': {
+      post: {
+        tags: ['Doctors'],
+        summary: 'Register a new doctor account.',
+        description:
+          'Allows a new doctor to register by providing necessary credentials and profile details. After registration, you will have to *verify* your *email* through the */api/v2/doctors/email-verification* endpoint. Initially your account will be in a *pending* state. After *verification* or *approval*, your account will be *active* and you can log in.',
+        operationId: 'signupDoctor',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: [
+                  'fullName',
+                  'email',
+                  'phone',
+                  'gender',
+                  'password',
+                  'passwordConfirm',
+                  'specialization',
+                  'experience',
+                  'education',
+                  'location',
+                  'visitingSchedule',
+                  'consultationFees',
+                ],
+                properties: {
+                  fullName: {
+                    type: 'string',
+                    example: 'Zarif Hossain',
+                  },
+                  email: {
+                    type: 'string',
+                    example: 'zarif.hossain@example.com',
+                  },
+                  phone: {
+                    type: 'string',
+                    example: '+880 1720 111234',
+                  },
+                  gender: {
+                    type: 'string',
+                    enum: ['male', 'female', 'others', 'prefer not to say'],
+                    example: 'female',
+                  },
+                  profilePhoto: {
+                    type: 'string',
+                    example: 'https://cdn.example.com/images/zarif.jpg',
+                  },
+                  password: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'pass1234',
+                  },
+                  passwordConfirm: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'pass1234',
+                  },
+                  specialization: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: ['Cardiology', 'Internal Medicine'],
+                  },
+                  experience: {
+                    type: 'number',
+                    example: 10,
+                  },
+                  education: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      required: ['degree', 'institute'],
+                      properties: {
+                        degree: {
+                          type: 'string',
+                          example: 'MBBS',
+                        },
+                        institute: {
+                          type: 'string',
+                          example: 'Dhaka Medical College',
+                        },
+                      },
+                    },
+                  },
+                  location: {
+                    type: 'object',
+                    required: ['type', 'coordinates'],
+                    properties: {
+                      type: {
+                        type: 'string',
+                        enum: ['Point'],
+                        example: 'Point',
+                      },
+                      coordinates: {
+                        type: 'array',
+                        items: {
+                          type: 'number',
+                        },
+                        example: [90.389, 23.746],
+                      },
+                      city: {
+                        type: 'string',
+                        example: 'Dhaka',
+                      },
+                      address: {
+                        type: 'string',
+                        example: 'Green Road, Dhaka',
+                      },
+                    },
+                  },
+                  visitingSchedule: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        day: {
+                          type: 'string',
+                          enum: [
+                            'saturday',
+                            'sunday',
+                            'monday',
+                            'tuesday',
+                            'wednesday',
+                            'thursday',
+                            'friday',
+                          ],
+                          example: 'monday',
+                        },
+                        hours: {
+                          type: 'object',
+                          required: ['from', 'to'],
+                          properties: {
+                            from: {
+                              type: 'string',
+                              example: '09:00',
+                            },
+                            to: {
+                              type: 'string',
+                              example: '17:00',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  consultationFees: {
+                    type: 'number',
+                    example: 1000,
+                  },
+                  appointmentDuration: {
+                    type: 'number',
+                    example: 60,
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: 'Doctor registered successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+
+                    data: {
+                      type: 'object',
+                      properties: {
+                        doctor: { $ref: '#/components/schemas/Doctor' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Invalid input or validation failed.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Passwords do not match.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          409: {
+            description: 'Email or phone number already in use.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Email already exists. Please use a different email.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+    '/api/v2/doctors/signin': {
+      post: {
+        tags: ['Doctors'],
+        summary: 'Doctor Sign In',
+        description:
+          'Allows a doctor to sign in using email and password. If your email is *not verified*, you will not be able to signin. Verify your email using the */api/v2/doctors/email-verification* endpoint. If your account is pending approval by the admin, you will not be able to signin.<br><br>After successfully logging in use the *jwt* token from the response to authenticate or authorize for accessing protected routes.',
+        operationId: 'signinDoctor',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['email', 'password'],
+                properties: {
+                  email: {
+                    type: 'string',
+                    format: 'email',
+                    example: 'zarif.hossain@example.com',
+                  },
+                  password: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'pass1234',
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Doctor signed in successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    token: {
+                      type: 'string',
+                      example: 'JWT token here.',
+                    },
+
+                    data: {
+                      type: 'object',
+                      properties: {
+                        doctor: { $ref: '#/components/schemas/Doctor' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Invalid email or password. Please provide valid credentials.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'fail' },
+                    message: {
+                      type: 'string',
+                      example: 'Enter correct email and password to sign in.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Unauthorized access.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Please verify your email before accessing the system',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description: 'Forbidden access due to account status.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Your account is pending approval by an admin or has been removed. Please contact support.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
     '/api/v2/doctors': {
       get: {
         tags: ['Doctors'],
@@ -699,357 +1051,12 @@ module.exports = {
       },
     },
 
-    '/api/v2/doctors/signup': {
-      post: {
-        tags: ['Doctors'],
-        summary: 'Register a new doctor account.',
-        description:
-          'Allows a new doctor to register by providing necessary credentials and profile details. After registration, you will have to verify you email through the `/api/v2/doctors/email-verification` endpoint. Initially your account will be in a `pending` state. After verification, your account will be `active` and you can log in.',
-        operationId: 'signupDoctor',
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                required: [
-                  'fullName',
-                  'email',
-                  'phone',
-                  'gender',
-                  'password',
-                  'passwordConfirm',
-                  'specialization',
-                  'experience',
-                  'education',
-                  'location',
-                  'visitingSchedule',
-                  'consultationFees',
-                ],
-                properties: {
-                  fullName: {
-                    type: 'string',
-                    example: 'Zarif Hossain',
-                  },
-                  email: {
-                    type: 'string',
-                    example: 'zarif.hossain@example.com',
-                  },
-                  phone: {
-                    type: 'string',
-                    example: '+880 1720 111234',
-                  },
-                  gender: {
-                    type: 'string',
-                    enum: ['male', 'female', 'others', 'prefer not to say'],
-                    example: 'female',
-                  },
-                  profilePhoto: {
-                    type: 'string',
-                    example: 'https://cdn.example.com/images/zarif.jpg',
-                  },
-                  password: {
-                    type: 'string',
-                    format: 'password',
-                    example: 'pass1234',
-                  },
-                  passwordConfirm: {
-                    type: 'string',
-                    format: 'password',
-                    example: 'pass1234',
-                  },
-                  specialization: {
-                    type: 'array',
-                    items: {
-                      type: 'string',
-                    },
-                    example: ['Cardiology', 'Internal Medicine'],
-                  },
-                  experience: {
-                    type: 'number',
-                    example: 10,
-                  },
-                  education: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      required: ['degree', 'institute'],
-                      properties: {
-                        degree: {
-                          type: 'string',
-                          example: 'MBBS',
-                        },
-                        institute: {
-                          type: 'string',
-                          example: 'Dhaka Medical College',
-                        },
-                      },
-                    },
-                  },
-                  location: {
-                    type: 'object',
-                    required: ['type', 'coordinates'],
-                    properties: {
-                      type: {
-                        type: 'string',
-                        enum: ['Point'],
-                        example: 'Point',
-                      },
-                      coordinates: {
-                        type: 'array',
-                        items: {
-                          type: 'number',
-                        },
-                        example: [90.389, 23.746],
-                      },
-                      city: {
-                        type: 'string',
-                        example: 'Dhaka',
-                      },
-                      address: {
-                        type: 'string',
-                        example: 'Green Road, Dhaka',
-                      },
-                    },
-                  },
-                  visitingSchedule: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        day: {
-                          type: 'string',
-                          enum: [
-                            'saturday',
-                            'sunday',
-                            'monday',
-                            'tuesday',
-                            'wednesday',
-                            'thursday',
-                            'friday',
-                          ],
-                          example: 'monday',
-                        },
-                        hours: {
-                          type: 'object',
-                          required: ['from', 'to'],
-                          properties: {
-                            from: {
-                              type: 'string',
-                              example: '09:00',
-                            },
-                            to: {
-                              type: 'string',
-                              example: '17:00',
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                  consultationFees: {
-                    type: 'number',
-                    example: 1000,
-                  },
-                  appointmentDuration: {
-                    type: 'number',
-                    example: 60,
-                  },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          201: {
-            description: 'Doctor registered successfully',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'success',
-                    },
-
-                    data: {
-                      type: 'object',
-                      properties: {
-                        doctor: { $ref: '#/components/schemas/Doctor' },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Invalid input or validation failed',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: { type: 'string', example: 'fail' },
-                    message: {
-                      type: 'string',
-                      example: 'Passwords do not match',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          409: {
-            description: 'Email or phone number already in use.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'Email already exists. Please use a different email.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          500: responses.InternalServerError,
-        },
-      },
-    },
-    '/api/v2/doctors/signin': {
-      post: {
-        tags: ['Doctors'],
-        summary: 'Doctor Sign In',
-        description:
-          'Allows a doctor to sign in using email and password. If your email is `not verified`, you will not be able to sign in. Verify your email using the `/api/v2/doctors/email-verification` endpoint. If your account is pending approval by the admin, you will not be able to sign in.<br><br>After successfully logging in use the `jwt` token from the response to authenticate or authorize for accessing protected routes.',
-        operationId: 'signinDoctor',
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                required: ['email', 'password'],
-                properties: {
-                  email: {
-                    type: 'string',
-                    format: 'email',
-                    example: 'zarif.hossain@example.com',
-                  },
-                  password: {
-                    type: 'string',
-                    format: 'password',
-                    example: 'pass1234',
-                  },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          200: {
-            description: 'Doctor signed in successfully',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'success',
-                    },
-
-                    data: {
-                      type: 'object',
-                      properties: {
-                        doctor: { $ref: '#/components/schemas/Doctor' },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description:
-              'Invalid email or password. Please provide valid credentials.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: { type: 'string', example: 'fail' },
-                    message: {
-                      type: 'string',
-                      example: 'Enter correct email and password to sign in.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          401: {
-            description: 'Unauthorized access.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'Please verify your email before accessing the system',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          403: {
-            description: 'Forbidden access due to account status.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'Your account is pending approval by an admin or has been removed. Please contact support.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          500: responses.InternalServerError,
-        },
-      },
-    },
     '/api/v2/doctors/email-verification': {
       post: {
         tags: ['Doctors'],
         summary: 'Send email verification link',
         description:
-          'Sends an `email verification link` to the doctor’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the `/api/v2/doctors/email-verification/{token}` endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the `/api/v2/doctors/email-verification` endpoint. <br><br>**Note**: The email verification token could be long. Make sure to copy the entire token from the email.',
+          'Sends an *email verification link* to the doctor’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the */api/v2/doctors/email-verification/{token}* endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the */api/v2/doctors/email-verification* endpoint. <br><br>**Note**: The email verification token could be long. Make sure to copy the entire token from the email.',
         operationId: 'sendEmailVerification',
         requestBody: {
           required: true,

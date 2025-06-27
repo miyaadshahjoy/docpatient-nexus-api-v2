@@ -20,7 +20,8 @@
   top: 0 !important;
 } */
 .swagger-ui .opblock-body pre.microlight {
-  background-color: #1e1e2e !important;
+  /* background-color: #1e1e2e !important; */
+  background-color: #0a1535 !important;
 }
 .swagger-ui p,
 .swagger-ui h1,
@@ -55,6 +56,14 @@
   font-size: 0.875rem !important;
   font-weight: 400 !important;
 }
+.swagger-ui em {
+  font-family: 'Operator Mono', monospace !important;
+  color: #000 !important;
+  background-color: #fa99ae;
+  border: 2px solid #f7345e;
+  border-radius: 3px;
+  padding: 1.5px 5px;
+}
 .swagger-ui button,
 .swagger-ui .btn,
 .swagger-ui .opblock .opblock-summary-method {
@@ -66,7 +75,7 @@
 }
 .swagger-ui b,
 .swagger-ui strong {
-  font-size: 1.25rem !important;
+  font-size: 1rem !important;
 }
 .swagger-ui .opblock .opblock-section-header h4,
 .swagger-ui th {
@@ -108,4 +117,19 @@
   border-radius: 50% !important;
   color: #005a6f !important;
   margin-right: 10px !important;
+}
+
+.swagger-ui .opblock-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+.swagger-ui .opblock-tag span {
+  font-family: 'Poppins', arial-sans !important;
+  font-size: 1.5rem !important;
+}
+
+.swagger-ui .expand-methods,
+.swagger-ui .expand-operation {
+  align-self: end;
 }
