@@ -52,12 +52,13 @@ exports.updatePassword = (Model) =>
     await user.save();
     // 4) Log user in, send JWT
     const token = generateJWT(user._id, user.role);
+    const resourceName = Model.modelName;
     res.status(200).json({
       status: 'success',
       jwt: token,
-      message: 'Password updated successfully',
+      message: `${resourceName} password updated successfully`,
       data: {
-        user: {
+        [resourceName]: {
           name: user.name,
           email: user.email,
         },
@@ -110,7 +111,7 @@ exports.updateCurrentUser = (Model) =>
     const resourceName = Model.modelName;
     res.status(200).json({
       status: 'success',
-      message: 'User account updated successfully',
+      message: `${resourceName} account updated successfully.`,
       data: {
         [resourceName]: updatedUser,
       },

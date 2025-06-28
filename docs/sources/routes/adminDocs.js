@@ -1466,7 +1466,8 @@ module.exports = {
         tags: ['Admins'],
         summary: 'Get currently logged-in Admin profile.',
         description:
-          '**Fetches the profile information of the currently logged in admin. The admin must be `logged in` and have a valid `JWT` token.**',
+          'Fetches the profile information of the currently **logged-in** Admin. The Admin must be logged-in and have a valid **JWT** token. Only **accessible** to **logged-in** Admins.',
+        operationId: 'getAdminProfile',
         security: [
           {
             bearerAuth: [], // This indicates that the endpoint requires authentication
@@ -1496,8 +1497,7 @@ module.exports = {
             },
           },
           400: {
-            description:
-              'Bad request. Possibly due to invalid input or validation errors.',
+            description: 'Bad request.',
             content: {
               'application/json': {
                 schema: {
@@ -1509,8 +1509,7 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example:
-                        'Invalid input. Please provide valid profile information.',
+                      example: 'This user does not exist anymore.',
                     },
                   },
                 },
@@ -1531,7 +1530,8 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example: 'You must be logged in to update your profile.',
+                      example:
+                        'You are not authorized to access this route. Please log in.',
                     },
                   },
                 },
@@ -1540,7 +1540,7 @@ module.exports = {
           },
           403: {
             description:
-              'Forbidden access. Admin does not have permission to update profile.',
+              'Forbidden access. Only logged-in Admins can access this route.',
             content: {
               'application/json': {
                 schema: {
@@ -1553,7 +1553,7 @@ module.exports = {
                     message: {
                       type: 'string',
                       example:
-                        'You do not have permission to update this profile.',
+                        'You do not have permission to perform this action.',
                     },
                   },
                 },
@@ -1565,9 +1565,9 @@ module.exports = {
       },
       patch: {
         tags: ['Admins'],
-        summary: 'Update Admin Profile.',
+        summary: 'Update currently logged-in Admin Profile.',
         description:
-          'Allows an admin to update their profile information. The admin must be `logged in` and have a valid `JWT` token.',
+          'Allows an Admin to **update** their profile information. The Admin must be **logged-in** and have a valid **JWT** token.',
         security: [
           {
             bearerAuth: [], // This indicates that the endpoint requires authentication
@@ -1662,7 +1662,7 @@ module.exports = {
           },
           401: {
             description:
-              'Unauthorized access. Admin must be logged in with a valid JWT token.',
+              'Unauthorized access. Only **logged-in** Admins can update their profile.',
             content: {
               'application/json': {
                 schema: {
@@ -1683,7 +1683,7 @@ module.exports = {
           },
           403: {
             description:
-              'Forbidden access. Admin does not have permission to update profile.',
+              'Forbidden access. Only **logged-in** Admins can update their profile.',
             content: {
               'application/json': {
                 schema: {
@@ -1708,21 +1708,22 @@ module.exports = {
       },
       delete: {
         tags: ['Admins'],
-        summary: 'Delete Admin Account.',
+        summary: 'Delete currently logged-in Admin account.',
         security: [
           {
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
         description:
-          '**Allows an admin to delete their own account. The admin must be `logged in` with a valid `JWT` token.**',
+          'Allows an Admin to **delete** their own account. The Admin must be **logged-in** with a valid **JWT** token.',
+        operationId: 'deleteAdminAccount',
         responses: {
           204: {
             description: 'Admin account deleted successfully.',
           },
           401: {
             description:
-              'Unauthorized access. Admin must be logged in with a valid `JWT` token.',
+              'Unauthorized access. Only logged-in Admins can delete their account.',
             content: {
               'application/json': {
                 schema: {
@@ -1743,7 +1744,7 @@ module.exports = {
           },
           403: {
             description:
-              'Forbidden access. Admin does not have permission to delete this account.',
+              'Forbidden access. Only logged-in Admins can delete their account.',
             content: {
               'application/json': {
                 schema: {
@@ -1763,6 +1764,162 @@ module.exports = {
               },
             },
           },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+
+    // Update currently logged-in Admin password
+    '/api/v2/admins/me/password': {
+      patch: {
+        tags: ['Admins'],
+        summary: 'Update currently logged-in Admin password.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows an Admin to **update** their own password. The Admin must be **logged-in** with a valid **JWT** token.',
+        operationId: 'updateAdminPassword',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['currentPassword', 'password', 'passwordConfirm'],
+                properties: {
+                  currentPassword: {
+                    type: 'string',
+                    example: 'currentPassword123',
+                  },
+                  password: {
+                    type: 'string',
+                    example: 'newPassword123',
+                  },
+                  passwordConfirm: {
+                    type: 'string',
+                    example: 'newPassword123',
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Admin password updated successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    jwt: {
+                      type: 'string',
+                      example: 'JWT token here',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Admin password has been updated successfully.',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        admin: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '60c72b2f9b1e8b001c8e4d3a',
+                            },
+                            name: {
+                              type: 'string',
+                              example: 'Ahsan Habib',
+                            },
+                            email: {
+                              type: 'string',
+                              example: 'ahsan.habib@example.com',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Bad request. Possibly due to missing or invalid current, new or confirm passwords.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Please provide current, new and confirm passwords.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Admins can update their password.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'You must be logged in to update your password.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Admins can update their password.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to update your password.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+
           500: responses.InternalServerError,
         },
       },
