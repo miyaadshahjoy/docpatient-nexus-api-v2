@@ -20,6 +20,7 @@ router.use('/patients/:id/records', patientRecordRouter);
 // POST/doctors/appointments/{patientId}/prescription
 router.use('/appointments', appointmentRouter);
 
+// GET /api/v2/doctors/doctors-within/{distance}/center/[lat, lng]/unit/{unit}
 router.get(
   '/doctors-within/:distance/center/:latlng/unit/:unit',
   doctorController.getDoctorsWithin, // Impl: Get doctors within a certain distance from a given location

@@ -32,7 +32,10 @@ exports.getDoctorsWithin = catchAsync(async (req, res, next) => {
   const [lat, lng] = latlng.split(',').map(Number);
   if (Number.isNaN(lat) || Number.isNaN(lng)) {
     return next(
-      new AppError('Please provide valid latitude and longitude', 400),
+      new AppError(
+        'Please provide valid latitude and longitude coordinates',
+        400,
+      ),
     );
   }
 
@@ -45,8 +48,8 @@ exports.getDoctorsWithin = catchAsync(async (req, res, next) => {
   });
   res.status(200).json({
     status: 'success',
-    message: 'Doctors found within specified distance.',
-    resutls: doctors.length,
+    message: 'Doctors fetched successfully within the specified distance.',
+    results: doctors.length,
     data: {
       doctors,
     },

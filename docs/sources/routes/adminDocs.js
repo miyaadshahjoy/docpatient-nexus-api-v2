@@ -284,7 +284,7 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Send email verification link',
-        description: `Sends an **email verification link** to the admins’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/admins/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/email-verification** endpoint.<br><br>**Note**: The email verification token could be long. Make sure to copy the entire token from the email.`,
+        description: `Sends an **email verification link** to the Admins’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/admins/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/email-verification** endpoint.`,
         operationId: 'sendEmailVerification',
         requestBody: {
           required: true,
@@ -349,7 +349,7 @@ module.exports = {
             },
           },
           404: {
-            description: 'No admin found with the provided email address.',
+            description: 'No Admin found with the provided email address.',
             content: {
               'application/json': {
                 schema: {
@@ -359,7 +359,7 @@ module.exports = {
                     message: {
                       type: 'string',
                       example:
-                        'No admin found with the provided email address. Please check the email and try again.',
+                        'No Admin found with the provided email address. Please check the email and try again.',
                     },
                   },
                 },
@@ -448,7 +448,7 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example: 'No verfication token found.',
+                      example: 'No verification token found.',
                     },
                   },
                 },
@@ -531,7 +531,7 @@ module.exports = {
             },
           },
           404: {
-            description: 'No admin found with the provided email address.',
+            description: 'No Admin found with the provided email address.',
             content: {
               'application/json': {
                 schema: {
@@ -543,7 +543,7 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example: 'No admin found with this email address.',
+                      example: 'No Admin found with this email address.',
                     },
                   },
                 },
@@ -644,7 +644,7 @@ module.exports = {
         },
       },
     },
-    // Approve doctor account
+    // Approve Doctor account
     '/api/v2/admins/approve-doctors/{doctorId}': {
       patch: {
         tags: ['Admins'],
@@ -783,11 +783,11 @@ module.exports = {
       },
     },
 
-    // Approve patient account
+    // Approve Patient account
     '/api/v2/admins/approve-patients/{patientId}': {
       patch: {
         tags: ['Admins'],
-        summary: 'Approve patient account.',
+        summary: 'Approve Patient account.',
         security: [
           {
             bearerAuth: [], // This indicates that the endpoint requires authentication
@@ -1568,6 +1568,7 @@ module.exports = {
         summary: 'Update currently logged-in Admin Profile.',
         description:
           'Allows an Admin to **update** their profile information. The Admin must be **logged-in** and have a valid **JWT** token.',
+        operationId: 'updateAdminProfile',
         security: [
           {
             bearerAuth: [], // This indicates that the endpoint requires authentication
@@ -1825,7 +1826,7 @@ module.exports = {
                     },
                     message: {
                       type: 'string',
-                      example: 'Admin password has been updated successfully.',
+                      example: 'Your password has been updated successfully.',
                     },
                     data: {
                       type: 'object',
