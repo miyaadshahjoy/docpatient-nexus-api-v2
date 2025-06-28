@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
+const { encrypt } = require('./cryptoHelper');
 
 exports.addInstanceMethods = (schema) => {
   schema.methods.correctPassword = async function (candidatePassword) {
@@ -27,13 +27,7 @@ exports.addInstanceMethods = (schema) => {
     return resetToken;
   };
   schema.methods.createEmailVerificationToken = function () {
-    const verificationToken = jwt.sign(
-      { email: this.email },
-      process.env.JWT_SECRET_KEY,
-      {
-        expiresIn: '10m', // Token will expire in 10 minutes
-      },
-    );
+    const verificationToken = encrypt(this.email);
 
     // Hash the token and set it to emailVerificationToken field
     this.emailVerificationToken = crypto

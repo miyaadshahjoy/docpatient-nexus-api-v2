@@ -12,9 +12,9 @@ router.post('/signin', authController.signin(Admin));
 // Approve Admin Accounts
 router.patch(
   '/approve-admins/:id',
-  authController.protect('admin'),
+  authController.protect(),
   superAdminOnly,
-  handlerFactory.verifyAccount(Admin),
+  handlerFactory.approveAccount(Admin),
 );
 
 module.exports = router;

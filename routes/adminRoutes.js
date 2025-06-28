@@ -58,7 +58,7 @@ router.patch(
   authController.protect('admin'),
   checkAccountEligibility(Admin),
   authController.restrictTo('admin'),
-  handlerFactory.verifyAccount(Doctor),
+  handlerFactory.approveAccount(Doctor),
 );
 
 // Approve Patient Accounts
@@ -67,7 +67,7 @@ router.patch(
   authController.protect('admin'),
   checkAccountEligibility(Admin),
   authController.restrictTo('admin'),
-  handlerFactory.verifyAccount(Patient),
+  handlerFactory.approveAccount(Patient),
 );
 
 module.exports = router;

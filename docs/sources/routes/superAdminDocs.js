@@ -6,8 +6,7 @@ module.exports = {
       post: {
         tags: ['Super-Admins'],
         summary: 'Super-Admin signin.',
-        description:
-          'Allows a super-admin to *signin* using *email* and *password*. After sigining in use the *jwt* token to access the protected routes.',
+        description: `Allows a super-admin to **signin** using **email** and **password**. After sigining in use the **jwt** token to access the protected routes.<br><br><blockquote><span>ℹ</span><p>You cannot create a new Super-Admin account using this api. A system has only one Super-Admin account and it is embedded in the system. You can only login to the Super-Admin account using the email and password provided in the example below. For convenience, I am providing the email and password here. **email: super-admin@docpatientnexus.com** and **password: pass12345**</p>`,
         requestBody: {
           required: true,
           content: {
@@ -19,12 +18,12 @@ module.exports = {
                   email: {
                     type: 'string',
                     format: 'email',
-                    example: 'miyaadjoy@docpatientnexus.com',
+                    example: 'super-admin@docpatientnexus.com',
                   },
                   password: {
                     type: 'string',
                     format: 'password',
-                    example: 'pass1234',
+                    example: 'pass12345',
                   },
                 },
               },
@@ -97,7 +96,7 @@ module.exports = {
           },
         ],
         description:
-          'Allows a super-admin to approve an admin account by ID. The admin must be in a pending state. Requires a valid `JWT` token with super-admin privileges.',
+          'Allows a Super-Admin to **approve** an **Admin** account by ID. The Admin must be in a pending state. Requires a valid **JWT** token with Auper-Admin privileges to access this route. ',
         parameters: [
           {
             name: 'adminId',
@@ -147,6 +146,49 @@ module.exports = {
                       type: 'string',
                       example:
                         'Admin account is already approved or does not exist.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Super-Admins can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to access this resource. Please log in.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged in Super-Admins can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'You are not allowed to perform this action.',
                     },
                   },
                 },

@@ -11,14 +11,7 @@
 .swagger-ui .topbar {
   display: none !important;
 }
-/* .swagger-ui .topbar::after {
-  content: '';
-  position: absolute;
-  height: 300px !important;
-  width: 100% !important;
-  background-color: black !important;
-  top: 0 !important;
-} */
+
 .swagger-ui .opblock-body pre.microlight {
   /* background-color: #1e1e2e !important; */
   background-color: #0a1535 !important;

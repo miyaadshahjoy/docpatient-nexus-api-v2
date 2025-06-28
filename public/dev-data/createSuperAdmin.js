@@ -20,13 +20,13 @@ const createSuperAdmin = async () => {
       return process.exit();
     }
     await Admin.create({
-      fullName: 'Miyaad Shah Joy',
+      fullName: 'Super Admin',
       email: process.env.SUPER_ADMIN_EMAIL,
       phone: '01700000000',
       gender: 'male',
-      password: 'pass1234',
-      passwordConfirm: 'pass1234',
-      role: 'super-admin',
+      password: 'pass12345',
+      passwordConfirm: 'pass12345',
+      roles: ['super-admin', 'admin'],
       isVerified: true,
       status: 'active',
       emailVerified: true,

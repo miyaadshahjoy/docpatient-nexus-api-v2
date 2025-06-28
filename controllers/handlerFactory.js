@@ -111,8 +111,9 @@ exports.deleteOne = (Model) =>
 
     res.status(204).send();
   });
-//TODO: Change the name of the handler to -> approveAccount
-exports.verifyAccount = (Model) =>
+
+// TODO: Send an email to respective user after approval
+exports.approveAccount = (Model) =>
   catchAsync(async (req, res, next) => {
     const resourceName = `${Model.modelName}`;
     const user = await Model.findById(req.params.id);
@@ -122,13 +123,13 @@ exports.verifyAccount = (Model) =>
     // Check if the user is already verified
     if (user.isVerified)
       return next(
-        new AppError(`${resourceName} account is already verified.`, 400),
+        new AppError(`${resourceName} account is already approved.`, 400),
       );
     user.isVerified = true;
     user.status = 'active';
     await user.save();
     res.status(200).json({
       status: 'success',
-      message: `${resourceName} account verified successfully`,
+      message: `${resourceName} account approval was successful.`,
     });
   });

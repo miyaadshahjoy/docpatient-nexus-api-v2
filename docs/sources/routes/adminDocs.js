@@ -23,12 +23,12 @@ const responses = require('../components/responses');
 
 module.exports = {
   paths: {
-    '/api/v2/admins/': {
+    '/api/v2/admins/signup': {
       post: {
         tags: ['Admins'],
-        summary: 'Register a new admin account.',
+        summary: 'Register a new Admin account.',
         description:
-          'Allows a new admin to register by providing necessary credentials and profile details. After registration, you will have to *verify* your *email* through the */api/v2/admins/email-verification* endpoint. Initially your account will be in a *pending* state. After *verification* or *approval*, your account will be *active* and you can log in.',
+          'Allows a new Admin to register by providing necessary credentials and profile details. After registration, you will have to **verify** your **email** through the **/api/v2/admins/email-verification** endpoint. Initially your account will be in a **pending** state. After **verification** or **approval**(by the Super-Admin), your account will be **active** and you can log in.',
         operationId: 'signupAdmin',
         requestBody: {
           required: true,
@@ -159,8 +159,8 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Admin signin',
-        description:
-          'Allows an admin to *signin* using *email* and *password*. After signing in, use the *jwt* token from the response to authenticate or authorize for accessing protected routes.',
+        description: `Allows an admin to **signin** using **email** and **password**. After signing in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes.<br><br>**Note:** In order to signin as an Admin you have to verify your email after signing up and get your account approved by the Super-Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p>`,
+
         requestBody: {
           required: true,
           content: {
@@ -267,7 +267,7 @@ module.exports = {
                     message: {
                       type: 'string',
                       example:
-                        'Your account is pending approval by an admin or has been removed. Please contact support.',
+                        'Your account is pending approval by a Super-Admin or has been removed. Please contact support.',
                     },
                   },
                 },
@@ -284,8 +284,7 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Send email verification link',
-        description:
-          'Sends an `email verification link` to the admins’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the `/api/v2/admins/email-verification/{token}` endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the `/api/v2/admins/email-verification` endpoint. <br><br>**Note**: The email verification token could be long. Make sure to copy the entire token from the email.',
+        description: `Sends an **email verification link** to the admins’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/admins/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/email-verification** endpoint.<br><br>**Note**: The email verification token could be long. Make sure to copy the entire token from the email.`,
         operationId: 'sendEmailVerification',
         requestBody: {
           required: true,
@@ -376,9 +375,9 @@ module.exports = {
     '/api/v2/admins/email-verification/{token}': {
       patch: {
         tags: ['Admins'],
-        summary: 'Verify admin’s email.',
+        summary: 'Verify Admin’s email.',
         description:
-          'Verifies the admin’s email using the token sent to their email address. Collect the token from the email and use it in the parameters section to verify your email. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the `/api/v2/admins/email-verification` endpoint.<br><br>**Note**: The email verification token could be long. Make sure to copy the entire token from the email.',
+          'Verifies the Admin’s email using the **token** sent to their email address. Collect the token from the email and use it in the parameters section to **verify** your email. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/email-verification** endpoint.',
         operationId: 'verifyAdminEmail',
         parameters: [
           {

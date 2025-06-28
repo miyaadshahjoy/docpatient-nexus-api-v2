@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { decrypt } = require('../utils/cryptoHelper');
+
 ///////////////////////////////////////////////
 const getModel = require('../utils/getModel');
 
@@ -15,7 +17,9 @@ const generateJWT = (user) => {
   // admins can have multiple roles
   if (user.roles && Array.isArray(user.roles) && user.roles.includes('admin'))
     role = 'admin';
-  else role = user.role;
+  else {
+    ({ role } = user); // Destructuring: This is same as -> role = user.role;
+  }
   return jwt.sign(
     {
       id: user._id,
@@ -28,15 +32,19 @@ const generateJWT = (user) => {
   );
 };
 
-// Impl: SIGN UP -
-// Implemented the signup function
+// TODO: Send an email to the respective admin/super-admin when a new user signs up
+// Admin -> Super-Admin
+// Doctor -> Doctor-Manager
+// Patient -> Patient-Manager
+// This will help in keeping track of new user registrations and approvals
 exports.signup = (Model) =>
   catchAsync(async (req, res, next) => {
+    // Check if request body is empty
     if (!req.body)
       return next(new AppError('Please provide user data to sign up', 400));
 
     if (req.body.phone || req.body.email) {
-      // 1) Check if email already exists
+      // Check if email already exists
       let existingUser = await Model.find({ email: req.body.email });
       if (existingUser.length > 0)
         return next(
@@ -119,7 +127,6 @@ exports.signin = (Model) =>
     // 3) If everything is ok, return jwt token
 
     const token = generateJWT(user);
-    console.log(token);
     const resourceName = `${Model.modelName}`;
     user.password = undefined; // Remove password from response
     // 4) Send response
@@ -364,15 +371,7 @@ exports.verifyEmail = (Model) =>
       );
 
     // decrypt the token to get the email
-    let decoded;
-    try {
-      decoded = jwt.verify(req.params.token, process.env.JWT_SECRET_KEY);
-    } catch (err) {
-      console.error('Token verification failed. ', err);
-      return next(new AppError('Invalid or expired token.', 400));
-    }
-
-    const { email } = decoded;
+    const email = decrypt(req.params.token);
     if (!email)
       return next(
         new AppError('Email address is missing in token payload.', 400),
@@ -381,7 +380,6 @@ exports.verifyEmail = (Model) =>
     const existingUser = await Model.findOne({ email }).select(
       '+emailVerificationToken +emailVerificationExpires',
     );
-    console.log(existingUser);
 
     if (!existingUser)
       return next(new AppError('No user found wih this email', 404));
@@ -395,12 +393,7 @@ exports.verifyEmail = (Model) =>
       .createHash('sha256')
       .update(req.params.token)
       .digest('hex');
-
-    console.log(
-      existingUser.emailVerificationToken !== hashedVerificationToken,
-      existingUser.emailVerificationToken,
-      hashedVerificationToken,
-    );
+    // Check if the token is valid and not expired
     if (
       existingUser.emailVerificationToken !== hashedVerificationToken ||
       existingUser.emailVerificationExpires < Date.now()
