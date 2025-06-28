@@ -463,7 +463,7 @@ module.exports = {
         ],
         responses: {
           200: {
-            description: 'Successfully fetched all doctors',
+            description: 'Successfully fetched all Doctors.',
             content: {
               'application/json': {
                 schema: {
@@ -542,7 +542,7 @@ module.exports = {
     '/api/v2/doctors/{id}': {
       get: {
         tags: ['Doctors'],
-        summary: 'Get a single doctor by ID',
+        summary: 'Get a Doctor by ID',
         description: 'Retrieve details of a specific doctor by their ID',
         operationId: 'getDoctorById',
         parameters: [
@@ -597,7 +597,7 @@ module.exports = {
                     message: {
                       type: 'string',
                       example:
-                        'Invalid ID format or missing ID. Please provide a valid doctor ID.',
+                        'Invalid ID format or missing ID. Please provide a valid Doctor ID.',
                     },
                   },
                 },
@@ -638,7 +638,7 @@ module.exports = {
           },
         ],
         description:
-          'Update a specific Doctor by their `ID`. This endpoint is accessible to `logged-in` Admins only.',
+          'Update a specific Doctor by their **ID**. This endpoint is accessible to **logged-in** Admins only.',
         operationId: 'updateDoctorById',
         parameters: [
           {
@@ -815,7 +815,7 @@ module.exports = {
         },
         responses: {
           200: {
-            description: 'Successfully updated the doctor.',
+            description: 'Successfully updated the Doctor.',
             content: {
               'application/json': {
                 schema: {

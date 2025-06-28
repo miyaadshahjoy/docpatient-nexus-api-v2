@@ -4,7 +4,13 @@ const getModel = require('../utils/getModel');
 
 exports.checkAccountEligibility = () =>
   catchAsync(async (req, res, next) => {
-    const Model = getModel(req.user.role);
+    const role =
+      req.user.roles &&
+      Array.isArray(req.user.roles) &&
+      req.user.roles.includes('admin')
+        ? 'admin'
+        : req.user.role;
+    const Model = getModel(role);
     const user = await Model.findById(req.user._id);
     if (!user) return next(new AppError("User doesn't exist.", 404));
 

@@ -656,6 +656,7 @@ module.exports = {
         ],
         description:
           'Allows an Admin with an **active** and **verified** account to approve a Doctor account by ID. The Doctor account must be in a pending state. Requires a valid **JWT** token with admin privileges to access this route.',
+        operationId: 'approveDoctor',
         parameters: [
           {
             name: 'doctorId',
@@ -794,6 +795,7 @@ module.exports = {
         ],
         description:
           'Allows an Admin with an **active** and **verified** account to approve a Patient account by ID. The Patient account must be in a pending state. Requires a valid **JWT** token with Admin privileges to access this route.',
+        operationId: 'approvePatient',
         parameters: [
           {
             name: 'patientId',
@@ -919,11 +921,550 @@ module.exports = {
         },
       },
     },
-    // Update currently logged in admin's profile
+
+    // Get all Admins -> Only the Super-Admin can access these routes
+    '/api/v2/admins': {
+      get: {
+        tags: ['Admins'],
+        summary: 'Get all Admins.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows the **Super-Admin**  to access all Admin accounts. Requires a valid **JWT** token with Super-Admin privileges to access this route.',
+        responses: {
+          200: {
+            description: 'Successfully fetched all Admins.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        admins: {
+                          type: 'array',
+                          items: { $ref: '#/components/schemas/Admin' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Bad request. Possibly due to invalid query parameters.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Invalid query parameters provided. Check your request.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in **Super-Admin**  can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to access this route. Please log in with a Super-Admin account.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in **Super-Admin**  can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No Admins found matching the provided criteria.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No Admins found.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+
+    // Get an Admin by ID
+    '/api/v2/admins/{id}': {
+      get: {
+        tags: ['Admins'],
+        summary: 'Get an Admin by ID.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows the **Super-Admin**  to access a specific Admin account by their ID. Requires a valid **JWT** token with **Super-Admin**  privileges to access this route.',
+        operationId: 'getAdminById',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the Admin to retrieve.',
+            schema: {
+              type: 'string',
+              example: '60c72b2f9b1e8b001c8e4d3a',
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Successfully fetched the Admin.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        admin: {
+                          $ref: '#/components/schemas/Admin',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Bad request. Possibly due to invalid ID format or missing ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Invalid ID format or missing ID. Please provide a valid Admin ID.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in **Super-Admin**  can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to access this route. Please log in with a Super-Admin account.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in **Super-Admin** can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No Admin found with the provided ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'No Admin found with the provided ID. Please check the ID and try again.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+      // Update an Admin by ID
+      patch: {
+        tags: ['Admins'],
+        summary: 'Update an Admin by ID.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows the **Super-Admin**  to update a specific Admin account by their ID. Requires a valid **JWT** token with **Super-Admin**  privileges to access this route.',
+        operationId: 'updateAdminById',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the Admin to update.',
+            schema: {
+              type: 'string',
+              example: '60c72b2f9b1e8b001c8e4d3a',
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/UpdateAdmin',
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Successfully updated the Admin.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        admin: {
+                          $ref: '#/components/schemas/Admin',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Bad request. Possibly due to invalid ID format or missing ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Invalid ID format or missing ID. Please provide a valid Admin ID.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Super-Admin can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to access this route. Please log in with a Super-Admin account.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Super-Admin can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No Admin found with the provided ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'No Admin found with the provided ID. Please check the ID and try again.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+      // Delete an Admin by ID
+      delete: {
+        tags: ['Admins'],
+        summary: 'Delete an Admin by ID.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows the **Super-Admin**  to delete a specific Admin account by their ID. Requires a valid **JWT** token with **Super-Admin**  privileges to access this route.',
+        operationId: 'deleteAdminById',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'The ID of the Admin to delete.',
+            schema: {
+              type: 'string',
+              example: '60c72b2f9b1e8b001c8e4d3a', // Replace with a valid Admin ID
+            },
+          },
+        ],
+        responses: {
+          204: {
+            description: 'Successfully deleted the Admin.',
+          },
+
+          400: {
+            description:
+              'Bad request. Possibly due to invalid ID format or missing ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Invalid ID format or missing ID. Please provide a valid Admin ID.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Super-Admin can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to access this route. Please log in with a Super-Admin account.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Super-Admin can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No Admin found with the provided ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'No Admin found with the provided ID. Please check the ID and try again.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+    // Get currently logged in Admin profile
     '/api/v2/admins/me': {
       get: {
         tags: ['Admins'],
-        summary: 'Get currently logged in admin profile.',
+        summary: 'Get currently logged-in Admin profile.',
         description:
           '**Fetches the profile information of the currently logged in admin. The admin must be `logged in` and have a valid `JWT` token.**',
         security: [

@@ -69,5 +69,38 @@ router.patch(
   authController.restrictTo('admin'),
   handlerFactory.approveAccount(Patient),
 );
+// Only Super-Admin can access these routes
+// Get All Admins
+router.get(
+  '/',
+  authController.protect(),
+  authController.restrictTo('super-admin', 'admin'),
+  checkAccountEligibility(Admin),
+  handlerFactory.readAll(Admin),
+);
+
+router
+  .route('/:id')
+  .get(
+    // Get Admin by ID
+    authController.protect(),
+    authController.restrictTo('super-admin', 'admin'),
+    checkAccountEligibility(Admin),
+    handlerFactory.readOne(Admin),
+  )
+  .patch(
+    // Update Admin by ID
+    authController.protect(),
+    authController.restrictTo('super-admin', 'admin'),
+    checkAccountEligibility(Admin),
+    handlerFactory.updateOne(Admin),
+  )
+  .delete(
+    // Delete Admin by ID
+    authController.protect(),
+    authController.restrictTo('super-admin', 'admin'),
+    checkAccountEligibility(Admin),
+    handlerFactory.deleteOne(Admin),
+  );
 
 module.exports = router;

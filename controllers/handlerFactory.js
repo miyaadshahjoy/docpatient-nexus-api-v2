@@ -19,18 +19,18 @@ exports.readAll = (Model) =>
   catchAsync(async (req, res, next) => {
     const queryObject = req.query;
     const query = Model.find();
+    const resourceName = `${Model.modelName.toLowerCase()}s`;
     const features = new APIFeatures(query, queryObject)
       .filter()
       .sort()
       .select()
       .paginate();
     const docs = await features.query;
-
-    const resourceName = `${Model.modelName.toLowerCase()}s`;
+    if (!docs) return next(new AppError(`No ${resourceName}s found.`, 404));
 
     res.status(200).json({
       status: `success`,
-      message: `Successfully fetched all ${resourceName}.`,
+      message: `Successfully fetched all ${resourceName}s.`,
       results: docs.length,
       data: {
         [resourceName]: docs,

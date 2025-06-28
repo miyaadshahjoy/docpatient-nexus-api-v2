@@ -196,6 +196,7 @@ exports.restrictTo =
   (...allowedRoles) =>
   (req, res, next) => {
     let allowed;
+    console.log(req.user.roles, allowedRoles); // Why is it printing ['super-admin']?
     if (req.user.roles && Array.isArray(req.user.roles))
       allowed = req.user.roles.every((role) => allowedRoles.includes(role));
     else allowed = allowedRoles.includes(req.user.role);
