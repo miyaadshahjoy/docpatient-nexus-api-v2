@@ -1439,7 +1439,7 @@ module.exports = {
               'The latitude and longitude coordinates of the center point.',
             schema: {
               type: 'string',
-              example: '37.7749,-122.4194',
+              example: '24.369,88.625', // Example coordinates
             },
           },
           {
