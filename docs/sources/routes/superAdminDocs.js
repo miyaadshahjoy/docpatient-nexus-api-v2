@@ -167,7 +167,7 @@ module.exports = {
                     message: {
                       type: 'string',
                       example:
-                        'You are not authorized to access this resource. Please log in.',
+                        'You are not authorized to access this route. Please log in.',
                     },
                   },
                 },
@@ -195,7 +195,7 @@ module.exports = {
               },
             },
           },
-          // TODO: Should we add a 404 response here? may be not needed
+          // TODO: 404 response might be unnecessary here. Might change it later.
           404: {
             description: 'Admin account not found.',
             content: {

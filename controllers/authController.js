@@ -211,14 +211,15 @@ exports.forgotPassword = (Model) =>
   catchAsync(async (req, res, next) => {
     // 1) Get user based on the posted Email
     const { email } = req.body;
-    if (!email) return next(new AppError('Please enter your email.', 400));
+    if (!email)
+      return next(new AppError('Please provide a valid email address.', 400));
     const user = await Model.findOne({ email });
     // console.log(user)
     if (!user)
       return next(
         new AppError(
-          `No ${Model.modelName.toLowerCase()} found with this email.`,
-          400,
+          `No ${Model.modelName.toLowerCase()} found with the provided email address.`,
+          404,
         ),
       );
 
@@ -249,7 +250,7 @@ exports.forgotPassword = (Model) =>
 
       res.status(200).json({
         status: 'success',
-        message: 'Password reset token sent to your email.',
+        message: 'Password reset link has been sent to your email.',
       });
     } catch (err) {
       user.passwordResetToken = undefined;
@@ -282,7 +283,7 @@ exports.resetPassword = (Model) =>
     const user = await Model.findOne({ passwordResetToken });
     if (!user || user.passwordResetExpires < Date.now())
       return next(
-        new AppError('Invalid password reset token or token has expired', 400),
+        new AppError('Invalid password reset token or token has expired.', 400),
       );
 
     // 2) If token has not expired, and there is user, set the new password
@@ -297,7 +298,7 @@ exports.resetPassword = (Model) =>
 
     res.status(200).json({
       status: 'success',
-      message: 'Password reset successfully.',
+      message: 'Password has been reset successfully.',
     });
   });
 

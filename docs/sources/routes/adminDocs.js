@@ -460,6 +460,465 @@ module.exports = {
       },
     },
 
+    // Forgot password route
+    '/api/v2/admins/forgot-password': {
+      post: {
+        tags: ['Admins'],
+        summary: 'Request password reset link.',
+        description:
+          "Sends a password reset link to the Admin's email address. The Admin just have to provide their registered email address. The **password reset link** will be sent to their email address. The link contains a **token** that will be used to reset the password through the **/api/v2/admins/reset-password/{token}** endpoint. The token is valid for only 10 minutes.",
+        operationId: 'requestPasswordReset',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['email'],
+                properties: {
+                  email: {
+                    type: 'string',
+                    format: 'email',
+                    example: 'ahsan.habib@example.com',
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Password reset link sent successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Password reset link has been sent to your email.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Bad request. Possibly due to invalid email format or missing email.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Invalid email format. Please provide a valid email address.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No admin found with the provided email address.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No admin found with this email address.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+
+    // Reset password route
+    '/api/v2/admins/reset-password/{token}': {
+      post: {
+        tags: ['Admins'],
+        summary: 'Reset Admin password.',
+        description:
+          'Resets the Admin’s password using the **token** sent to their email address. The token is valid for only 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/forgot-password** endpoint. The Admin must provide a new password and confirm it.',
+        operationId: 'resetAdminPassword',
+        parameters: [
+          {
+            name: 'token',
+            in: 'path',
+            required: true,
+            description: 'Password reset token',
+            schema: {
+              type: 'string',
+              example: 'password-reset-token-here',
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['password', 'confirmPassword'],
+                properties: {
+                  password: {
+                    type: 'string',
+                    example: 'newPassword123',
+                  },
+                  passwordConfirm: {
+                    type: 'string',
+                    example: 'newPassword123',
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Password reset successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Password has been reset successfully.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Invalid input. Please provide valid password and confirm password.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Invalid password reset token or token has expired',
+                    },
+                  },
+                },
+              },
+            },
+          },
+
+          500: responses.InternalServerError,
+        },
+      },
+    },
+    // Approve doctor account
+    '/api/v2/admins/approve-doctors/{doctorId}': {
+      patch: {
+        tags: ['Admins'],
+        summary: 'Approve Doctor Account.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows an Admin with an **active** and **verified** account to approve a Doctor account by ID. The Doctor account must be in a pending state. Requires a valid **JWT** token with admin privileges to access this route.',
+        parameters: [
+          {
+            name: 'doctorId',
+            in: 'path',
+            required: true,
+            schema: {
+              type: 'string',
+              example: '60c72b2f9b1e8b001c8e4f3a',
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Doctor account approved successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        doctor: { $ref: '#/components/schemas/Doctor' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Doctor account is already approved or does not exist.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Doctor account is already approved or does not exist.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Admins can approve doctor accounts.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        "You're not authorized to approve doctor accounts. Please log in with an active and verified admin account.",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Admins can approve doctor accounts.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          // TODO: Should we add a 404 response here? may be not needed
+          404: {
+            description: 'Doctor account not found.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No doctor found with the provided ID.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+
+    // Approve patient account
+    '/api/v2/admins/approve-patients/{patientId}': {
+      patch: {
+        tags: ['Admins'],
+        summary: 'Approve patient account.',
+        security: [
+          {
+            bearerAuth: [], // This indicates that the endpoint requires authentication
+          },
+        ],
+        description:
+          'Allows an Admin with an **active** and **verified** account to approve a Patient account by ID. The Patient account must be in a pending state. Requires a valid **JWT** token with Admin privileges to access this route.',
+        parameters: [
+          {
+            name: 'patientId',
+            in: 'path',
+            required: true,
+            schema: {
+              type: 'string',
+              example: '60c72b2f9b1e8b001c8e4f3a',
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Patient account approved successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        patient: { $ref: '#/components/schemas/Patient' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description:
+              'Patient account is already approved or does not exist.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Patient account is already approved or does not exist.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Admins can approve patient accounts.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to approve patient accounts. Please log in with an active and verified Admin account.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Admins can approve patient accounts.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          // TODO: Should we add a 404 response here? may be not needed
+          404: {
+            description: 'Patient account not found.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No patient found with the provided ID.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
     // Update currently logged in admin's profile
     '/api/v2/admins/me': {
       get: {
@@ -757,279 +1216,6 @@ module.exports = {
                       type: 'string',
                       example:
                         'You do not have permission to delete this account.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          500: responses.InternalServerError,
-        },
-      },
-    },
-    // how to make this route protected in docs
-
-    '/api/v2/admins/approve-doctors/{doctorId}': {
-      patch: {
-        tags: ['Admins'],
-        summary: 'Approve Doctor Account.',
-        security: [
-          {
-            bearerAuth: [], // This indicates that the endpoint requires authentication
-          },
-        ],
-        description:
-          'Allows an admin with an active and verified account to approve a doctor account by ID. The doctor must be in a pending state. Requires a valid `JWT` token with admin privileges.',
-        parameters: [
-          {
-            name: 'doctorId',
-            in: 'path',
-            required: true,
-            schema: {
-              type: 'string',
-              example: '60c72b2f9b1e8b001c8e4f3a',
-            },
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Doctor account approved successfully.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'success',
-                    },
-                    data: {
-                      type: 'object',
-                      properties: {
-                        doctor: { $ref: '#/components/schemas/Doctor' },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description:
-              'Doctor account is already approved or does not exist.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'Doctor account is already approved or does not exist.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          401: {
-            description: 'Unauthorized access.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'Please verify your email before accessing the system',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          403: {
-            description: 'Forbidden access due to account status.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'You do not have permission to approve doctor accounts.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          // TODO: Should we add a 404 response here? may be not needed
-          404: {
-            description: 'Doctor account not found.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example: 'No doctor found with the provided ID.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          500: responses.InternalServerError,
-        },
-      },
-    },
-
-    // Approve patient account
-
-    '/api/v2/admins/approve-patients/{patientId}': {
-      patch: {
-        tags: ['Admins'],
-        summary: 'Approve patient account.',
-        security: [
-          {
-            bearerAuth: [], // This indicates that the endpoint requires authentication
-          },
-        ],
-        description:
-          'Allows an admin with an active and verified account to approve a patient account by ID. The patient must be in a pending state. Requires a valid `JWT` token with admin privileges',
-        parameters: [
-          {
-            name: 'patientId',
-            in: 'path',
-            required: true,
-            schema: {
-              type: 'string',
-              example: '60c72b2f9b1e8b001c8e4f3a',
-            },
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Patient account approved successfully.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'success',
-                    },
-                    data: {
-                      type: 'object',
-                      properties: {
-                        patient: { $ref: '#/components/schemas/Patient' },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description:
-              'Patient account is already approved or does not exist.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'Patient account is already approved or does not exist.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          401: {
-            description: 'Unauthorized access.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'Please verify your email before accessing the system',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          403: {
-            description: 'Forbidden access due to account status.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example:
-                        'You do not have permission to approve patient accounts.',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          // TODO: Should we add a 404 response here? may be not needed
-          404: {
-            description: 'Patient account not found.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: {
-                      type: 'string',
-                      example: 'fail',
-                    },
-                    message: {
-                      type: 'string',
-                      example: 'No patient found with the provided ID.',
                     },
                   },
                 },
