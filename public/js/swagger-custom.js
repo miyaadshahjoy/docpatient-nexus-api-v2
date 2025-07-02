@@ -36,7 +36,7 @@ sidebarScript.onload = function () {
           ////////////////////////////////////////
           const html = `
                 <div class="sidebar topbar">
-                    <a href="https://docpatient-nexus.onrender.com"><img class="topbar__logo" src="/img/docpatient-nexus-icon.png" alt="DocPatient Nexus Logo" onerror="this.onerror=null; this.src='/img/broken-image.png';"></a>
+                    <a href="https://docpatient-nexus.onrender.com"><img class="topbar__logo" src="/img/docpatient-nexus-icon.png" alt="DocPatient Nexus Logo" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/4154/4154438.png';"></a>
                     <h3> DocPatient Nexus</h3>
                 </div>
             

@@ -42,7 +42,7 @@
   font-family: 'Lato', sans-serif;
   color: #1e1e1e;
   background-color: #005b6f15;
-  margin: 3px;
+  margin-bottom: 5px !important;
 }
 #sidebar li .part,
 #sidebar li .part .link {

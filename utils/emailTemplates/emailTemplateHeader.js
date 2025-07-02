@@ -76,7 +76,7 @@ module.exports = () => {
                   class="header__logo"
                   src="https://docpatient-nexus.onrender.com/img/docpatient-nexus-logo.png"
                   alt="DocPatient Nexus Logo"
-                  onerror="this.onerror=null; this.src='https://docpatient-nexus.onrender.com/img/broken-image.png';"
+                  onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/4154/4154438.png';"
                   />
                  
               </div>

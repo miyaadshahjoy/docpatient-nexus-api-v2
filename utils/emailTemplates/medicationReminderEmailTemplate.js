@@ -77,7 +77,7 @@ module.exports = ({ userName, medicationName, dosage, instruction, time }) => {
       <div class="container">
 
         <div class="header">
-          <img src="https://docpatient-nexus.onrender.com/img/docpatient-nexus-logo.png" alt="DocPatient Nexus" onerror="this.onerror=null; this.src='/img/broken-image.png';"/>
+          <img src="https://docpatient-nexus.onrender.com/img/docpatient-nexus-logo.png" alt="DocPatient Nexus" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/4154/4154438.png';"/>
           <h2>It's time to take your medication!</h2>
         </div>
         <div class="content">

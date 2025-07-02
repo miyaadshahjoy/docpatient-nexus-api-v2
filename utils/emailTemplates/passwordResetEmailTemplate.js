@@ -69,7 +69,7 @@ module.exports = ({ userName, resetUrl }) => {
         <div class="container">
           <div class="header">
             <img src="https://docpatient-nexus.onrender.com/img/docpatient-nexus-logo.png" alt="DocPatient Nexus Logo" 
-            onerror="this.onerror=null; this.src='/img/broken-image.png';"/>
+            onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/4154/4154438.png';"/>
           </div>
           <div class="content">
             <h2>Password Reset Request</h2>
