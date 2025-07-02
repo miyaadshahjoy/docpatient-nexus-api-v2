@@ -242,7 +242,7 @@ This project uses *Mailpit* for local email testing. Mailpit is a lightweight SM
   - **For macOS:** download and install using Homebrew:<br><br><code>brew install --no-quarantine --cask mailpit</code><br>
 
   - **For Linux:**<br><br><code>
-curl -s https://api.github.com/repos/axllent/mailpit/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | wget -qi -<br>
+curl -s https://api.github.com/repos/axllent/mailpit/releases/latest grep browser_download_url grep linux-amd64 cut -d '"' -f 4 wget -qi -<br>
 tar -xzf mailpit-*-linux-amd64.tar.gz<br>
 sudo mv mailpit /usr/local/bin/</code><br>
   
