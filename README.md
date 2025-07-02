@@ -313,12 +313,7 @@ REDIS_PORT=YOUR_REDIS_PORT
   - **For Linux:**
 
   ```bash
-  curl -s https://api.github.com/repos/axllent/mailpit/releases/latest \
-  | grep browser_download_url \
-  | grep linux-amd64 \
-  | cut -d '"' -f 4 \
-  | wget -qi -
-
+  curl -s https://api.github.com/repos/axllent/mailpit/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | wget -qi -
   tar -xzf mailpit-\*-linux-amd64.tar.gz
   sudo mv mailpit /usr/local/bin/
   ```
@@ -326,9 +321,7 @@ REDIS_PORT=YOUR_REDIS_PORT
 ##### Option 2: Run via Docker
 
 ```bash
-docker run -d --name mailpit \
- -p 8025:8025 -p 2025:2025 \
- axllent/mailpit
+docker run -d --name mailpit -p 8025:8025 -p 2025:2025 axllent/mailpit
 ```
 
 #### 🚀 Usage
@@ -357,8 +350,7 @@ mailpit --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025
 - **🐳 For Docker:**
 
 ```bash
-docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit \
-  --smtp 0.0.0.0:2025 --listen 0.0.0.0:8025
+docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit --smtp 0.0.0.0:2025 --listen 0.0.0.0:8025
 ```
 
 #### 🔍 View Emails

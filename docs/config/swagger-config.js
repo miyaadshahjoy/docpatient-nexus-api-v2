@@ -219,6 +219,83 @@ const options = {
 
 ---
 
+### 📬 Mailpit Setup for Local Email Testing
+
+#### This project uses *Mailpit* for local email testing. Mailpit is a lightweight SMTP server and web interface that lets you capture and view emails sent from this API.
+
+#### ✅ Features:
+
+- No real emails are sent
+- View all outgoing emails in a web interface
+- Works seamlessly with nodemailer or any mail library
+
+- [Mailpit GitHub Repository](https://github.com/axllent/mailpit)
+- [Mailpit Documentation](https://mailpit.axllent.org/docs/install/)
+
+#### 🔧 Installation
+
+##### Option 1: Install via Binary
+
+- Download from the [Mailpit releases page](https://github.com/axllent/mailpit/releases)
+
+  - **For Windows:** download [mailpit-windows-amd64.exe](https://github.com/axllent/mailpit/releases/download/v1.27.0/mailpit-windows-amd64.zip)
+  - **For macOS:** download and install using Homebrew:
+
+  <code>brew install --no-quarantine --cask mailpit</code>
+  - **For Linux:**
+
+  <code>
+curl -s https://api.github.com/repos/axllent/mailpit/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | wget -qi -<br>
+tar -xzf mailpit-*-linux-amd64.tar.gz<br>
+sudo mv mailpit /usr/local/bin/
+  </code>
+  
+##### Option 2: Run via Docker
+
+<code>docker run -d --name mailpit -p 8025:8025 -p 2025:2025 axllent/mailpit</code>
+
+
+#### 🚀 Usage
+
+- **🖥 For Windows:**
+
+<code>
+cd C:\Users\<username>\Downloads\mailpit-windows-amd64<br>
+.\mailpit.exe --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025
+</code>
+
+
+- **🍎 For macOS:**
+
+<code>
+sudo mv mailpit-darwin-arm64 /usr/local/bin/mailpit<br>
+mailpit --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025
+</code>
+
+
+- **🐧 For Linux:**
+
+<code>
+sudo mv mailpit-linux-amd64 /usr/local/bin/mailpit<br>
+mailpit --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025
+</code>
+
+
+- **🐳 For Docker:**
+
+<code>
+docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit --smtp 0.0.0.0:2025 --listen 0.0.0.0:8025
+</code>
+
+
+#### 🔍 View Emails
+
+- SMTP available at: http://localhost:2025
+- Web UI: http://localhost:8025 (This is Mailpit's web UI where you can view, read, and inspect all outgoing emails.)
+
+---
+
+
 ## 📚 Current Modules
 
 - Authentication & Authorization
