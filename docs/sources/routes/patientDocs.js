@@ -2127,6 +2127,142 @@ module.exports = {
         },
       },
     },
+    // Cancel appointment
+    // PATCH /patients/appointments/{appointmentId}/cancel-appointment
+    '/api/v2/patients/appointments/{appointmentId}/cancel-appointment': {
+      patch: {
+        tags: ['Patients'],
+        summary: 'Cancel an appointment.',
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        description:
+          'Allows a Patient to **cancel an appointment**. The Patient must be **logged in** to use this route. <br><br>**Note:** The appointment must have a status of **pending** or **confirmed** to be cancelled. Patient can only cancel an appointment 24 hours before the appointment time. Patient will be refunded 100% of the appointment fee if the cancellation is done 24 hours before the appointment time and the appointment was confirmed.',
+        operationId: 'cancelAppointment',
+        parameters: [
+          {
+            name: 'appointmentId',
+            in: 'path',
+            description: 'ID of the appointment to cancel.',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Your appointment has been successfully cancelled.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Your appointment has been successfully cancelled and refund is in the process.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Bad Request. Invalid input or validation failed',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Appointments can only be cancelled 24 hours in advance.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Patients can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to access this route. Please log in.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Patients can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No appointment found with provided ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No appointment found.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
     // Post a review for an appointment
     // POST/patients/appointments/{appointmentId}/reviews
     '/api/v2/patients/appointments/{appointmentId}/reviews': {
