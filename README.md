@@ -286,9 +286,9 @@ REDIS_PORT=YOUR_REDIS_PORT
 
 ### 📬 Mailpit Setup for Local Email Testing
 
-### This project uses `Mailpit` for local email testing. Mailpit is a lightweight SMTP server and web interface that lets you capture and view emails sent from this API.
+#### This project uses `Mailpit` for local email testing. Mailpit is a lightweight SMTP server and web interface that lets you capture and view emails sent from this API.
 
-### ✅ Features:
+#### ✅ Features:
 
 - No real emails are sent
 - View all outgoing emails in a web interface
@@ -297,9 +297,9 @@ REDIS_PORT=YOUR_REDIS_PORT
 - [Mailpit GitHub Repository](https://github.com/axllent/mailpit)
 - [Mailpit Documentation](https://mailpit.axllent.org/docs/install/)
 
-### 🔧 Installation
+#### 🔧 Installation
 
-#### Option 1: Install via Binary
+##### Option 1: Install via Binary
 
 - Download from the [Mailpit releases page](https://github.com/axllent/mailpit/releases)
 
@@ -323,7 +323,7 @@ REDIS_PORT=YOUR_REDIS_PORT
   sudo mv mailpit /usr/local/bin/
   ```
 
-#### Option 2: Run via Docker
+##### Option 2: Run via Docker
 
 ```bash
 docker run -d --name mailpit \
@@ -331,7 +331,7 @@ docker run -d --name mailpit \
  axllent/mailpit
 ```
 
-### 🚀 Usage
+#### 🚀 Usage
 
 - **🖥 For Windows:**
 
@@ -361,7 +361,7 @@ docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit \
   --smtp 0.0.0.0:2025 --listen 0.0.0.0:8025
 ```
 
-### 🔍 View Emails
+#### 🔍 View Emails
 
 - SMTP available at: http://localhost:2025
 - Web UI: http://localhost:8025 (This is Mailpit's web UI where you can view, read, and inspect all outgoing emails.)
