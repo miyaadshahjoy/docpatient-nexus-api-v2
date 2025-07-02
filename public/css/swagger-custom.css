@@ -1,17 +1,17 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap'); */
 
 /* Fira Code font  */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap'); */
 
 /* Operator Mono font  */
-/* @font-face {
+@font-face {
   font-family: 'Operator Mono';
   src: url('./assets/fonts/operator-mono-bold.woff2');
   format: ('woff2');
   font-display: swap;
-} */
+}
 #swagger-ui {
   margin-left: 300px !important;
 }
@@ -34,8 +34,8 @@
 .swagger-ui .parameter__name,
 .swagger-ui select,
 .swagger-ui input {
-  /* font-family: 'Poppins', sans-serif !important; */
-  font-family: 'Lato', sans-serif !important;
+  font-family: 'Poppins', sans-serif !important;
+  /* font-family: 'Lato', sans-serif !important; */
   line-height: 1.5 !important;
 }
 .swagger-ui td,
@@ -51,19 +51,19 @@
 .swagger-ui span,
 .swagger-ui textarea,
 .swagger-ui .parameter__type {
-  /* font-family: 'Operator Mono', monospace !important; */
-  font-family: 'Fira Code', monospace !important;
+  font-family: 'Operator Mono', monospace !important;
+  /* font-family: 'Fira Code', monospace !important; */
 }
 .swagger-ui pre,
 .swagger-ui code {
   font-size: 0.875rem !important;
-  /* font-weight: 400 !important; */
+  font-weight: 400 !important;
   /* for Fira Code font */
-  font-weight: 300 !important;
+  /* font-weight: 300 !important; */
 }
 .swagger-ui em {
-  /* font-family: 'Operator Mono', monospace !important; */
-  font-family: 'Fira Code', monospace !important;
+  font-family: 'Operator Mono', monospace !important;
+  /* font-family: 'Fira Code', monospace !important; */
   color: #000 !important;
   font-style: normal !important;
   background-color: #fa99ae;
@@ -74,8 +74,8 @@
 .swagger-ui button,
 .swagger-ui .btn,
 .swagger-ui .opblock .opblock-summary-method {
-  /* font-family: 'Poppins', arial-sans !important; */
-  font-family: 'Lato', sans-serif !important;
+  font-family: 'Poppins', arial-sans !important;
+  /* font-family: 'Lato', sans-serif !important; */
   line-height: 1.5 !important;
   font-size: 1.125rem !important;
   font-weight: 400 !important;
@@ -134,8 +134,8 @@
   align-items: baseline;
 }
 .swagger-ui .opblock-tag span {
-  /* font-family: 'Poppins', arial-sans !important; */
-  font-family: 'Lato', sans-serif !important;
+  font-family: 'Poppins', arial-sans !important;
+  /* font-family: 'Lato', sans-serif !important; */
   line-height: 1.5 !important;
   font-size: 1.5rem !important;
 }
@@ -143,4 +143,13 @@
 .swagger-ui .expand-methods,
 .swagger-ui .expand-operation {
   align-self: end;
+}
+
+.swagger-ui .markdown code,
+.swagger-ui .renderedMarkdown code {
+  display: inline-block;
+  color: #fff;
+  background-color: #0a1535;
+  padding: 7px 7px;
+  border-radius: 5px;
 }

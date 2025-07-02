@@ -65,7 +65,7 @@ const options = {
 - Prescriptions linked to appointments
 - Prescription creation by Doctors on approved or completed appointments only
 - Prescription allowed to have multiple medications
-- Prescription status:*activ*,*expire*, *deleted*
+- Prescription status:*active*,*expire*, *deleted*
 - Medication includes name, dosage, frequency, duration, and instructions
 - Medication reminder email for Patient
 
@@ -221,7 +221,7 @@ const options = {
 
 ### 📬 Mailpit Setup for Local Email Testing
 
-#### This project uses *Mailpit* for local email testing. Mailpit is a lightweight SMTP server and web interface that lets you capture and view emails sent from this API.
+This project uses *Mailpit* for local email testing. Mailpit is a lightweight SMTP server and web interface that lets you capture and view emails sent from this API.
 
 #### ✅ Features:
 
@@ -239,53 +239,35 @@ const options = {
 - Download from the [Mailpit releases page](https://github.com/axllent/mailpit/releases)
 
   - **For Windows:** download [mailpit-windows-amd64.exe](https://github.com/axllent/mailpit/releases/download/v1.27.0/mailpit-windows-amd64.zip)
-  - **For macOS:** download and install using Homebrew:
+  - **For macOS:** download and install using Homebrew:<br><br><code>brew install --no-quarantine --cask mailpit</code><br>
 
-  <code>brew install --no-quarantine --cask mailpit</code>
-  - **For Linux:**
-
-  <code>
+  - **For Linux:**<br><br><code>
 curl -s https://api.github.com/repos/axllent/mailpit/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | wget -qi -<br>
 tar -xzf mailpit-*-linux-amd64.tar.gz<br>
-sudo mv mailpit /usr/local/bin/
-  </code>
+sudo mv mailpit /usr/local/bin/</code><br>
   
-##### Option 2: Run via Docker
-
-<code>docker run -d --name mailpit -p 8025:8025 -p 2025:2025 axllent/mailpit</code>
+##### Option 2: Run via Docker<br><br><code>docker run -d --name mailpit -p 8025:8025 -p 2025:2025 axllent/mailpit</code><br>
 
 
 #### 🚀 Usage
 
-- **🖥 For Windows:**
-
-<code>
+- **🖥 For Windows:**<br><br><code>
 cd C:\Users\<username>\Downloads\mailpit-windows-amd64<br>
-.\mailpit.exe --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025
-</code>
+.\mailpit.exe --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025</code><br>
 
 
-- **🍎 For macOS:**
-
-<code>
+- **🍎 For macOS:**<br><br><code>
 sudo mv mailpit-darwin-arm64 /usr/local/bin/mailpit<br>
-mailpit --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025
-</code>
+mailpit --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025</code><br>
 
 
-- **🐧 For Linux:**
-
-<code>
+- **🐧 For Linux:**<br><br><code>
 sudo mv mailpit-linux-amd64 /usr/local/bin/mailpit<br>
-mailpit --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025
-</code>
+mailpit --smtp 127.0.0.1:2025 --listen 127.0.0.1:8025</code><br>
 
 
-- **🐳 For Docker:**
-
-<code>
-docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit --smtp 0.0.0.0:2025 --listen 0.0.0.0:8025
-</code>
+- **🐳 For Docker:**<br><br><code>
+docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit --smtp 0.0.0.0:2025 --listen 0.0.0.0:8025</code><br>
 
 
 #### 🔍 View Emails
