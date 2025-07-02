@@ -1,0 +1,146 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+/* Fira Code font  */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
+/* Operator Mono font  */
+/* @font-face {
+  font-family: 'Operator Mono';
+  src: url('./assets/fonts/operator-mono-bold.woff2');
+  format: ('woff2');
+  font-display: swap;
+} */
+#swagger-ui {
+  margin-left: 300px !important;
+}
+.swagger-ui .topbar {
+  display: none !important;
+}
+
+.swagger-ui .opblock-body pre.microlight {
+  /* background-color: #1e1e2e !important; */
+  background-color: #0a1535 !important;
+}
+.swagger-ui p,
+.swagger-ui h1,
+.swagger-ui h2,
+.swagger-ui h3,
+.swagger-ui h4,
+.swagger-ui ul li,
+.swagger-ui th,
+.swagger-ui a,
+.swagger-ui .parameter__name,
+.swagger-ui select,
+.swagger-ui input {
+  /* font-family: 'Poppins', sans-serif !important; */
+  font-family: 'Lato', sans-serif !important;
+  line-height: 1.5 !important;
+}
+.swagger-ui td,
+.swagger-ui p {
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+.swagger-ui pre,
+.swagger-ui code,
+.swagger-ui tr,
+.swagger-ui td,
+.swagger-ui span,
+.swagger-ui textarea,
+.swagger-ui .parameter__type {
+  /* font-family: 'Operator Mono', monospace !important; */
+  font-family: 'Fira Code', monospace !important;
+}
+.swagger-ui pre,
+.swagger-ui code {
+  font-size: 0.875rem !important;
+  /* font-weight: 400 !important; */
+  /* for Fira Code font */
+  font-weight: 300 !important;
+}
+.swagger-ui em {
+  /* font-family: 'Operator Mono', monospace !important; */
+  font-family: 'Fira Code', monospace !important;
+  color: #000 !important;
+  font-style: normal !important;
+  background-color: #fa99ae;
+  border: 2px solid #f7345e;
+  border-radius: 3px;
+  padding: 1.5px 5px;
+}
+.swagger-ui button,
+.swagger-ui .btn,
+.swagger-ui .opblock .opblock-summary-method {
+  /* font-family: 'Poppins', arial-sans !important; */
+  font-family: 'Lato', sans-serif !important;
+  line-height: 1.5 !important;
+  font-size: 1.125rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 1px !important;
+  padding: 7px 13.5px;
+}
+.swagger-ui b,
+.swagger-ui strong {
+  font-size: 1rem !important;
+}
+.swagger-ui .opblock .opblock-section-header h4,
+.swagger-ui th {
+  font-size: 1rem !important;
+}
+.swagger-ui .try-out__btn,
+.swagger-ui .execute {
+  color: #ffffff !important;
+  background-color: #f7345e !important;
+  border-color: #f7345e !important;
+  font-size: 1.125rem !important;
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+}
+.swagger-ui .model-box-control:focus,
+.swagger-ui .models-control:focus,
+.swagger-ui .opblock-summary-control:focus {
+  border: none !important;
+  outline: none !important;
+}
+.swagger-ui .swagger-ui .auth-btn-wrapper .btn {
+  color: #ffffff !important;
+  background-color: #f7345e !important;
+  border-color: #f7345e !important;
+  font-size: 1.125rem !important;
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+}
+.swagger-ui blockquote {
+  box-shadow: 0px 3.5px 0px 5px #005a6f;
+  border-radius: 3px;
+  padding: 15px;
+  display: inline-flex !important;
+  align-items: baseline !important;
+}
+.swagger-ui blockquote span {
+  border: 2px solid #005a6f !important;
+  padding: 4.5px 11px !important;
+  border-radius: 50% !important;
+  color: #005a6f !important;
+  margin-right: 10px !important;
+}
+
+.swagger-ui .opblock-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+.swagger-ui .opblock-tag span {
+  /* font-family: 'Poppins', arial-sans !important; */
+  font-family: 'Lato', sans-serif !important;
+  line-height: 1.5 !important;
+  font-size: 1.5rem !important;
+}
+
+.swagger-ui .expand-methods,
+.swagger-ui .expand-operation {
+  align-self: end;
+}
