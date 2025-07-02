@@ -38,8 +38,8 @@
 }
 
 #sidebar .sectionTitle {
-  /* font-family: 'Poppins', sans-serif; */
-  font-family: 'Lato', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  /* font-family: 'Lato', sans-serif; */
   color: #1e1e1e;
   background-color: #005b6f15;
   margin-bottom: 5px !important;
