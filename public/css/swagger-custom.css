@@ -126,6 +126,7 @@
   border-radius: 50% !important;
   color: #005a6f !important;
   margin-right: 10px !important;
+  font-size: 1.125rem !important;
 }
 
 .swagger-ui .opblock-tag {
