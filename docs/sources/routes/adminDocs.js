@@ -27,8 +27,67 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Register a new Admin account.',
-        description:
-          'Allows a new Admin to register by providing necessary credentials and profile details. After registration, you will have to **verify** your **email** through the **/api/v2/admins/email-verification** endpoint. Initially your account will be in a **pending** state. After **verification** or **approval**(by the Super-Admin), your account will be **active** and you can log in.',
+        description: `
+Allows a new Admin to register by providing necessary credentials and profile details. After registration, you will have to **verify** your **email** through the **/api/v2/admins/email-verification** endpoint. Initially your account will be in a **pending** state. After **verification** or **approval**(by the Super-Admin), your account will be **active** and you can log in.<br><br>
+<h2>Request Body:</h2>
+<ul>
+  <li><b>fullName:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The full name of the Admin.</li>
+      <li>Example: Ahsan Habib</li>
+    </ul>
+  </li><br>
+  
+  <li><b>email:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The email address of the Admin.</li>
+      <li>Format: email</li>
+      <li>Example: ahsan.habib@example.com</li>
+    </ul>
+  </li><br>
+
+  <li><b>phone:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The phone number of the Admin.</li>
+      <li>Format: phone</li>
+      <li>Example: +8801712245678</li>
+    </ul>
+  </li><br>
+  
+  <li><b>gender:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The gender of the Admin.</li>
+      <li>Allowed values: <b>male</b>, <b>female</b>, <b>other</b>, <b>prefer not to say</b></li>
+      <li>Example: male</li>
+    </ul>
+  </li><br>
+
+  <li><b>profilePhoto:</b> <em>string</em>
+    <ul>
+      <li>The profile photo of the Admin.</li>
+      <li>Format: url</li>
+      <li>Example: https://example.com/photos/ahsan_habib.jpg (Allowed formats: JPG, SVG, JPEG, PNG)</li>
+    </ul>
+  </li><br>
+
+  <li><b>password:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: pass1234</li>
+    </ul>
+  </li><br>
+
+  <li><b>passwordConfirm:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The password confirmation of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: pass1234</li>
+    </ul>
+  </li><br>
+
+</ul>
+          `,
         operationId: 'signupAdmin',
         requestBody: {
           required: true,
@@ -57,7 +116,7 @@ module.exports = {
                   phone: {
                     type: 'string',
                     pattern: '^\\+?[0-9]{10,15}$',
-                    example: '+8801712345678',
+                    exa2ple: '+8801712245678',
                   },
                   gender: {
                     type: 'string',
@@ -159,7 +218,28 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Admin signin',
-        description: `Allows an admin to **signin** using **email** and **password**. After signing in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes.<br><br>**Note:** In order to signin as an Admin you have to verify your email after signing up and get your account approved by the Super-Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p>`,
+        description: `
+Allows an admin to **signin** using **email** and **password**. After signing in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes.<br><br>**Note:** In order to signin as an Admin you have to verify your email after signing up and get your account approved by the Super-Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p></blockquote><br><br>
+
+<h2>Request Body:</h2>
+<ul>
+  <li><b>email:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The email address of the Admin.</li>
+      <li>Format: email</li>
+      <li>Example: ahsan.habib@example.com</li>
+    </ul>
+  </li><br>
+
+  <li><b>password:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: pass1234</li>
+    </ul>
+  </li><br>
+</ul>
+        `,
 
         requestBody: {
           required: true,
@@ -284,7 +364,20 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Send email verification link',
-        description: `Sends an **email verification link** to the Admins’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/admins/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/email-verification** endpoint.`,
+        description: `
+Sends an **email verification link** to the Admins’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/admins/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/email-verification** endpoint.<br><br>
+
+<h2>Request Body:</h2>
+<ul>
+  <li><b>email:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The email address of the Admin.</li>
+      <li>Format: email</li>
+      <li>Example: asif.hossain@example.com</li>
+    </ul>
+  </li><br>
+</ul>
+        `,
         operationId: 'sendEmailVerification',
         requestBody: {
           required: true,
@@ -465,8 +558,20 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Request password reset link.',
-        description:
-          "Sends a password reset link to the Admin's email address. The Admin just have to provide their registered email address. The **password reset link** will be sent to their email address. The link contains a **token** that will be used to reset the password through the **/api/v2/admins/reset-password/{token}** endpoint. The token is valid for only 10 minutes.",
+        description: `
+Sends a password reset link to the Admin's email address. The Admin just have to provide their registered email address. The **password reset link** will be sent to their email address. The link contains a **token** that will be used to reset the password through the **/api/v2/admins/reset-password/{token}** endpoint. The token is valid for only 10 minutes.<br><br>
+
+<h2>Request Body:</h2>
+<ul>
+  <li><b>email:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The email address of the Admin.</li>
+      <li>Format: email</li>
+      <li>Example: ahsan.habib@example.com</li>
+    </ul>
+  </li><br>
+</ul>
+        `,
         operationId: 'requestPasswordReset',
         requestBody: {
           required: true,
@@ -560,8 +665,28 @@ module.exports = {
       post: {
         tags: ['Admins'],
         summary: 'Reset Admin password.',
-        description:
-          'Allows Admin to reset their password using the **token** sent to their email address. The token is valid for only 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/forgot-password** endpoint. The Admin must provide a new password and confirm it.',
+        description: `
+Allows Admin to reset their password using the **token** sent to their email address. The token is valid for only 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/admins/forgot-password** endpoint. The Admin must provide a new password and confirm it.<br><br>
+
+<h2>Request Body:</h2>
+<ul>
+  <li><b>password:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The new password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: newPassword123</li>
+    </ul>
+  </li><br>
+
+  <li><b>passwordConfirm:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The confirmation of the new password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: newPassword123</li>
+    </ul>
+  </li><br>
+</ul>
+        `,
         operationId: 'resetAdminPassword',
         parameters: [
           {
@@ -1200,8 +1325,100 @@ module.exports = {
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
-        description:
-          'Allows the **Super-Admin**  to update a specific Admin account by their ID. Requires a valid **JWT** token with **Super-Admin**  privileges to access this route.',
+        description: `
+Allows the **Super-Admin**  to update a specific Admin account by their ID. Requires a valid **JWT** token with **Super-Admin**  privileges to access this route.<br><br>
+  
+<h2>Request Body:</h2>
+<ul>
+  <li><b>fullName:</b> <em>string</em>
+    <ul>
+      <li>The full name of the Admin.</li>
+      <li>Example: Ahsan Habib</li>
+    </ul>
+  </li><br>
+  
+  <li><b>email:</b> <em>string</em>
+    <ul>
+      <li>The email address of the Admin.</li>
+      <li>Format: email</li>
+      <li>Example: ahsan.habib@example.com</li>
+    </ul>
+  </li><br>
+
+  <li><b>phone:</b> <em>string</em>
+    <ul>
+      <li>The phone number of the Admin.</li>
+      <li>Format: phone</li>
+      <li>Example: +8801712245678</li>
+    </ul>
+  </li><br>
+  
+  <li><b>gender:</b> <em>string</em>
+    <ul>
+      <li>The gender of the Admin.</li>
+      <li>Allowed values: <b>male</b>, <b>female</b>, <b>other</b>, <b>prefer not to say</b></li>
+      <li>Example: male</li>
+    </ul>
+  </li><br>
+
+  <li><b>profilePhoto:</b> <em>string</em>
+    <ul>
+      <li>The profile photo of the Admin.</li>
+      <li>Format: url</li>
+      <li>Example: https://example.com/photos/ahsan_habib.jpg (Allowed formats: JPG, SVG, JPEG, PNG)</li>
+    </ul>
+  </li><br>
+
+  <li><b>password:</b> <em>string</em>
+    <ul>
+      <li>The password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: pass1234</li>
+    </ul>
+  </li><br>
+
+  <li><b>passwordConfirm:</b> <em>string</em>
+    <ul>
+      <li>The password confirmation of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: pass1234</li>
+    </ul>
+  </li><br>
+
+  <li><b>emailVerified:</b> <em>boolean</em>
+    <ul>
+      <li>The email verification status of the Admin.</li>
+      <li>Allowed values: <b>true</b>, <b>false</b></li>
+      <li>Example: true</li>
+    </ul>
+  </li><br>
+
+  <li><b>isVerified:</b> <em>boolean</em>
+    <ul>
+      <li>The account verification status of the Admin.</li>
+      <li>Allowed values: <b>true</b>, <b>false</b></li>
+      <li>Example: true</li>
+    </ul>
+  </li><br>
+
+  <li><b>roles:</b> <em>string</em>
+    <ul>
+      <li>The role of the Admin.</li>
+      <li>Allowed values: <b>admin</b>, <b>doctor-manager</b>, <b>patient-manager</b> <b>appointment-manager</b></li>
+      <li>Example: admin</li>
+    </ul>
+  </li><br>
+
+  <li><b>status:</b> <em>string</em>
+    <ul>
+      <li>The status of the Admin.</li>
+      <li>Allowed values: <b>active</b>, <b>pending</b>, <b>removed</b></li>
+      <li>Example: active</li>
+    </ul>
+  </li><br>
+</ul>
+
+`,
         operationId: 'updateAdminById',
         parameters: [
           {
@@ -1220,7 +1437,7 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/UpdateAdmin',
+                $ref: '#/components/schemas/Admin',
               },
             },
           },
@@ -1566,8 +1783,52 @@ module.exports = {
       patch: {
         tags: ['Admins'],
         summary: 'Update currently logged-in Admin Profile.',
-        description:
-          'Allows an Admin to **update** their profile information. The Admin must be **logged-in** and have a valid **JWT** token.',
+        description: `
+Allows an Admin to **update** their profile information. The Admin must be **logged-in** and have a valid **JWT** token.<br><br>
+
+<h2>Request Body:</h2>
+<ul>
+  <li><b>fullName:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The full name of the Admin.</li>
+      <li>Example: Ahsan Habib</li>
+    </ul>
+  </li><br>
+  
+  <li><b>email:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The email address of the Admin.</li>
+      <li>Format: email</li>
+      <li>Example: ahsan.habib@example.com</li>
+    </ul>
+  </li><br>
+
+  <li><b>phone:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The phone number of the Admin.</li>
+      <li>Format: phone</li>
+      <li>Example: +8801712245678</li>
+    </ul>
+  </li><br>
+  
+  <li><b>gender:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The gender of the Admin.</li>
+      <li>Allowed values: <b>male</b>, <b>female</b>, <b>other</b>, <b>prefer not to say</b></li>
+      <li>Example: male</li>
+    </ul>
+  </li><br>
+
+  <li><b>profilePhoto:</b> <em>string</em>
+    <ul>
+      <li>The profile photo of the Admin.</li>
+      <li>Format: url</li>
+      <li>Example: https://example.com/photos/ahsan_habib.jpg (Allowed formats: JPG, SVG, JPEG, PNG)</li>
+    </ul>
+  </li><br>
+
+</ul>          
+`,
         operationId: 'updateAdminProfile',
         security: [
           {
@@ -1780,8 +2041,36 @@ module.exports = {
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
-        description:
-          'Allows an Admin to **update** their own password. The Admin must be **logged-in** with a valid **JWT** token.',
+        description: `
+Allows an Admin to **update** their own password. The Admin must be **logged-in** with a valid **JWT** token.<br><br>
+
+<h2>Request Body:</h2>
+<ul>
+  <li><b>currentPassword:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The current password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: currentPassword123</li>
+    </ul>
+  </li><br>
+
+  <li><b>password:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The new password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: newPassword123</li>
+    </ul>
+  </li><br>
+
+  <li><b>passwordConfirm:</b> <em>string</em>, <em>mandatory</em>
+    <ul>
+      <li>The confirmation of the new password of the Admin.</li>
+      <li>Format: password</li>
+      <li>Example: newPassword123</li>
+    </ul>
+  </li><br>
+</ul>
+`,
         operationId: 'updateAdminPassword',
         requestBody: {
           required: true,

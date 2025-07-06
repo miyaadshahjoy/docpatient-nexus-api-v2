@@ -2,17 +2,20 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/config/swagger-config');
 // Importing routes and controllers
 const globalErrorHandler = require('./controllers/errorController');
 const paymentController = require('./controllers/paymentController');
+const calendarController = require('./controllers/calendarController');
 const superAdminRouter = require('./routes/superAdminRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const doctorRouter = require('./routes/doctorRoutes');
 const patientRouter = require('./routes/patientRoutes');
 const appointmenRouter = require('./routes/appointmentRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const calendarRouter = require('./routes/calendarRoutes');
 
 // Initialize express app
 const app = express();
@@ -57,9 +60,11 @@ app.use('/api/v2/doctors', doctorRouter);
 app.use('/api/v2/patients', patientRouter);
 app.use('/api/v2/appointments', appointmenRouter);
 app.use('/api/v2/reviews', reviewRouter);
+app.use('/api/v2/calendars', calendarRouter);
 
-// Swagger Documentation
+app.get('/oauth/v2/callback', calendarController.createCalendar);
 
+// Route for API Documentation
 app.use(
   '/api/v2/docs',
   swaggerUi.serve,

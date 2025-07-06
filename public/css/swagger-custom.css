@@ -38,6 +38,9 @@
   /* font-family: 'Lato', sans-serif !important; */
   line-height: 1.5 !important;
 }
+.swagger-ui ul li {
+  font-size: 1rem !important;
+}
 .swagger-ui td,
 .swagger-ui p {
   font-size: 1rem !important;
@@ -67,9 +70,9 @@
   color: #000 !important;
   font-style: normal !important;
   background-color: #fa99ae;
-  border: 2px solid #f7345e;
+  border: 1px solid #f7345e;
   border-radius: 3px;
-  padding: 1.5px 5px;
+  padding: 0.5px 5px;
 }
 .swagger-ui button,
 .swagger-ui .btn,
@@ -122,7 +125,7 @@
 }
 .swagger-ui blockquote span {
   border: 2px solid #005a6f !important;
-  padding: 4.5px 11px !important;
+  padding: 3.5px 11px !important;
   border-radius: 50% !important;
   color: #005a6f !important;
   margin-right: 10px !important;

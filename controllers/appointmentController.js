@@ -162,7 +162,7 @@ exports.cancelAppointment = catchAsync(async (req, res, next) => {
     if (timeRemaining < 24 * 60 * 60 * 1000)
       return next(
         new AppError(
-          'Appointments can only be cancelled 24 hours in advance',
+          'Appointments can only be cancelled 24 hours in advance.',
           400,
         ),
       );

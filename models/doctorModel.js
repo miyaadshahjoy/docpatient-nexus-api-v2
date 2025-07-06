@@ -3,6 +3,19 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 const { addInstanceMethods } = require('../utils/schemaUtil');
 
+const calendarSchema = new mongoose.Schema({
+  calendarUID: String,
+  accessToken: {
+    type: String,
+    trim: true,
+  },
+  refreshToken: {
+    type: String,
+    trim: true,
+  },
+  accessTokenExpiry: Date,
+});
+
 const doctorSchema = new mongoose.Schema(
   {
     fullName: {
@@ -190,6 +203,7 @@ const doctorSchema = new mongoose.Schema(
       type: Number,
       default: 60, // in minutes
     },
+    calendar: calendarSchema,
     consultationFees: {
       type: Number,
       required: [true, 'Consultation fee is required.'],
