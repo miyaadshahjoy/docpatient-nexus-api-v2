@@ -5,8 +5,8 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 ////////////////////////////////////////////////////
 const redirectURI = `http://127.0.0.1:3000/oauth/v2/callback`;
-const clientId = '1000.SILJQBMY31TVZPGHUEMDTJ4YZ5A22J';
-const clientSecret = '3f354c0e1c74db46ef75c21a4877b059db585d0214';
+const clientId = process.env.ZOHO_CLIENT_ID;
+const clientSecret = process.env.ZOHO_CLIENT_SECRET;
 const scope = 'ZohoCalendar.event.ALL,ZohoCalendar.calendar.ALL';
 
 const getAccessToken = catchAsync(async (req, res, next) => {
