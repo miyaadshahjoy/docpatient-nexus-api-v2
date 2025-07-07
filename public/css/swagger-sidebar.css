@@ -26,7 +26,7 @@
 #sidebar .topbar {
   display: flex;
   align-items: center;
-
+  justify-content: space-evenly;
   margin-bottom: 4.375rem;
 }
 #sidebar .topbar a img {
@@ -35,6 +35,10 @@
 }
 #sidebar .topbar a {
   margin-right: 10px;
+}
+
+#sidebar nav {
+  margin-bottom: 3rem;
 }
 
 #sidebar .sectionTitle {
@@ -96,6 +100,19 @@
   background-color: #f7345e;
   color: white;
   font-weight: 600;
+}
+
+#sidebar .model--btn {
+  display: block;
+
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 400;
+  background-color: #005b6f15;
+  padding: 10px 16px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease;
 }
 
 /* Adjust swagger-ui main container */

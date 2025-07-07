@@ -64,6 +64,32 @@ sidebarScript.onload = function () {
                 ).textContent;
             },
           );
+
+          ////////////////////////////////////////
+          const sidebarModelsEl = document.createElement('div');
+          sidebarModelsEl.classList.add('sidebar-models');
+          sidebarModelsEl.insertAdjacentHTML(
+            'afterbegin',
+            `
+            <h4>Schemas👇🏻</h4>
+            `,
+          );
+
+          const modelContainerEls = Array.from(
+            swaggerUiEl.querySelectorAll('.model-container'),
+          );
+          modelContainerEls.forEach((modelContainerEl) => {
+            const modelName =
+              modelContainerEl.attributes['data-name'].nodeValue;
+            const href = modelContainerEl.attributes.id.nodeValue;
+            sidebarModelsEl.insertAdjacentHTML(
+              'beforeend',
+              `
+             <a href="#${href}" class="model--btn">${modelName} Model</a>
+              `,
+            );
+          });
+          sidebarEl.appendChild(sidebarModelsEl);
         }, 101);
       } else {
         console.error('❌ initSidebar not found');

@@ -34,7 +34,7 @@ const options = {
     - **id**: User ID
     - **role**: Access control role
     - **iat, exp**: Issued-at and expiration timestamps
-  - All protected routes requiring a valid *Authorization: Bearer <token>* header.
+  - All protected routes requiring a valid *Authorization: Bearer(token)* header.
   - Custom middleware (authController.protect) verifying token integrity, expiration, and user existence.
   - Role-based access control via restrictTo(...) middleware enforces granular permissions (e.g. only Doctors can prescribe).
   - Sub-role support for admins (e.g. ['admin', 'appointment-manager']) adds fine-grained authorization control.
@@ -52,7 +52,7 @@ const options = {
 - Appointment booking and cancellation with proper validation
 - Appointment approval and rejection by Admin
 - Appointment approval after payment
-- Appointment lifecycle:*pending → confirmed → completed/cancelled*
+- Appointment lifecycle: *pending → confirmed → completed/cancelled*
 - Stripe-powered secure payments
 - Refund logic for cancellations
 - Follow-up appointment creation after completed appointment or missed appointment
@@ -65,7 +65,7 @@ const options = {
 - Prescriptions linked to appointments
 - Prescription creation by Doctors on approved or completed appointments only
 - Prescription allowed to have multiple medications
-- Prescription status:*active*,*expire*, *deleted*
+- Prescription status: *active*, *expired*, *deleted*
 - Medication includes name, dosage, frequency, duration, and instructions
 - Medication reminder email for Patient
 
