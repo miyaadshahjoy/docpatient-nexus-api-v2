@@ -90,6 +90,23 @@ sidebarScript.onload = function () {
             );
           });
           sidebarEl.appendChild(sidebarModelsEl);
+
+          const modelButtons = sidebarEl.querySelectorAll('.model--btn');
+          modelButtons.forEach((button) => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const modelContainerEl = modelContainerEls.find(
+                (el) =>
+                  el.attributes['data-name'].nodeValue ===
+                  button.textContent.split(' ')[0],
+              );
+              modelContainerEls.forEach((el) => {
+                el.style.backgroundColor = '';
+              });
+              modelContainerEl.style.backgroundColor = '#d7edff';
+              modelContainerEl.scrollIntoView({ behavior: 'smooth' });
+            });
+          });
         }, 101);
       } else {
         console.error('❌ initSidebar not found');
