@@ -40,7 +40,7 @@ const generateJWT = (user) => {
 exports.signup = (Model) =>
   catchAsync(async (req, res, next) => {
     // Check if request body is empty
-    if (!req.body)
+    if (Object.keys(req.body).length === 0)
       return next(new AppError('Please provide user data to sign up', 400));
 
     if (req.body.phone || req.body.email) {
@@ -103,14 +103,14 @@ exports.signup = (Model) =>
 
 exports.signin = (Model) =>
   catchAsync(async (req, res, next) => {
-    if (!req.body)
-      return next(
-        new AppError('Please provide email and password to sign in', 400),
-      );
+    if (Object.keys(req.body).length === 0)
+      return next(new AppError('Request body does not contain any data.', 400));
     // 1) Check if email and password exists
     const { email, password } = req.body;
     if (!email || !password)
-      return next(new AppError('Enter email and password to sign in', 400));
+      return next(
+        new AppError('To sign in, please provide email and password.', 400),
+      );
     // 2) Check if email exists and password is correct
     const user = await Model.findOne({ email }).select('+password');
 

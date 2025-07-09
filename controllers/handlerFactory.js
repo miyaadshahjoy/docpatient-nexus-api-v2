@@ -19,7 +19,7 @@ exports.readAll = (Model) =>
   catchAsync(async (req, res, next) => {
     const queryObject = req.query;
     const query = Model.find();
-    const resourceName = `${Model.modelName.toLowerCase()}s`;
+    const resourceName = `${Model.modelName.toLowerCase()}`;
     const features = new APIFeatures(query, queryObject)
       .filter()
       .sort()
