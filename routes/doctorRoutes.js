@@ -5,6 +5,7 @@ const currentUserController = require('../controllers/currentUserController');
 const appointmentController = require('../controllers/appointmentController');
 const appointmentRouter = require('./appointmentRoutes');
 const patientRecordRouter = require('./patientRecordRoutes');
+const calendarRouter = require('./calendarRoutes');
 
 const {
   checkAccountEligibility,
@@ -12,6 +13,9 @@ const {
 const Doctor = require('../models/doctorModel');
 
 const router = express.Router({ mergeParams: true });
+
+// POST /doctors/calendars
+router.use('/calendars', calendarRouter);
 
 // POST /doctors/patients/{patientId}/records
 // PATCH/doctors/patients/{patientId}/records

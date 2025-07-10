@@ -1,112 +1,117 @@
+const { google } = require('googleapis');
 const axios = require('axios');
-const qs = require('qs');
-const Doctor = require('../models/doctorModel');
-const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-////////////////////////////////////////////////////
-const redirectURI = `http://127.0.0.1:3000/oauth/v2/callback`;
-const clientId = process.env.ZOHO_CLIENT_ID;
-const clientSecret = process.env.ZOHO_CLIENT_SECRET;
-const scope = 'ZohoCalendar.event.ALL,ZohoCalendar.calendar.ALL';
 
-const getAccessToken = catchAsync(async (req, res, next) => {
-  const { state, code } = req.query;
-  if (!state || !code)
-    return next(
-      new AppError(
-        'Redirect URI doesnt have state and code query parameters.',
-        400,
-      ),
-    );
-  const doctorID = state;
-
-  const tokenResponse = await axios.post(
-    `https://accounts.zoho.com/oauth/v2/token?code=${code}&grant_type=authorization_code&client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${redirectURI}&scope=${scope}&state=${state}`,
+const createOAuth2Client = () =>
+  new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    'http://127.0.0.1:3000/oauth/v2/callback',
   );
-  console.log(tokenResponse.data);
-  if (tokenResponse.status !== 200)
-    return next(
-      new AppError('Something went wrong while fetching access token.', 500),
-    );
-  const {
-    access_token: accessToken,
-    // refresh_token: refreshToken, // FIXME:
-    expires_in: expiresIn,
-  } = tokenResponse.data;
-  //   if (!accessToken || !refreshToken || !expiresIn)
-  if (!accessToken || !expiresIn)
-    return next(
-      new AppError(
-        'Token response data must contain access token, refresh token and expires in.',
-        400,
-      ),
-    );
+
+exports.createCalendar = async (accessToken, doctor) => {
   try {
-    const doctor = await Doctor.findById(doctorID);
-    if (!doctor)
-      return next(new AppError('No doctor found with this ID.', 404));
-    const calendar = {
-      accessToken,
-      // refreshToken,
-      accessTokenExpiry: Date.now() + expiresIn * 1000, // 1 hour
-    };
-    doctor.calendar = calendar;
-    await doctor.save();
-
-    console.log('✅ Doctor updated successfully.', doctor);
-  } catch (err) {
-    console.error('❌ Error updating Doctor.', err);
-    return next(
-      new AppError(
-        'Internal Error. Something went wrong while updating the Doctor.',
-        500,
-      ),
-    );
-  }
-  return accessToken;
-});
-
-exports.createCalendar = catchAsync(async (req, res, next) => {
-  const accessToken = await getAccessToken(req, next);
-
-  const calendarData = {
-    calendarData: {
-      name: 'docpatient-nexus-calendar',
-      color: '#005a6f',
-      textcolor: '#FFFFFF',
-      include_infreebusy: true,
-      private: 'enable',
-      public: 'freeBusy',
-      timezone: 'Asia/Dhaka',
-      description: 'Calendar for DocPatient Nexus application.',
-      status: true,
-    },
-  };
-
-  try {
-    const calendar = await axios.post(
-      `https://calendar.zoho.com/api/v1/calendars`,
-      qs.stringify(calendarData),
-      //   JSON.stringify(calendarData),
-
-      {
-        headers: {
-          Authorization: `Zoho-oauthtoken ${accessToken}`,
-          //   'Content-Type': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'cache-control': 'no-cache',
-        },
+    const response = await axios({
+      method: 'POST',
+      url: `https://www.googleapis.com/calendar/v3/calendars`,
+      data: {
+        summary: 'DocPatient Nexus',
+        description: 'Calendar for DocPatient Nexus API',
+        timeZone: 'Asia/Dhaka',
+        location: doctor.location.address,
       },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.id;
+  } catch (error) {
+    console.error(
+      '❌ Error creating calendar',
+      error?.response?.data || error.message,
     );
-    console.log(calendar);
-    res.redirect('https://calendar.zoho.com/zc/wk');
-  } catch (err) {
-    console.error('❌ Error creating calendar.', err.response.data);
-    return next(
-      new AppError(
-        'Internal Error. Something went wrong while creating the calendar.',
-        500,
-      ),
-    );
+    throw new AppError('Failed to create calendar.', 500);
   }
-});
+};
+
+const generateOAuthURL = (req, res, next) => {
+  const oauth2Client = createOAuth2Client();
+
+  // Generate a url that asks permissions for Google Calendar scopes
+  const scopes = [
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/calendar.events',
+  ];
+
+  // Generate the OAuth2 url
+  const url = oauth2Client.generateAuthUrl({
+    // 'online' (default) or 'offline' (gets refresh_token)
+    access_type: 'offline',
+    // If you only need one scope, you can pass it as a string
+    scope: scopes,
+    state: req.user.id, // TODO: Encrypt the doctor id before sending it to the client
+  });
+  res.status(201).json({
+    status: 'success',
+    message: 'Google OAuth2 url generated successfully',
+    data: {
+      url,
+    },
+  });
+};
+
+exports.createEvent = async (appointment, doctor, patient) => {
+  const calendarId = doctor.calendar.calendarUID;
+  const appointmentDate = new Date(appointment.appointmentDate)
+    .toISOString()
+    .split('T')[0];
+  const startTime = appointment.appointmentSchedule.hours.from; // "09:00"
+  const endTime = appointment.appointmentSchedule.hours.to; // "09:59"
+  const startDateTime = `${appointmentDate}T${startTime}:00`;
+  const endDateTime = `${appointmentDate}T${endTime}:00`;
+
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`,
+      data: {
+        summary: `Appointment: Dr. ${doctor.fullName} has an appointment with ${patient.fullName}.`,
+        description: `Dr. ${doctor.fullName} has an appointment with  ${patient.fullName} on ${appointmentDate}for "${appointment.reason}".`,
+
+        start: {
+          dateTime: startDateTime,
+          timeZone: 'Asia/Dhaka',
+        },
+        end: {
+          dateTime: endDateTime,
+          timeZone: 'Asia/Dhaka',
+        },
+        attendees: [
+          {
+            email: doctor.email,
+          },
+          {
+            email: patient.email,
+          },
+        ],
+        location: doctor.location.address,
+        transparency: 'opaque',
+        visibility: 'public',
+        sendUpdates: 'all',
+      },
+      headers: {
+        Authorization: `Bearer ${doctor.calendar.accessToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error('❌ Error creating event', err?.response?.data || err.errors);
+    throw new AppError('Failed to create event.', 500);
+  }
+};
+exports.generateOAuthURL = generateOAuthURL;
+exports.createOAuth2Client = createOAuth2Client;

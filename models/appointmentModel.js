@@ -5,6 +5,8 @@ const {
   sendAppointmentNotification,
 } = require('../services/notificationService');
 
+const { createEvent } = require('../controllers/calendarController');
+
 const sendAppointmentReminder = require('../utils/sendAppointmentReminder');
 
 const appointmentSchema = new mongoose.Schema(
@@ -104,6 +106,10 @@ appointmentSchema.post('findOneAndUpdate', async function (doc) {
 
     // send appointment reminder to the doctor and patient
     sendAppointmentReminder(appointment, doctor, patient);
+
+    // create an event to doctor's calendar
+    const response = await createEvent(appointment, doctor, patient);
+    console.log(response);
   }
 });
 
