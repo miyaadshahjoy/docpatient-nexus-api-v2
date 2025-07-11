@@ -5,7 +5,10 @@ const {
   sendAppointmentNotification,
 } = require('../services/notificationService');
 
-const { createEvent } = require('../controllers/calendarController');
+const {
+  createEvent,
+  createNewAccessToken,
+} = require('../controllers/calendarController');
 
 const sendAppointmentReminder = require('../utils/sendAppointmentReminder');
 
@@ -106,7 +109,9 @@ appointmentSchema.post('findOneAndUpdate', async function (doc) {
 
     // send appointment reminder to the doctor and patient
     sendAppointmentReminder(appointment, doctor, patient);
-
+    // Check if the doctor's access token is expired
+    if (new Date(doctor.calendar.accessTokenExpiry).getTime() < Date.now())
+      await createNewAccessToken(doctor);
     // create an event to doctor's calendar
     const response = await createEvent(appointment, doctor, patient);
     console.log(response);

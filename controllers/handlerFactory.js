@@ -33,7 +33,7 @@ exports.readAll = (Model) =>
       message: `Successfully fetched all ${resourceName}s.`,
       results: docs.length,
       data: {
-        [resourceName]: docs,
+        [`${resourceName}s`]: docs,
       },
     });
   });

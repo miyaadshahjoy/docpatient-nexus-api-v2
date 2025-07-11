@@ -1,6 +1,7 @@
 const { google } = require('googleapis');
 const axios = require('axios');
 const AppError = require('../utils/appError');
+const { encrypt } = require('../utils/cryptoHelper');
 
 const createOAuth2Client = () =>
   new google.auth.OAuth2(
@@ -45,13 +46,16 @@ const generateOAuthURL = (req, res, next) => {
     'https://www.googleapis.com/auth/calendar.events',
   ];
 
+  // Encrypting the doctor id before sending it as a state
+  const encryptedDoctorID = encrypt(req.user.id);
+
   // Generate the OAuth2 url
   const url = oauth2Client.generateAuthUrl({
     // 'online' (default) or 'offline' (gets refresh_token)
     access_type: 'offline',
     // If you only need one scope, you can pass it as a string
     scope: scopes,
-    state: req.user.id, // TODO: Encrypt the doctor id before sending it to the client
+    state: encryptedDoctorID,
   });
   res.status(201).json({
     status: 'success',
@@ -111,6 +115,43 @@ exports.createEvent = async (appointment, doctor, patient) => {
   } catch (err) {
     console.error('❌ Error creating event', err?.response?.data || err.errors);
     throw new AppError('Failed to create event.', 500);
+  }
+};
+
+exports.createNewAccessToken = async (doctor) => {
+  try {
+    if (!doctor.calendar.refreshToken)
+      throw new AppError(
+        'Refresh token not found. Please re-authenticate the doctor.',
+        400,
+      );
+    const response = await axios({
+      method: 'POST',
+      url: 'https://oauth2.googleapis.com/token',
+      data: {
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        refresh_token: doctor.calendar.refreshToken,
+        grant_type: 'refresh_token',
+      },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    const newAccessToken = response.data.access_token;
+    const newTokenExpiresIn = response.data.expires_in;
+    doctor.calendar.accessToken = newAccessToken;
+    doctor.calendar.accessTokenExpiry = new Date(
+      newTokenExpiresIn * 1000 + Date.now(),
+    );
+    await doctor.save();
+  } catch (err) {
+    console.error(
+      '❌ Error creating new access token:',
+      err?.response?.data || err?.message || err,
+    );
+
+    throw new AppError('Failed to create new access token.', 500);
   }
 };
 exports.generateOAuthURL = generateOAuthURL;

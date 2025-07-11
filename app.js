@@ -23,6 +23,7 @@ const {
 const catchAsync = require('./utils/catchAsync');
 const AppError = require('./utils/appError');
 const doctorModel = require('./models/doctorModel');
+const { decrypt } = require('./utils/cryptoHelper');
 
 // Initialize express app
 const app = express();
@@ -89,7 +90,15 @@ app.get(
     const accessTokenExpiry = new Date(expiry_date);
 
     try {
-      const doctorId = state;
+      // Decrypting the doctor id from the state
+      const doctorId = decrypt(state);
+      if (!doctorId)
+        return next(
+          new AppError(
+            'Invalid state. Please re-authenticate the doctor.',
+            400,
+          ),
+        );
       const doctor = await doctorModel.findById(doctorId);
       if (!doctor) throw new AppError('Doctor not found.', 404);
 
