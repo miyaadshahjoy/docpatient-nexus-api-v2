@@ -769,4 +769,27 @@ module.exports = {
       },
     },
   },
+  Calendar: {
+    type: 'object',
+    properties: {
+      calendarUID: {
+        type: 'string',
+        example:
+          '5496bcec2da54d7f43df0530537d8552f36edab7e95f7be26a33828866970d76@group.calendar.google.com',
+      },
+      accessToken: {
+        type: 'string',
+        example: 'access_token',
+      },
+      refreshToken: {
+        type: 'string',
+        example: 'refresh_token',
+      },
+      accessTokenExpiry: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-07-12T14:20:00.000Z',
+      },
+    },
+  },
 };
