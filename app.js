@@ -102,18 +102,25 @@ app.get(
       const doctor = await doctorModel.findById(doctorId);
       if (!doctor) throw new AppError('Doctor not found.', 404);
 
+      // Check if a calendar already exists for the doctor
+      if (doctor.calendar && doctor.calendar.calendarUID)
+        return next(
+          new AppError('A calendar already exists for this doctor.', 400),
+        );
+
       const calendarId = await createCalendar(accessToken, doctor);
-      doctor.calendar = {
+      const calendar = {
         calendarUID: calendarId,
         accessToken,
         refreshToken,
         accessTokenExpiry,
       };
+      doctor.calendar = calendar;
       await doctor.save();
 
       res.status(200).json({
         status: 'success',
-        message: 'Google calendar created successfully.',
+        message: 'Calendar created successfully.',
         data: {
           calendarId,
         },

@@ -2566,5 +2566,116 @@ module.exports = {
         },
       },
     },
+    // Create a new Calendar for a Doctor in his Google Calendar
+    '/api/v2/doctors/me/calendar': {
+      post: {
+        tags: ['Doctors'],
+        summary: 'Create a new Calendar for a Doctor in his Google Calendar',
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+        description: `Allows a doctor to **create a new calendar** in his Google Calendar. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A calendar can only be created if the doctor has not already created one. If the doctor has already created a calendar, an error will be returned.<blockquote><span>ℹ</span><p>Inorder to access your Google Calendar data you have to create an account in *[Google Cloud Platform](https://console.cloud.google.com/)* and create a project and enable Google Calendar API for that project. Then create an oauth2 credentials for that project and use the credentials to authorize the app to access your Google Calendar data. You have to use your client ID and client secret in the config.env file of the application inorder to authorize the 'DocPatient Nexus' API to access your Google Calendar data. You also need to add *./auth/calendar.events* and *./auth/calendar* scopes to the oauth2 credentials, otherwise the app will not be able to access your Google Calendar data.</p></blockquote>`,
+        operationId: 'createCalendar',
+        responses: {
+          200: {
+            description: 'Calendar created successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Calendar created successfully.',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        calendarId: {
+                          type: 'string',
+                          example:
+                            'f4278bc2f8f4a7b16d51ce59a177a28daf1dc4cb3265e8b31602e06ff1e5e0a8@group.calendar.google.com',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Bad request.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No authorization code provided',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Doctors can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Unauthorized access. Only logged-in Doctors can create a calendar.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Doctors can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Forbidden access. Only logged-in Doctors can create a calendar.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
   },
 };

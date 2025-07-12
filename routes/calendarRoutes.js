@@ -4,7 +4,7 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-// POST /doctors/calendars
+// POST /doctors/me/calendar
 router.post(
   '/',
   authController.protect(),

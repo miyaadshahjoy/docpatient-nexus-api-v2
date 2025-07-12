@@ -14,8 +14,8 @@ const Doctor = require('../models/doctorModel');
 
 const router = express.Router({ mergeParams: true });
 
-// POST /doctors/calendars
-router.use('/calendars', calendarRouter);
+// POST /doctors/me/calendar
+router.use('/me/calendar', calendarRouter);
 
 // POST /doctors/patients/{patientId}/records
 // PATCH/doctors/patients/{patientId}/records
