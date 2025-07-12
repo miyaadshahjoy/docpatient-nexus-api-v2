@@ -769,7 +769,8 @@ module.exports = {
       },
     },
   },
-  Calendar: {
+
+  /*Calendar: {
     type: 'object',
     properties: {
       calendarUID: {
@@ -792,4 +793,5 @@ module.exports = {
       },
     },
   },
+  */
 };
