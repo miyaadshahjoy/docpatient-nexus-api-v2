@@ -779,13 +779,11 @@ module.exports = {
       },
       accessToken: {
         type: 'string',
-        example:
-          'ya29.a0AS3H6Nw1YLfCYT6FQyne35xFIaoQ9HmeqX-zKgNa8BIZVilibwEBq9g0J0brU3CxkHGA0brHJ4Bma70dSP6DivieiugT5GwATZfSAz7meIUKzZcqu_A5d3-qNUiQlKGo8pq40i6xKOtyke7j7E8rogcXknORQVE0A-Ph0ga2KwaCgYKAfsSARUSFQHGX2MiV3wiOFZqrFrVmu9h7yUH9b199j',
+        example: 'access_token',
       },
       refreshToken: {
         type: 'string',
-        example:
-          '1/1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1//0gFC1hGI_vddbCgYIARAAGBASNwF-L9Ir9r13mI4o4vGvmvvj5Z7VpKw_qYejOhgIKIpezafSjPTezgk0y7Q4Kq5swiNjK3c1gpN',
+        example: 'refresh_token',
       },
       accessTokenExpiry: {
         type: 'string',
