@@ -7,7 +7,7 @@ const createOAuth2Client = () =>
   new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    'http://127.0.0.1:3000/oauth/v2/callback',
+    process.env.GOOGLE_REDIRECT_URI,
   );
 
 exports.createCalendar = async (accessToken, doctor) => {
