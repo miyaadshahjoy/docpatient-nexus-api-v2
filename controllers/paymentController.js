@@ -59,7 +59,7 @@ exports.createCheckoutSession = catchAsync(async (req, res, next) => {
 
       mode: 'payment',
       success_url: `${req.protocol}://${req.get('host')}`,
-      cancel_url: 'http://localhost:3000',
+      cancel_url: `${req.protocol}://${req.get('host')}`,
 
       // 3) Send session as response
     });
