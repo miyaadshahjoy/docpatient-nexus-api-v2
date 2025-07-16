@@ -9,7 +9,6 @@
 ### 🛡 Authentication & Authorization
 
 - Secure **JWT-based** authentication
-
   - Use of JSON Web Tokens (JWT) to implement stateless authentication across all user roles (Patients, Doctors, Admins, Super Admins)
   - JWT generation after a successful login and signing with a secure server-side secret
   - JWT invalidation on logout
@@ -100,50 +99,40 @@
 ### ✅ Real-World Problems Solved by DocPatient Nexus API
 
 1. **⏰ Appointment Chaos → Organized Scheduling**
-
    - No more overbooked time slots, double bookings, or unclear availability.
    - Patients can only book from validated, doctor-defined visiting hours.
    - Real-time conflict detection ensures accurate appointment slots.
 
 2. **📞 Endless Calls → Self-Service Booking**
-
    - Patients don't need to call the clinic to book, cancel, or confirm appointments.
    - Everything is handled via secure API endpoints, ready for any frontend (mobile/web).
 
 3. **😵 Medication Confusion → Smart Reminders**
-
    - Automatically schedules personalized medication reminders via email.
    - Sends reminders **10 minutes** before each dose, helping patients stick to treatment plans.
 
 4. **💳 Manual Billing → Seamless Online Payments**
-
    - Secure Stripe integration for paying doctor fees online.
    - Handles automatic receipt generation, status tracking, and error handling.
 
 5. **📁 Scattered Health Records → Centralized Patient Records**
-
    - Stores all patient-related data in one place: prescriptions, lab reports, surgeries, allergies, etc.
    - Easily accessible to Doctors, Patients, and authorized Admins.
 
 6. **🧾 Forgotten Reviews → Verified Feedback System**
-
    - Ensures Patients can only leave reviews **after completing an appointment**.
    - Helps clinics gather authentic feedback to improve services.
 
 7. **📬 Silent System → Role-Based Notifications**
-
    - Doctors, Patients, and appointment-managers receive **context-specific notifications** via email (soon SMS + in-app).
    - Tracks events like appointment creation, cancellation, payment, and prescription updates.
 
 8. **✅ Limited Access Control → Multi-Level Admin System**
-
    - Fine-grained role & sub-role access: Super Admin, Admin, Appointment Manager, etc.
    - Prevents unauthorized actions and keeps data secure and organized.
 
 9. **📄 Manual Emailing → Automated Communication**
-
    - Sends beautiful, production-grade email templates for:
-
      - Welcome emails
      - Email verification
      - Appointment booking and cancellation
@@ -156,12 +145,10 @@
      - System notifications
 
 10. **🥼 Doctor’s Visibility → Review-Based Reputation**
-
     - Calculates Doctor's average rating based on Patient reviews.
     - Builds trust for Patients selecting a provider.
 
 11. **⚖️ Mismanaged Cancellations → Smart Refund Workflow**
-
     - Handles appointment cancellations with refund eligibility logic baked in.
     - Reduces admin overhead and improves transparency.
 
@@ -196,7 +183,8 @@
 | **Redis**           | In-memory store for BullMQ                     |
 | **Stripe**          | Payment processing & webhook handling          |
 | **Nodemailer**      | Sending transactional emails                   |
-| **mailpit**         | Email testing and debugging                    |
+| **mailpit**         | Email testing and debugging in local dev       |
+| **mailtrap**        | Email testing and debugging in production      |
 | **Swagger (JSDoc)** | API documentation                              |
 | **CORS**            | Cross-Origin Resource Sharing setup            |
 | **Postman**         | API testing and debugging                      |
@@ -276,11 +264,15 @@ CRYPTO_SECRET_KEY=CRYPTO_SECRET_KEY (16 bytes encryption key)
 FRONTEND_URL=FRONTEND_URL (example: https://docpatientnexus.com)
 SUPER_ADMIN_EMAIL=super-admin@docpatientnexus.com
 STRIPE_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
-STRIPE_WEBHOOK_SECRET=YOUR_STRIPE_WEBHOOK_SECRET (use stripe cli to generate webhook secret)
+STRIPE_WEBHOOK_SECRET=YOUR_STRIPE_WEBHOOK_SECRET (Go to stripe-dashboard->developers->webhooks to get your webhook secret)
 REDIS_USERNAME=YOUR_REDIS_USERNAME (default: default)
 REDIS_PASSWORD=YOUR_REDIS_PASSWORD
 REDIS_HOST=YOUR_REDIS_HOST
 REDIS_PORT=YOUR_REDIS_PORT
+MAILTRAP_HOST=YOUR_MAILTRAP_HOST
+MAILTRAP_PORT=YOUR_MAILTRAP_PORT
+MAILTRAP_USERNAME=YOUR_MAILTRAP_USERNAME
+MAILTRAP_PASSWORD=YOUR_MAILTRAP_PASSWORD
 
 ```
 
@@ -302,7 +294,6 @@ REDIS_PORT=YOUR_REDIS_PORT
 ##### Option 1: Install via Binary
 
 - Download from the [Mailpit releases page](https://github.com/axllent/mailpit/releases)
-
   - **For Windows:** download [mailpit-windows-amd64.exe](https://github.com/axllent/mailpit/releases/download/v1.27.0/mailpit-windows-amd64.zip)
   - **For macOS:** download and install using Homebrew:
 
@@ -357,6 +348,45 @@ docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit --smtp 0.0.0.0:2025 --
 
 - SMTP available at: http://localhost:2025
 - Web UI: http://localhost:8025 (This is Mailpit's web UI where you can view, read, and inspect all outgoing emails.)
+
+---
+
+### 🛢 Redis setup for BullMQ
+
+- Redis (Remote Dictionary Server) is a fast, open-source, in-memory key-value data store that's often used as a database, cache, and message broker.
+- Redis is used as a queue for sending email notifications and reminders in this application.
+- This project uses `BullMQ` for job scheduling and background processing, which requires a `Redis` server to function.
+- Go to [https://cloud.redis.io/#/databases](https://cloud.redis.io/#/databases) to create a free Redis database.
+- Install Redis
+
+```bash
+npm install ioredis
+```
+
+- Configure Redis connection in your `.env` file:
+
+```bash
+REDIS_HOST=YOUR_REDIS_HOST
+REDIS_PORT=YOUR_REDIS_PORT
+REDIS_USERNAME=YOUR_REDIS_USERNAME (default: default)
+REDIS_PASSWORD=YOUR_REDIS_PASSWORD
+```
+
+- Create a Redis client in your application:
+
+```javascript
+const { Redis } = require('ioredis');
+const redisClient = new Redis({
+  username: process.env.REDIS_USERNAME,
+  password: process.env.REDIS_PASSWORD,
+  maxRetriesPerRequest: null,
+
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+});
+```
+
+- Go to the [Redis documentation](https://redis.io/documentation) for more information on how to set up and use Redis.
 
 ---
 
