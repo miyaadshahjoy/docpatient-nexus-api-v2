@@ -21,4 +21,40 @@ router.patch(
   prescriptionController.updatePrescription,
 );
 
+// Get all prescriptions for a Patient
+// GET /api/v2/patients/{patientId}/prescriptions
+router.get(
+  '/',
+  authController.protect(),
+  authController.restrictTo('admin', 'prescription-manager'),
+  prescriptionController.getAllPrescriptions,
+);
+
+// Get a single prescription by ID for a patient
+// GET /api/v2/patients/{patientId}/prescriptions/{prescriptionId}/
+router.get(
+  '/:prescriptionId',
+  authController.protect(),
+  authController.restrictTo('admin', 'prescription-manager'),
+  prescriptionController.getPrescription,
+);
+
+// Update a single prescription for a Patient
+// PATCH /api/v2/patients/{patientId}/prescriptions/{prescriptionId}
+router.patch(
+  '/:prescriptionId',
+  authController.protect(),
+  authController.restrictTo('admin', 'prescription-manager'),
+  prescriptionController.updateOnePrescription,
+);
+
+// Delete a single prescription for a Patient
+// DELETE /api/v2/patients/{patientId}/prescriptions/{prescriptionId}
+router.delete(
+  '/:prescriptionId',
+  authController.protect(),
+  authController.restrictTo('admin', 'prescription-manager'),
+  prescriptionController.deleteOnePrescription,
+);
+
 module.exports = router;

@@ -147,3 +147,144 @@ exports.updatePrescription = catchAsync(async (req, res, next) => {
     );
   }
 });
+
+exports.getAllPrescriptions = catchAsync(async (req, res, next) => {
+  const patientId = req.params.id;
+  if (!patientId) return next(new AppError('No patient ID provided.', 400));
+
+  try {
+    const patient = await Patient.findById(patientId).populate('prescriptions');
+    if (!patient)
+      return next(new AppError('No Patient found with the provided ID.', 404));
+    const { prescriptions } = patient;
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfully retrieved all prescriptions.',
+      resutls: prescriptions.length,
+      data: {
+        prescriptions,
+      },
+    });
+  } catch (err) {
+    console.error('❌ Failed to get prescriptions:', err);
+    return next(
+      new AppError('Internal error. Failed to get prescriptions.', 500),
+    );
+  }
+});
+
+exports.getPrescription = catchAsync(async (req, res, next) => {
+  const patientId = req.params.id;
+  if (!patientId) return next(new AppError('No patient ID provided.', 400));
+  const { prescriptionId } = req.params;
+  if (!prescriptionId)
+    return next(new AppError('No prescription ID provided.', 400));
+  try {
+    const patient = await Patient.findById(patientId).populate('prescriptions');
+    if (!patient)
+      return next(new AppError('No Patient found with the provided ID.', 404));
+    const prescription = patient.prescriptions.find((pre) =>
+      pre._id.equals(prescriptionId),
+    );
+    if (!prescription)
+      return next(
+        new AppError('No Prescription found with the provided ID.', 404),
+      );
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfully retrieved prescription.',
+      data: {
+        prescription,
+      },
+    });
+  } catch (err) {
+    console.error('❌ Failed to get prescription:', err);
+    return next(
+      new AppError('Internal error. Failed to get prescription.', 500),
+    );
+  }
+});
+
+exports.updateOnePrescription = catchAsync(async (req, res, next) => {
+  const patientId = req.params.id;
+  if (!patientId) return next(new AppError('No patient ID provided.', 400));
+  const { prescriptionId } = req.params;
+  if (!prescriptionId)
+    return next(new AppError('No prescription ID provided.', 400));
+  try {
+    const patient = await Patient.findById(patientId).populate('prescriptions');
+    if (!patient)
+      return next(new AppError('No Patient found with the provided ID.', 404));
+    const prescriptionExists = patient.prescriptions.find((pre) =>
+      pre._id.equals(prescriptionId),
+    );
+    if (!prescriptionExists)
+      return next(
+        new AppError('This prescription does not exist for this patient.', 404),
+      );
+    const updatedPrescription = await Prescription.findByIdAndUpdate(
+      prescriptionId,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    if (!updatedPrescription)
+      return next(new AppError('Failed to update prescription.', 500));
+    res.status(200).json({
+      status: 'success',
+      message: 'Prescription updated successfully.',
+      data: {
+        prescription: updatedPrescription,
+      },
+    });
+  } catch (err) {
+    console.error('❌ Failed to update prescription:', err);
+    return next(
+      new AppError('Internal error. Failed to update prescription.', 500),
+    );
+  }
+});
+
+exports.deleteOnePrescription = catchAsync(async (req, res, next) => {
+  const patientId = req.params.id;
+  if (!patientId) return next(new AppError('No patient ID provided.', 400));
+
+  const { prescriptionId } = req.params;
+  if (!prescriptionId)
+    return next(new AppError('No prescription ID provided.', 400));
+
+  try {
+    const patient = await Patient.findById(patientId).populate('prescriptions');
+    if (!patient)
+      return next(new AppError('No Patient found with the provided ID.', 404));
+    const prescription = await Prescription.findById(prescriptionId);
+
+    if (!prescription)
+      return next(
+        new AppError('No Prescription found with the provided ID.', 404),
+      );
+
+    if (prescription.status === 'deleted')
+      return next(new AppError('Prescription is already deleted.', 400));
+    prescription.status = 'deleted';
+    await prescription.save();
+    // Remove the prescription from the patient's prescriptions array
+    patient.prescriptions = patient.prescriptions.filter(
+      (pre) => !pre._id.equals(prescription._id),
+    );
+    await patient.save();
+
+    res.status(204).json({
+      status: 'success',
+      message: 'Prescription deleted successfully.',
+      data: null,
+    });
+  } catch (err) {
+    console.error('❌ Failed to delete prescription:', err);
+    return next(
+      new AppError('Internal error. Failed to delete prescription.', 500),
+    );
+  }
+});

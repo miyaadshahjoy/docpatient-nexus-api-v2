@@ -4,6 +4,7 @@ const handlerFactory = require('../controllers/handlerFactory');
 const currentUserController = require('../controllers/currentUserController');
 const appointmentRouter = require('./appointmentRoutes');
 const paymentRouter = require('./paymentRoutes');
+const prescriptionRouter = require('./prescriptionRoutes');
 
 const {
   checkAccountEligibility,
@@ -21,6 +22,10 @@ router.use('/doctors', doctorRouter);
 // PATCH /patients/appointments/{appointmentId}/cancel-appointment
 // POST/patients/appointments/{appointmentId}/reviews
 router.use('/appointments', appointmentRouter);
+
+// GET /api/v2/patients/{patientId}/prescriptions
+// GET /api/v2/patients/{patientId}/prescriptions/{prescriptionId}
+router.use('/:id/prescriptions', prescriptionRouter);
 
 // POST/patients/payments/checkout-session
 router.use('/payments', paymentRouter);

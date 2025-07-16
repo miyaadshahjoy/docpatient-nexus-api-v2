@@ -478,7 +478,7 @@ module.exports = {
   },
   Prescription: {
     type: 'object',
-    required: ['doctor', 'patient', 'appointment', 'medications'],
+    required: ['doctor', 'appointment', 'medications'],
     properties: {
       doctor: {
         type: 'string',
