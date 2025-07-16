@@ -104,11 +104,15 @@ appointmentSchema.post('findOneAndUpdate', async function (doc) {
     const patient = await Patient.findById(doc.patient);
     const appointment = doc;
 
-    // Send email notifications to the doctor and patient
-    await sendAppointmentNotification(appointment, doctor, patient);
+    try {
+      // Send email notifications to the doctor and patient
+      await sendAppointmentNotification(appointment, doctor, patient);
 
-    // send appointment reminder to the doctor and patient
-    sendAppointmentReminder(appointment, doctor, patient);
+      // send appointment reminder to the doctor and patient
+      sendAppointmentReminder(appointment, doctor, patient);
+    } catch (err) {
+      console.error(err);
+    }
     // Check if the doctor's access token is expired
     if (new Date(doctor.calendar.accessTokenExpiry).getTime() < Date.now())
       await createNewAccessToken(doctor);

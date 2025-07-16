@@ -123,7 +123,7 @@ module.exports = {
         ],
         operationId: 'createCheckoutSession',
         description:
-          'Allows a patient to create a checkout session for an appointment. The patient must be `logged in` to use this route. Log in with a valid `jwt` token.',
+          'Allows a patient to create a checkout session for an appointment. The patient must be **logged in** to use this route. Log in with a valid *jwt* token.',
 
         requestBody: {
           required: true,
