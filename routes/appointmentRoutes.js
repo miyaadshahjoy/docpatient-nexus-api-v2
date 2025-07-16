@@ -11,7 +11,8 @@ const router = express.Router({ mergeParams: true });
 // POST/patients/appointments/{appointmentId}/reviews
 router.use('/:id/reviews', reviewRouter);
 
-// POST/doctors/appointments/:id/prescription
+// POST /api/v2/doctors/appointments/{appointmentId}/prescription
+// PATCH /api/v2/doctors/appointments/{appointmentId}/prescription
 router.use('/:id/prescription', prescriptionRouter);
 
 // Cancel Appointment
@@ -23,8 +24,8 @@ router.patch(
   appointmentController.cancelAppointment,
 );
 
-// Get all appointments
 router.get(
+  // Get all appointments
   '/',
   authController.protect(),
   authController.restrictTo('admin', 'appointment-manager'),
@@ -34,13 +35,21 @@ router.get(
 router
   .route('/:id')
   .get(
+    // Get appointment by id
     authController.protect(),
     authController.restrictTo('admin', 'appointment-manager'),
     handlerFactory.readOne(Appointment),
   )
   .patch(
+    // Update appointment by id
     authController.protect(),
     authController.restrictTo('admin', 'appointment-manager'),
     handlerFactory.updateOne(Appointment),
+  )
+  .delete(
+    // Delete appointment by ID
+    authController.protect(),
+    authController.restrictTo('admin', 'appointment-manager'),
+    handlerFactory.deleteOne(Appointment),
   );
 module.exports = router;

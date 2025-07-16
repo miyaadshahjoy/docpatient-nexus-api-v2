@@ -37,11 +37,13 @@ const prescriptionSchema = mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Doctor',
       required: [true, 'Doctor is required.'],
+      mutate: false,
     },
     appointment: {
       type: mongoose.Schema.ObjectId,
       ref: 'Appointment',
       required: [true, 'Appointment is required.'],
+      mutate: false,
     },
     notes: {
       type: String,

@@ -23,7 +23,23 @@ router.patch(
   reviewController.updateReview,
 );
 
-router.get('/', handlerFactory.readAll(Review));
+// Get all reviews for a Doctor
+// GET /api/v2/doctors/{doctorId}/reviews
+router.get(
+  '/',
+  authController.protect(),
+  authController.restrictTo('admin', 'review-manager'),
+  reviewController.getAllReviews,
+);
+
+// Get one single review by ID for a Doctor
+// GET /api/v2/doctors/{doctorId}/reviews/{reviewId}/
+router.get(
+  '/:reviewId',
+  authController.protect(),
+  authController.restrictTo('admin', 'review-manager'),
+  reviewController.getReview,
+);
 
 router.delete('/:id', handlerFactory.deleteOne(Review));
 

@@ -4,6 +4,7 @@ const superAdminDocs = require('../sources/routes/superAdminDocs');
 const adminDocs = require('../sources/routes/adminDocs');
 const doctorDocs = require('../sources/routes/doctorDocs');
 const patientDocs = require('../sources/routes/patientDocs');
+const appointmentDocs = require('../sources/routes/appointmentDocs');
 const prescriptionDocs = require('../sources/routes/prescriptionDocs');
 const reviewDocs = require('../sources/routes/reviewDocs');
 const paymentDocs = require('../sources/routes/paymentDocs');
@@ -473,8 +474,9 @@ swaggerSpec.paths = {
   ...adminDocs.paths,
   ...doctorDocs.paths,
   ...patientDocs.paths,
+  ...appointmentDocs.paths,
   ...prescriptionDocs.paths,
   ...reviewDocs.paths,
-  ...paymentDocs.paths, // Merging doctorDocs paths into swaggerSpec
+  ...paymentDocs.paths,
 };
 module.exports = swaggerSpec;

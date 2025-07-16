@@ -6,6 +6,7 @@ const appointmentController = require('../controllers/appointmentController');
 const appointmentRouter = require('./appointmentRoutes');
 const patientRecordRouter = require('./patientRecordRoutes');
 const calendarRouter = require('./calendarRoutes');
+const reviewRouter = require('./reviewRoutes');
 
 const {
   checkAccountEligibility,
@@ -14,6 +15,10 @@ const Doctor = require('../models/doctorModel');
 
 const router = express.Router({ mergeParams: true });
 
+// Get all reviews for a Doctor
+// GET /api/v2/doctors/{doctorId}/reviews
+router.use('/:id/reviews', reviewRouter);
+
 // POST /doctors/me/calendar
 router.use('/me/calendar', calendarRouter);
 
@@ -21,7 +26,8 @@ router.use('/me/calendar', calendarRouter);
 // PATCH/doctors/patients/{patientId}/records
 router.use('/patients/:id/records', patientRecordRouter);
 
-// POST/doctors/appointments/{patientId}/prescription
+// POST/doctors/appointments/{appointmentId}/prescription
+// PATCH /api/v2/doctors/appointments/{appointmentId}/prescription
 router.use('/appointments', appointmentRouter);
 
 // GET /api/v2/doctors/doctors-within/{distance}/center/[lat, lng]/unit/{unit}

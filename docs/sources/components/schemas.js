@@ -484,10 +484,6 @@ module.exports = {
         type: 'string',
         example: '682787f1fea3f44089558cd6',
       },
-      patient: {
-        type: 'string',
-        example: '682787f1fea3f44089558cd7',
-      },
       appointment: {
         type: 'string',
         example: '682787f1fea3f44089558cd8',
@@ -625,6 +621,7 @@ module.exports = {
       },
     },
   },
+
   /*
   {
   "doctor": "64fc8e27b12d5a9cfdcdef07",

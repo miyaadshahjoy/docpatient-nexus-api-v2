@@ -16,14 +16,14 @@ const DB_URI = process.env.DB_CONNECTION_STRING.replace(
 );
 // const DB_LOCAL_URI = process.env.DB_LOCAL_CONNECTION_STRING;
 mongoose.connect(DB_URI).then(() => {
-  console.log('DATABASE CONNECTED SUCCESSFULLY 😍');
+  console.log('🛢 DATABASE CONNECTED SUCCESSFULLY 😍');
 });
 
 const PORT = process.env.PORT || 3000;
 const app = require('./app');
 
 const server = app.listen(PORT, () => {
-  console.log(`🟢 SERVER IS RUNNING ON PORT: ${PORT}`);
+  console.log(`🌐 SERVER IS RUNNING ON PORT: ${PORT}`);
 });
 
 process.on('unhandledRejection', (err) => {

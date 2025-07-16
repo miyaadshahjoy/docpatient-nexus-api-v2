@@ -63,6 +63,7 @@ const adminSchema = new mongoose.Schema(
         'appointment-manager',
         'doctor-manager',
         'patient-manager',
+        'review-manager',
       ],
       default: ['admin'],
       // immutable: true,

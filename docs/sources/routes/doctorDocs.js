@@ -2419,7 +2419,7 @@ module.exports = {
           },
         ],
         description:
-          'Allows a doctor to **create a prescription** for an appointment. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A prescription can only be created if the appointment is in a state that allows prescribing (e.g., completed or ongoing). If the appointment does not exist or is not in the correct state, an error will be returned.',
+          'Allows a Doctor to **create a prescription** for an appointment. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A prescription can only be created if the appointment is in a state that allows prescribing (e.g., completed or ongoing). If the appointment does not exist or is not in the correct state, an error will be returned.',
         operationId: 'createPrescription',
         parameters: [
           {
@@ -2471,6 +2471,14 @@ module.exports = {
                     message: {
                       type: 'string',
                       example: 'Prescription created successfully.',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        prescription: {
+                          $ref: '#/components/schemas/Prescription',
+                        },
+                      },
                     },
                   },
                 },
@@ -2563,6 +2571,166 @@ module.exports = {
             },
           },
           500: responses.InternalServerError,
+        },
+      },
+      // Update a prescription for an appointment
+      patch: {
+        tags: ['Doctors'],
+        summary: 'Update a prescription for an appointment',
+        security: [{ bearerAuth: [] }],
+        description:
+          'Allows a Doctor to **update a prescription** for an appointment. Requires a valid *JWT* token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing prescription. If the appointment does not have a prescription, use the **/doctors/appointments/{appointmentId}/prescription/** route to create one.',
+        operationId: 'updatePrescription',
+        parameters: [
+          {
+            name: 'appointmentId',
+            in: 'path',
+            description: 'ID of the appointment to update a prescription for.',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['medications'],
+                properties: {
+                  notes: {
+                    type: 'string',
+                    example:
+                      'Patient advised to continue medications for 7 days and return for follow-up if symptoms persist.',
+                  },
+                  medications: {
+                    type: 'array',
+                    items: {
+                      $ref: '#/components/schemas/Medication',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Prescription updated successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Prescription updated successfully.',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        prescription: {
+                          $ref: '#/components/schemas/Prescription',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Bad request. Possibly due to invalid input.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No prescription exists for this appointment.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Doctors can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You are not authorized to access this route. Please log in.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Doctors can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have the permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No appointment found with the provided ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Appointment not found.',
+                    },
+                  },
+                },
+              },
+            },
+
+            500: responses.InternalServerError,
+          },
         },
       },
     },

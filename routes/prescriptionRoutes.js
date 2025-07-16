@@ -9,7 +9,16 @@ const router = express.Router({ mergeParams: true });
 router.post(
   '/',
   authController.protect(),
+  authController.restrictTo('doctor'),
   prescriptionController.createPrescription,
+);
+
+// PATCH /api/v2/doctors/appointments/{appointmentId}/prescription/
+router.patch(
+  '/',
+  authController.protect(),
+  authController.restrictTo('doctor'),
+  prescriptionController.updatePrescription,
 );
 
 module.exports = router;
