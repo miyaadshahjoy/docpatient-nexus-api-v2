@@ -169,8 +169,7 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
     if (!doctor)
       return next(new AppError('No doctor found with the provided ID.', 404));
     const reviews = await Review.find({ doctor: doctor._id });
-    if (reviews.length === 0)
-      return next(new AppError('No reviews found for this Doctor.', 404));
+
     res.status(200).json({
       status: 'success',
       message: 'Successfully retrieved all reviews for the Doctor.',
@@ -214,6 +213,78 @@ exports.getReview = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         'Something went wrong while retrieving review. Please try again later.',
+        500,
+      ),
+    );
+  }
+});
+
+exports.updateOneReview = catchAsync(async (req, res, next) => {
+  const doctorId = req.params.id;
+  if (!doctorId) return next(new AppError('No doctor ID provided.', 400));
+  const { reviewId } = req.params;
+  if (!reviewId) return next(new AppError('No review ID provided.', 400));
+
+  try {
+    const allowedFields = ['isEdited', 'status'];
+    const filteredBody = {};
+    Object.keys(req.body).forEach((field) => {
+      if (allowedFields.includes(field)) filteredBody[field] = req.body[field];
+    });
+
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor)
+      return next(new AppError('No doctor found with the provided ID.', 404));
+    const updatedReview = await Review.findOneAndUpdate(
+      { _id: reviewId, doctor: doctor._id },
+      filteredBody,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    if (!updatedReview)
+      return next(new AppError('No review found with provided ID.', 404));
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfully updated the review.',
+      data: {
+        review: updatedReview,
+      },
+    });
+  } catch (err) {
+    console.error(`❌ Failed to update review: ${reviewId}`, err);
+    return next(
+      new AppError(
+        'Something went wrong while updating review. Please try again later.',
+        500,
+      ),
+    );
+  }
+});
+
+exports.deleteOneReview = catchAsync(async (req, res, next) => {
+  const doctorId = req.params.id;
+  if (!doctorId) return next(new AppError('No doctor ID provided.', 400));
+  const { reviewId } = req.params;
+  if (!reviewId) return next(new AppError('No review ID provided.', 400));
+
+  try {
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor)
+      return next(new AppError('No doctor found with the provided ID.', 404));
+    const deletedReview = await Review.findOneAndDelete({
+      _id: reviewId,
+      doctor: doctor._id,
+    });
+    if (!deletedReview)
+      return next(new AppError('No review found with provided ID.', 404));
+    res.status(204).send();
+  } catch (err) {
+    console.error(`❌ Failed to delete review: ${reviewId}`, err);
+    return next(
+      new AppError(
+        'Something went wrong while deleting review. Please try again later.',
         500,
       ),
     );

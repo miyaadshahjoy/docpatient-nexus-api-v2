@@ -23,6 +23,8 @@ router.patch(
   reviewController.updateReview,
 );
 
+router.delete('/:id', handlerFactory.deleteOne(Review));
+
 // Get all reviews for a Doctor
 // GET /api/v2/doctors/{doctorId}/reviews
 router.get(
@@ -41,6 +43,21 @@ router.get(
   reviewController.getReview,
 );
 
-router.delete('/:id', handlerFactory.deleteOne(Review));
+// Update one signle review for a Doctor
+// PATCH /api/v2/doctrs/{doctorId}/reviews/{reviewId}
+router.patch(
+  '/:reviewId',
+  authController.protect(),
+  authController.restrictTo('admin', 'review-manager'),
+  reviewController.updateOneReview,
+);
+// Delete one single review for a Doctor
+// DELETE /api/v2/doctrs/{doctorId}/reviews/{reviewId}
+router.delete(
+  '/:reviewId',
+  authController.protect(),
+  authController.restrictTo('admin', 'review-manager'),
+  reviewController.deleteOneReview,
+);
 
 module.exports = router;
