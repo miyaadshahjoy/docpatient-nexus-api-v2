@@ -2,14 +2,24 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
   // 1) Create a transporter
-  const transporter = nodemailer.createTransport({
-    host: '127.0.0.1',
-    port: 2025,
-    secure: false,
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
+  const transporter =
+    process.env.NODE_ENV === 'production'
+      ? nodemailer.createTransport({
+          host: process.env.MAILTRAP_HOST,
+          port: process.env.MAILTRAP_PORT,
+          auth: {
+            user: process.env.MAILTRAP_USERNAME,
+            pass: process.env.MAILTRAP_PASSWORD,
+          },
+        })
+      : nodemailer.createTransport({
+          host: '127.0.0.1',
+          port: 2025,
+          secure: false,
+          tls: {
+            rejectUnauthorized: false,
+          },
+        });
   // 2) Define the email options
   const emailOptions = {
     from: 'DocPatient Nexus" <no-reply@docpatientnexus.com>',
