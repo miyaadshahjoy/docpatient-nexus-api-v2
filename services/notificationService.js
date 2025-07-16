@@ -54,7 +54,7 @@ const sendNotification = async ({
     });
     return notification;
   } catch (error) {
-    console.error('❌ Failed to create notification:', error.message);
+    console.error('❌ Failed to create notification:', error.message, error);
     throw new AppError('Internal error. Failed to create notification.', 500);
   }
 };
@@ -92,7 +92,11 @@ const sendAppointmentNotification = async (appointment, doctor, patient) => {
       },
     });
   } catch (err) {
-    console.error('❌ Failed to send an email to the patient:', err.message);
+    console.error(
+      '❌ Failed to send an email to the Patient:',
+      err.message,
+      err,
+    );
   }
   try {
     const html = appointmentNotificationTemplate({
@@ -116,7 +120,11 @@ const sendAppointmentNotification = async (appointment, doctor, patient) => {
       },
     });
   } catch (err) {
-    console.error('❌ Failed to send an email to the patient:', err.message);
+    console.error(
+      '❌ Failed to send an email to the Doctor:',
+      err.message,
+      err,
+    );
   }
 };
 
@@ -160,6 +168,7 @@ const sendAppointmentNotificationToManager = async (
     console.error(
       '❌ Failed to send an email to the appointment-manager:',
       err.message,
+      err,
     );
   }
 };
