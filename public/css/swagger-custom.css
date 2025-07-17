@@ -44,13 +44,14 @@
 }
 
 .swagger-ui table {
-  border: 3px solid #fa99ae !important;
-  border-collapse: collapse !important;
-  margin-top: 20px !important;
+  /* border: 3px solid #fff !important; */
+  /* border-collapse: collapse !important; */
+  text-align: left !important;
+  margin-bottom: 20px !important;
 }
 .swagger-ui td,
 .swagger-ui th {
-  border: 2px solid #fa99ae !important;
+  /* border: 3px solid #fff !important; */
   padding: 10px 20px !important;
 }
 .swagger-ui td,
