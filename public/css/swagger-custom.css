@@ -42,6 +42,17 @@
 .swagger-ui ul li {
   font-size: 1rem !important;
 }
+
+.swagger-ui table {
+  border: 3px solid #fa99ae !important;
+  border-collapse: collapse !important;
+  margin-top: 20px !important;
+}
+.swagger-ui td,
+.swagger-ui th {
+  border: 2px solid #fa99ae !important;
+  padding: 10px 20px !important;
+}
 .swagger-ui td,
 .swagger-ui p {
   font-size: 1rem !important;

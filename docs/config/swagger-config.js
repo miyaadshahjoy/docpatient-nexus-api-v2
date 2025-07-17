@@ -196,27 +196,88 @@ const options = {
 ---
 
 ## 🛠️ Tech Stack & Tools
-
-| Technology          | Usage/Purpose                                  |
-| ------------------- | ---------------------------------------------- |
-| **Node.js**         | JavaScript runtime for the backend server      |
-| **Express.js**      | Web framework for REST APIs                    |
-| **MongoDB**         | NoSQL database for scalable data storage       |
-| **Mongoose**        | ODM for MongoDB, schema validation, population |
-| **npm**             | Package manager for Node.js                    |
-| **dotenv**          | Environment variable management                |
-| **JWT**             | Authentication & access control                |
-| **bcrypt**          | Secure password hashing                        |
-| **crypto**          | Encryption and decryption of sensitive data    |
-| **multer**          | Multi-part/form-data file uploads              |
-| **BullMQ**          | Queue system for background jobs & reminders   |
-| **Redis**           | In-memory store for BullMQ                     |
-| **Stripe**          | Payment processing & webhook handling          |
-| **Nodemailer**      | Sending transactional emails                   |
-| **mailpit**         | Email testing and debugging                    |
-| **Swagger (JSDoc)** | API documentation                              |
-| **CORS**            | Cross-Origin Resource Sharing setup            |
-| **Postman**         | API testing and debugging                      |
+<table>
+  <tr>
+    <th>Technology</th>
+    <th>Usage/Purpose</th>
+  </tr>
+  <tr>
+    <td>Node.js</td>
+    <td>JavaScript runtime for the backend server</td>
+  </tr>
+  <tr>
+    <td>Express.js</td>
+    <td>Web framework for REST APIs</td>
+  </tr>
+  <tr>
+    <td>MongoDB</td>
+    <td>NoSQL database for scalable data storage</td>
+  </tr>
+  <tr>
+    <td>Mongoose</td>
+    <td>ODM for MongoDB, schema validation, population</td>
+  </tr>
+  <tr>
+    <td>npm</td>
+    <td>Package manager for Node.js</td>
+  </tr>
+  <tr>
+    <td>dotenv</td>
+    <td>Environment variable management</td>
+  </tr>
+  <tr>
+    <td>JWT</td>
+    <td>Authentication & access control</td>
+  </tr>
+  <tr>
+    <td>bcrypt</td>
+    <td>Secure password hashing</td>
+  </tr>
+  <tr>
+    <td>crypto</td>
+    <td>Encryption and decryption of sensitive data</td>
+  </tr>
+  <tr>
+    <td>multer</td>
+    <td>Multi-part/form-data file uploads</td>
+  </tr>
+  <tr>
+    <td>BullMQ</td>
+    <td>Queue system for background jobs & reminders</td>
+  </tr>
+  <tr>
+    <td>Redis</td>
+    <td>In-memory store for BullMQ</td>
+  </tr>
+  <tr>
+    <td>Stripe</td>
+    <td>Payment processing & webhook handling</td>
+  </tr>
+  <tr>
+    <td>Nodemailer</td>
+    <td>Sending transactional emails</td>
+  </tr>
+  <tr>
+    <td>mailpit</td>
+    <td>Email testing and debugging in local dev</td>
+  </tr>
+  <tr>
+    <td>mailtrap</td>
+    <td>Email testing and debugging in production</td>
+  </tr>
+  <tr>
+    <td>Swagger(JS Doc)</td>
+    <td>API documentation </td>
+  </tr>
+  <tr>
+    <td>CORS</td>
+    <td>Cross-Origin Resource Sharing setup</td>
+  </tr>
+  <tr>
+    <td>Postmant</td>
+    <td>API testing and debugging</td>
+  </tr>
+</table>
 
 ---
 
@@ -275,6 +336,40 @@ docker run --rm -p 8025:8025 -p 2025:2025 axllent/mailpit --smtp 0.0.0.0:2025 --
 
 - SMTP available at: http://localhost:2025
 - Web UI: http://localhost:8025 (This is Mailpit's web UI where you can view, read, and inspect all outgoing emails.)
+
+---
+
+### 🛢 Redis setup for BullMQ
+
+- Redis (Remote Dictionary Server) is a fast, open-source, in-memory key-value data store that's often used as a database, cache, and message broker.
+- Redis is used as a queue for sending email notifications and reminders in this application.
+- This project uses **BullMQ** for job scheduling and background processing, which requires a **Redis** server to function.
+- Go to [https://cloud.redis.io/#/databases](https://cloud.redis.io/#/databases) to create a free Redis database.
+- Install Redis<br>
+<code>npm install ioredis</code>
+
+- Configure Redis connection in your **.env** file:<br>
+<code>
+REDIS_HOST=YOUR_REDIS_HOST <br>
+REDIS_PORT=YOUR_REDIS_PORT <br>
+REDIS_USERNAME=YOUR_REDIS_USERNAME (default: default) <br>
+REDIS_PASSWORD=YOUR_REDIS_PASSWORD
+</code>
+
+- Create a Redis client in your application:
+  <pre> 
+    const { Redis } = require('ioredis');
+    const redisClient = new Redis({
+      username: process.env.REDIS_USERNAME,
+      password: process.env.REDIS_PASSWORD,
+      maxRetriesPerRequest: null,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+    });
+  </pre>
+
+- Go to the [Redis documentation](https://redis.io/documentation) for more information on how to set up and use Redis.
+
 
 ---
 
