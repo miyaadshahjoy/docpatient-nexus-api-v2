@@ -3,6 +3,9 @@
 
 /* @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap'); */
 
+/* source sans 3 font  */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 @font-face {
   font-family: 'Operator Mono';
   src: url('./assets/fonts/operator-mono-bold.woff2');
@@ -20,8 +23,13 @@
   padding: 20px 10px;
   border-right: 1px solid #e8edf1;
   z-index: 9999;
-  font-family: 'Poppins', sans-serif;
+  /* font-family: 'Poppins', sans-serif; */
+  font-family: 'Source Sans 3', sans-serif;
+
   /* font-family: 'Lato', sans-serif; */
+
+  word-spacing: 1.5px !important;
+  letter-spacing: 0.5px !important;
 }
 #sidebar .topbar {
   display: flex;
@@ -42,7 +50,9 @@
 }
 
 #sidebar .sectionTitle {
-  font-family: 'Poppins', sans-serif;
+  /* font-family: 'Poppins', sans-serif; */
+  font-family: 'Source Sans 3', sans-serif;
+
   /* font-family: 'Lato', sans-serif; */
   color: #1e1e1e;
   background-color: #005b6f15;
