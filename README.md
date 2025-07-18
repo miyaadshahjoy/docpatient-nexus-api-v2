@@ -1,4 +1,4 @@
-# 🩺 DocPatient Nexus API
+# 🥼 DocPatient Nexus API
 
 **DocPatient Nexus** is a modern, scalable, and secure REST API that bridges the gap between patients and healthcare providers through an intelligent, role-based medical appointment management system. Whether you're running a clinic, a telehealth startup, or a full-blown hospital system, this backend is designed to scale with your needs.
 
