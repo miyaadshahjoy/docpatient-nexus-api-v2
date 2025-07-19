@@ -49,7 +49,35 @@ const doctorSchema = new mongoose.Schema(
       required: [true, 'Gender is required'],
       trim: true,
     },
+    location: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point',
+      },
+      coordinates: {
+        type: [Number],
+        required: [true, 'Coordinates are required'],
+        validate: {
+          validator: function (coords) {
+            return coords.length === 2; // Ensure it's a pair of coordinates
+          },
+          message: 'Coordinates must be an array of two numbers',
+        },
+      },
+      city: {
+        type: String,
+        required: [true, 'City is required'],
+        trim: true,
+      },
+      address: {
+        type: String,
+        required: [true, 'Address is required'],
+        trim: true,
+      },
+    },
     profilePhoto: String,
+    calendar: calendarSchema,
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -98,51 +126,6 @@ const doctorSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-    experience: {
-      type: Number,
-      required: [true, 'Experience (in years) is required'],
-    },
-
-    averageRating: {
-      type: Number,
-      default: 4.5,
-      min: [1, 'Average rating must be at least 1'],
-      max: [5, 'Average rating must not exceed 5'],
-    },
-    numRating: {
-      type: Number,
-      default: 0,
-    },
-    // location: required
-
-    location: {
-      type: {
-        type: String,
-        enum: ['Point'],
-        default: 'Point',
-      },
-      coordinates: {
-        type: [Number],
-        required: [true, 'Coordinates are required'],
-        validate: {
-          validator: function (coords) {
-            return coords.length === 2; // Ensure it's a pair of coordinates
-          },
-          message: 'Coordinates must be an array of two numbers',
-        },
-      },
-      city: {
-        type: String,
-        required: [true, 'City is required'],
-        trim: true,
-      },
-      address: {
-        type: String,
-        required: [true, 'Address is required'],
-        trim: true,
-      },
-    },
-
     visitingSchedule: {
       type: [
         {
@@ -198,17 +181,44 @@ const doctorSchema = new mongoose.Schema(
       },
       required: [true, 'Visiting schedule is required'],
     },
-
     appointmentDuration: {
       type: Number,
       default: 60, // in minutes
     },
-    calendar: calendarSchema,
+    experience: {
+      type: Number,
+      required: [true, 'Experience (in years) is required'],
+    },
+
+    averageRating: {
+      type: Number,
+      default: 4.5,
+      min: [1, 'Average rating must be at least 1'],
+      max: [5, 'Average rating must not exceed 5'],
+    },
+    numRating: {
+      type: Number,
+      default: 0,
+    },
+
     consultationFees: {
       type: Number,
       required: [true, 'Consultation fee is required.'],
     },
 
+    role: {
+      type: String,
+      default: 'doctor',
+      immutable: true,
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
     status: {
       type: String,
       enum: {
@@ -218,29 +228,13 @@ const doctorSchema = new mongoose.Schema(
       default: 'pending',
       trim: true,
     },
-    role: {
-      type: String,
-      default: 'doctor',
-      immutable: true,
+    deletedBy: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Admin',
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    emailVerified: {
-      type: Boolean,
-      default: false,
-    },
-    /////////////////////////////////////////////
+    deletedAt: Date,
+    ///////////////////////////////////////////// Non-selected fields
     passwordChangedAt: {
-      type: Date,
-    },
-    passwordResetToken: {
-      type: String,
-      select: false,
-    },
-
-    passwordResetExpires: {
       type: Date,
       select: false,
     },
@@ -249,6 +243,15 @@ const doctorSchema = new mongoose.Schema(
       select: false,
     },
     emailVerificationExpires: {
+      type: Date,
+      select: false,
+    },
+    passwordResetToken: {
+      type: String,
+      select: false,
+    },
+
+    passwordResetExpires: {
       type: Date,
       select: false,
     },

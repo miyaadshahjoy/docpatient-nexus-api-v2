@@ -36,7 +36,10 @@ const adminSchema = new mongoose.Schema(
       required: [true, 'Gender is required'],
       trim: true,
     },
-    profilePhoto: String,
+    profilePhoto: {
+      type: String,
+      trim: true,
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -60,13 +63,23 @@ const adminSchema = new mongoose.Schema(
       enum: [
         'admin',
         'super-admin',
-        'appointment-manager',
         'doctor-manager',
         'patient-manager',
+        'appointment-manager',
         'review-manager',
+        'record-manager',
+        'notification-manager',
       ],
       default: ['admin'],
       // immutable: true,
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
     },
     status: {
       type: String,
@@ -77,32 +90,32 @@ const adminSchema = new mongoose.Schema(
       default: 'pending',
       trim: true,
     },
-    emailVerified: {
-      type: Boolean,
-      default: false,
+    deletedBy: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Admin',
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
+    deletedAt: Date,
 
     ///////////////////////////////////////////
+    // Non-selected fields
     passwordChangedAt: {
       type: Date,
+      select: false,
+    },
+
+    emailVerificationToken: {
+      type: String,
+      select: false,
+    },
+    emailVerificationExpires: {
+      type: Date,
+      select: false,
     },
     passwordResetToken: {
       type: String,
       select: false,
     },
     passwordResetExpires: {
-      type: Date,
-      select: false,
-    },
-    emailVerificationToken: {
-      type: String,
-      select: false,
-    },
-    emailVerificationExpires: {
       type: Date,
       select: false,
     },
@@ -116,7 +129,8 @@ addInstanceMethods(adminSchema);
 
 adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  if (this.isNew) this.passwordChangedAt = Date.now() - 1000;
+  if (this.isNew) this.passwordChangedAt = Date.now() - 1000; // this is to prevent token issued right before saving from being invalidated due to async delay
+
   // Encrypt the password with bcrypt
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
