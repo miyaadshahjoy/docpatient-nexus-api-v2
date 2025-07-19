@@ -84,8 +84,8 @@ const adminSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: ['active', 'pending', 'removed'],
-        message: 'Status must be either active, pending, or removed.',
+        values: ['active', 'pending', 'deleted'],
+        message: 'Status must be either active, pending, or deleted.',
       },
       default: 'pending',
       trim: true,
@@ -140,7 +140,7 @@ adminSchema.pre('save', async function (next) {
 
 adminSchema.pre(/^find/, function (next) {
   // this points to the current query
-  this.find({ status: { $ne: 'removed' } });
+  this.find({ status: { $ne: 'deleted' } });
   next();
 });
 

@@ -4,7 +4,10 @@ const bcrypt = require('bcrypt');
 const { addInstanceMethods } = require('../utils/schemaUtil');
 
 const calendarSchema = new mongoose.Schema({
-  calendarUID: String,
+  calendarUID: {
+    type: String,
+    required: [true, 'Calendar UID is required.'],
+  },
   accessToken: {
     type: String,
     trim: true,
@@ -58,12 +61,19 @@ const doctorSchema = new mongoose.Schema(
       coordinates: {
         type: [Number],
         required: [true, 'Coordinates are required'],
-        validate: {
-          validator: function (coords) {
-            return coords.length === 2; // Ensure it's a pair of coordinates
+        validate: [
+          {
+            validator: function (coords) {
+              return coords.length === 2; // Ensure it's a pair of coordinates
+            },
+            message: 'Coordinates must be an array of two numbers',
           },
-          message: 'Coordinates must be an array of two numbers',
-        },
+          {
+            validator: function ([lat, lng]) {
+              return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+            },
+          },
+        ],
       },
       city: {
         type: String,
@@ -76,7 +86,10 @@ const doctorSchema = new mongoose.Schema(
         trim: true,
       },
     },
-    profilePhoto: String,
+    profilePhoto: {
+      type: String,
+      trim: true,
+    },
     calendar: calendarSchema,
     password: {
       type: String,
@@ -151,10 +164,18 @@ const doctorSchema = new mongoose.Schema(
             from: {
               type: String, //HH:MM
               required: true,
+              validate: {
+                validator: (str) => /^(0\d|1\d|2[0-3]):([0-5]\d)$/.test(str),
+                message: '"from" time must be in HH:MM format.',
+              },
             },
             to: {
               type: String, //HH:MM
               required: true,
+              validate: {
+                validator: (str) => /^(0\d|1\d|2[0-3]):([0-5]\d)$/.test(str),
+                message: '"to" time must be in "HH:MM" format.',
+              },
             },
           },
         },
@@ -222,8 +243,8 @@ const doctorSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: ['active', 'pending', 'removed'],
-        message: 'Status must be either active, pending, or removed.',
+        values: ['active', 'pending', 'deleted'],
+        message: 'Status must be either active, pending, or deleted.',
       },
       default: 'pending',
       trim: true,
@@ -277,7 +298,7 @@ doctorSchema.pre('save', async function (next) {
 
 doctorSchema.pre(/^find/, function (next) {
   // this points to the current query
-  this.find({ status: { $ne: 'removed' } });
+  this.find({ status: { $ne: 'deleted' } });
   next();
 });
 

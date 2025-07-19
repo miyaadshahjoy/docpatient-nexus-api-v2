@@ -36,7 +36,36 @@ const patientSchema = new mongoose.Schema(
       required: [true, 'Gender is required'],
       trim: true,
     },
-    profilePhoto: String,
+    dateOfBirth: {
+      type: Date,
+      required: [true, 'Date of birth is required'],
+    },
+    location: {
+      type: {
+        city: {
+          type: String,
+          trim: true,
+        },
+        address: {
+          type: String,
+          trim: true,
+        },
+      },
+      required: [true, 'Location is required.'],
+    },
+    bloodGroup: {
+      type: String,
+      enum: {
+        values: ['A+', 'B+', 'O+', 'A-', 'B-', 'O-', 'AB+', 'AB-'],
+        message:
+          'Blood group must be one of these: A+, B+, O+, A-, B-, O-, AB+, AB-',
+      },
+      required: [true, 'Blood group is required'],
+    },
+    profilePhoto: {
+      type: String,
+      trim: true,
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -61,19 +90,6 @@ const patientSchema = new mongoose.Schema(
       },
       select: false,
     },
-    bloodGroup: {
-      type: String,
-      enum: {
-        values: ['A+', 'B+', 'O+', 'A-', 'B-', 'O-', 'AB+', 'AB-'],
-        message:
-          'Blood group must be one of these: A+, B+, O+, A-, B-, O-, AB+, AB-',
-      },
-      required: [true, 'Blood group is required'],
-    },
-    dateOfBirth: {
-      type: Date,
-      required: [true, 'Date of birth is required'],
-    },
     medicalHistory: [
       {
         type: String,
@@ -92,19 +108,6 @@ const patientSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-    location: {
-      type: {
-        city: {
-          type: String,
-          trim: true,
-        },
-        address: {
-          type: String,
-          trim: true,
-        },
-      },
-      required: [true, 'Location is required.'],
-    },
     // Child referencing
     prescriptions: [
       {
@@ -116,38 +119,47 @@ const patientSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'PatientRecord',
     },
-    status: {
-      type: String,
-      enum: {
-        values: ['active', 'pending', 'removed'],
-        message: 'Status must be either active, pending, or removed.',
-      },
-      default: 'pending',
-      trim: true,
-    },
     role: {
       type: String,
       default: 'patient',
       immutable: true,
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
     emailVerified: {
       type: Boolean,
       default: false,
-    }, //////////////////////////////////////////
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      enum: {
+        values: ['active', 'pending', 'deleted'],
+        message: 'Status must be either active, pending, or deleted.',
+      },
+      default: 'pending',
+      trim: true,
+    },
+    //////////////////////////////////////////
+    // Non-selected fields
     passwordChangedAt: {
       type: Date,
+      select: false,
     },
-    passwordResetToken: String,
-    passwordResetExpires: Date,
     emailVerificationToken: {
       type: String,
       select: false,
     },
     emailVerificationExpires: {
+      type: Date,
+      select: false,
+    },
+    passwordResetToken: {
+      type: String,
+      select: false,
+    },
+    passwordResetExpires: {
       type: Date,
       select: false,
     },
@@ -168,6 +180,8 @@ patientSchema.virtual('age').get(function () {
   );
 });
 
+// Indexes
+patientSchema.index({ email: 1 });
 // instance methods
 addInstanceMethods(patientSchema);
 
@@ -184,7 +198,7 @@ patientSchema.pre('save', async function (next) {
 
 patientSchema.pre(/^find/, function (next) {
   // this points to the current query
-  this.find({ status: { $ne: 'removed' } });
+  this.find({ status: { $ne: 'deleted' } });
   next();
 });
 
