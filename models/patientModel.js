@@ -96,12 +96,6 @@ const patientSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-    allergies: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
     currentMedications: [
       {
         type: String,
@@ -141,6 +135,11 @@ const patientSchema = new mongoose.Schema(
       default: 'pending',
       trim: true,
     },
+    deletedBy: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Admin',
+    },
+    deletedAt: Date,
     //////////////////////////////////////////
     // Non-selected fields
     passwordChangedAt: {
@@ -188,7 +187,8 @@ addInstanceMethods(patientSchema);
 // middlewares
 patientSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  if (this.isNew) this.passwordChangedAt = Date.now() - 1000;
+  if (this.isNew) this.passwordChangedAt = Date.now() - 1000; // this is to prevent token issued right before saving from being invalidated due to async delay
+
   // Encrypt the password with bcrypt
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;

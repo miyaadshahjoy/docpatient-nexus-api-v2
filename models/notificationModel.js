@@ -16,7 +16,7 @@ const notificationSchema = new mongoose.Schema(
     type: {
       type: String,
       required: [true, 'Notification type is required.'],
-      enum: ['appointment', 'reminder', 'system', 'medication', 'custom'],
+      enum: ['appointment', 'medication', 'system', 'custom'],
     },
     title: {
       type: String,
@@ -36,15 +36,33 @@ const notificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    scheduledOn: Date,
     sentAt: {
       type: Date,
       default: Date.now,
     },
-    scheduledFor: Date,
+    deliveryStatus: {
+      type: 'String',
+      enum: ['pending', 'sent', 'failed'],
+      default: 'pending',
+    },
     channel: {
       type: [String],
       enum: ['email', 'sms', 'in-app'],
       default: ['email'],
+      validate: {
+        validator: function (channel) {
+          return (
+            Array.isArray(channel) && new Set(channel).size === channel.length
+          );
+        },
+        message: 'Channels must be unique.',
+      },
+    },
+    category: {
+      type: String,
+      enum: ['reminder', 'alert', 'update', 'system'],
+      default: 'update',
     },
   },
   { timestamps: true },

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Doctor = require('./doctorModel');
 
+const DEFAULT_RATING = 4.5;
 const reviewSchema = mongoose.Schema(
   {
     doctor: {
@@ -34,7 +35,7 @@ const reviewSchema = mongoose.Schema(
     reply: {
       type: String,
       trim: true,
-      maxlength: [500, 'Reply must not exceed 500 characters.'],
+      maxlength: [100, 'Reply must not exceed 100 characters.'],
       default: '',
     },
     isEdited: {
@@ -59,6 +60,7 @@ reviewSchema.statics.calcAverageRating = async function (doctorId, session) {
     {
       $match: {
         doctor: doctorId,
+        status: 'visible',
       },
     },
     {
@@ -69,6 +71,7 @@ reviewSchema.statics.calcAverageRating = async function (doctorId, session) {
       },
     },
   ])
+    .option({ lean: true })
     .session(session) // Using session for transaction support
     .exec(); // Using exec() to ensure the query is executed
 
@@ -80,7 +83,7 @@ reviewSchema.statics.calcAverageRating = async function (doctorId, session) {
       return;
     }
     if (!aggregatedObj) {
-      doctor.averageRating = 4.5; // default rating
+      doctor.averageRating = DEFAULT_RATING; // default rating
       doctor.numRating = 0;
       console.error('❌ No reviews found for the doctor with ID:', doctorId);
     } else {

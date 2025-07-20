@@ -2,13 +2,6 @@ const mongoose = require('mongoose');
 
 const patientRecordSchema = new mongoose.Schema(
   {
-    // Parent referencing is changed to child referencing
-    // patient: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: 'Patient',
-    //   unique: true,
-    //   required: [true, 'Patient is required.'],
-    // },
     allergies: [
       {
         type: String,
@@ -57,10 +50,22 @@ const patientRecordSchema = new mongoose.Schema(
           trim: true,
           required: [true, 'Report title is required.'],
         },
+        description: {
+          type: String,
+          trim: true,
+          required: [true, 'Report description is required.'],
+        },
         fileUrl: {
           type: String,
           trim: true,
           required: [true, 'File URL is required in a report.'],
+          validate: {
+            validator: function (str) {
+              return /\.(pdf|jpg|jpeg|png)$/i.test(str);
+            },
+            message:
+              'Invalid file type. Only JPEG, PNG, and PDF files are allowed.',
+          },
         },
         issuedBy: {
           type: String,
@@ -76,6 +81,9 @@ const patientRecordSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+patientRecordSchema.index({ 'lifestyle.exercise': 1 });
+patientRecordSchema.index({ 'lifestyle.badHabits': 1 });
 
 const PatientRecord = mongoose.model('PatientRecord', patientRecordSchema);
 
