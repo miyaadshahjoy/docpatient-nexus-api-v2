@@ -7,8 +7,113 @@ module.exports = {
       post: {
         tags: ['Doctors'],
         summary: 'Register a new Doctor account.',
-        description:
-          'Allows a new Doctor to register by providing necessary credentials and profile details. After registration, you will have to **verify** your **email** through the **/api/v2/doctors/email-verification** endpoint. Initially your account will be in a **pending** state. After **verification** or **approval**(by the Admin), your account will be **active** and you can log in.',
+        description: `
+Allows a new Doctor to register by providing necessary credentials and profile details.After registration, you will have to **verify** your **email** through the **api/v2/doctors/email-verification** endpoint.Initially your account will be in a **pending** state.After **verification** or **approval** (by the Admin), your account will be **active** and you can log in.<br><br>
+
+## Request Body
+- **fullName**: *string*, *mandatory*
+  - The full name of the Doctor.
+  - Example: "Zarif Hossain"
+
+- **email**: *string*, *mandatory*
+  - The email address of the Doctor.
+  - Format: email
+  - Example: "zarif.hossain@example.com"
+
+- **phone**: *string*, *mandatory*
+  - The phone number of the Doctor.
+  - Format: phone
+  - Example: "+880 1720 111234"
+
+- **gender**: *string*, *mandatory*
+  - The gender of the Doctor.
+  - Allowed values: **male**, **female**, **others**, **prefer not to say**
+  - Example: "male"
+
+- **location**: *object*, *mandatory*
+  - The location of the Doctor.
+  - Format: location
+  - Example:
+    \`\`\`json
+    {
+      "type": "Point",
+      "coordinates": [90.389, 23.746],
+      "city": "Dhaka",
+      "address": "Green Road, Dhaka"
+    }
+    \`\`\`
+
+- **profilePhoto**: *string*
+  - The profile photo of the Doctor.
+  - Format: url
+  - Example: "https://cdn.example.com/images/zarif.jpg"
+
+- **password**: *string*, *mandatory*
+  - The password of the Doctor.
+  - Format: password
+  - Example: "pass1234"
+
+- **passwordConfirm**: *string*, *mandatory*
+  - The confirmation of the password of the Doctor.
+  - Format: password
+  - Example: "pass1234"
+
+- **education**: *array of objects*, *mandatory*
+  - The educational background of the Doctor.
+  - Format: education
+  - Example:
+    \`\`\`json
+    [
+      {
+        "degree": "MBBS",
+        "institute": "Dhaka Medical College"
+      },
+      {
+        "degree": "FCPS",
+        "institute": "BCPS"
+      },
+      {
+        "degree": "MD",
+        "institute": "Dhaka Medical College"
+      }
+    ]
+    \`\`\`
+
+- **specialization**: *array of strings*, *mandatory*
+  - The specialization of the Doctor.
+  - Example: ["Cardiology", "Internal Medicine"]
+
+- **visitingSchedule**: *array of objects*, *mandatory*
+  - The visiting schedule of the Doctor.
+  - Format: visitingSchedule
+  - Example:
+    \`\`\`json
+    [
+      "monday": {
+        "from": "10:00",
+        "to": "14:00"
+      },
+      "wednesday": {
+        "from": "15:00",
+        "to": "19:00"
+      }
+    ]
+    \`\`\`
+
+- **appointmentDuration**: *number*
+  - The duration of an appointment in minutes.
+  - Default: 60
+  - Example: 60
+
+- **experience**: *number*, *mandatory*
+  - The experience of the Doctor in years.
+  - Example: 5
+
+- **consultationFees**: *number*, *mandatory*
+  - The consultation fees of the Doctor.
+  - Example: 500
+
+`,
         operationId: 'signupDoctor',
         requestBody: {
           required: true,
@@ -21,13 +126,13 @@ module.exports = {
                   'email',
                   'phone',
                   'gender',
+                  'location',
                   'password',
                   'passwordConfirm',
-                  'specialization',
-                  'experience',
                   'education',
-                  'location',
+                  'specialization',
                   'visitingSchedule',
+                  'experience',
                   'consultationFees',
                 ],
                 properties: {
@@ -47,48 +152,6 @@ module.exports = {
                     type: 'string',
                     enum: ['male', 'female', 'others', 'prefer not to say'],
                     example: 'female',
-                  },
-                  profilePhoto: {
-                    type: 'string',
-                    example: 'https://cdn.example.com/images/zarif.jpg',
-                  },
-                  password: {
-                    type: 'string',
-                    format: 'password',
-                    example: 'pass1234',
-                  },
-                  passwordConfirm: {
-                    type: 'string',
-                    format: 'password',
-                    example: 'pass1234',
-                  },
-                  specialization: {
-                    type: 'array',
-                    items: {
-                      type: 'string',
-                    },
-                    example: ['Cardiology', 'Internal Medicine'],
-                  },
-                  experience: {
-                    type: 'number',
-                    example: 10,
-                  },
-                  education: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      required: ['degree', 'institute'],
-                      properties: {
-                        degree: {
-                          type: 'string',
-                          example: 'MBBS',
-                        },
-                        institute: {
-                          type: 'string',
-                          example: 'Dhaka Medical College',
-                        },
-                      },
-                    },
                   },
                   location: {
                     type: 'object',
@@ -115,6 +178,44 @@ module.exports = {
                         example: 'Green Road, Dhaka',
                       },
                     },
+                  },
+                  profilePhoto: {
+                    type: 'string',
+                    example: 'https://cdn.example.com/images/zarif.jpg',
+                  },
+                  password: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'pass1234',
+                  },
+                  passwordConfirm: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'pass1234',
+                  },
+                  education: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      required: ['degree', 'institute'],
+                      properties: {
+                        degree: {
+                          type: 'string',
+                          example: 'MBBS',
+                        },
+                        institute: {
+                          type: 'string',
+                          example: 'Dhaka Medical College',
+                        },
+                      },
+                    },
+                  },
+                  specialization: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: ['Cardiology', 'Internal Medicine'],
                   },
                   visitingSchedule: {
                     type: 'array',
@@ -151,13 +252,17 @@ module.exports = {
                       },
                     },
                   },
-                  consultationFees: {
-                    type: 'number',
-                    example: 1000,
-                  },
                   appointmentDuration: {
                     type: 'number',
                     example: 60,
+                  },
+                  experience: {
+                    type: 'number',
+                    example: 10,
+                  },
+                  consultationFees: {
+                    type: 'number',
+                    example: 1000,
                   },
                 },
               },
@@ -238,7 +343,21 @@ module.exports = {
       post: {
         tags: ['Doctors'],
         summary: 'Doctor Sign In',
-        description: `Allows a doctor to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Doctor you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p>`,
+        description: `
+Allows a doctor to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Doctor you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p></blockquote><br><br>
+
+## Request Body:
+
+- **email**: *string*, *mandatory*
+  - The email address of the Doctor.
+  - Format: email
+  - Example: zarif.hossain@example.com
+
+- **password**: *string*, *mandatory*
+  - The password of the Doctor.
+  - Format: password
+  - Example: pass1234
+`,
         operationId: 'signinDoctor',
         requestBody: {
           required: true,
@@ -364,7 +483,17 @@ module.exports = {
         tags: ['Doctors'],
         summary: 'Send email verification link',
 
-        description: `Sends an **email verification link** to the Doctor’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/doctors/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/doctors/email-verification** endpoint.`,
+        description: `
+Sends an **email verification link** to the Doctor’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/doctors/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/doctors/email-verification** endpoint.<br><br>
+
+## Request Body:
+
+- **email**: *string*, *mandatory*
+  - The email address of the Doctor.
+  - Format: email
+  - Example: zarif.hossain@example.com
+
+`,
         operationId: 'sendEmailVerification',
         requestBody: {
           required: true,
@@ -537,8 +666,16 @@ module.exports = {
       post: {
         tags: ['Doctors'],
         summary: 'Request password reset link.',
-        description:
-          "Sends a password reset link to the Doctor's email address. The Doctor just have to provide their registered email address. The **password reset link** will be sent to their email address. The link contains a **token** that will be used to reset the password through the **/api/v2/doctors/reset-password/{token}** endpoint. The token is valid for only 10 minutes.",
+        description: `
+Sends a password reset link to the Doctor's email address. The Doctor just have to provide their registered email address. The **password reset link** will be sent to their email address. The link contains a **token** that will be used to reset the password through the **/api/v2/doctors/reset-password/{token}** endpoint. The token is valid for only 10 minutes.<br><br>
+
+## Request Body:
+
+- **email**: *string*, *mandatory*
+  - The email address of the Doctor.
+  - Format: email
+  - Example: zarif.hossain@example.com
+`,
         operationId: 'requestPasswordReset',
         requestBody: {
           required: true,
@@ -631,8 +768,21 @@ module.exports = {
       post: {
         tags: ['Doctors'],
         summary: 'Reset Doctor password.',
-        description:
-          'Allows Doctor to reset their password using the **token** sent to their email address. The token is valid for only 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/doctors/forgot-password** endpoint. The Doctor must provide a new password and confirm it.',
+        description: `
+Allows Doctor to reset their password using the **token** sent to their email address. The token is valid for only 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/doctors/forgot-password** endpoint. The Doctor must provide a new password and confirm it.<br><br>
+
+## Request Body:
+
+- **password**: *string*, *mandatory*
+  - The new password of the Doctor.
+  - Format: password
+  - Example: newPassword123
+
+- **passwordConfirm**: *string*, *mandatory*
+  - The confirmation of the new password of the Doctor.
+  - Format: password
+  - Example: newPassword123
+`,
         operationId: 'resetDoctorPassword',
         parameters: [
           {

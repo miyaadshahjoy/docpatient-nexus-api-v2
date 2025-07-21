@@ -13,6 +13,7 @@ module.exports = {
     properties: {
       _id: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd5',
       },
       fullName: {
@@ -21,6 +22,7 @@ module.exports = {
       },
       email: {
         type: 'string',
+        format: 'email',
         example: 'ahsan.habib@example.com',
       },
       phone: {
@@ -29,7 +31,10 @@ module.exports = {
       },
       gender: {
         type: 'string',
-        enum: ['male', 'female', 'others', 'prefer not to say'],
+        enum: {
+          values: ['male', 'female', 'others', 'prefer not to say'],
+          message: 'Allowed values: male, female, others, prefer not to say',
+        },
         example: 'male',
       },
       profilePhoto: {
@@ -46,31 +51,72 @@ module.exports = {
         format: 'password',
         example: 'pass1234',
       },
-      role: {
-        type: 'string',
-        enum: ['admin', 'super-admin'],
-        default: 'admin',
-        example: 'admin',
-      },
-      status: {
-        type: 'string',
-        enum: ['active', 'pending', 'removed'],
-        example: 'pending',
-      },
-      isVerified: {
-        type: 'boolean',
-        example: false,
+      roles: {
+        type: 'array',
+        items: {
+          type: 'string',
+          enum: [
+            'admin',
+            'super-admin',
+            'doctor-manager',
+            'patient-manager',
+            'appointment-manager',
+            'review-manager',
+            'notification-manager',
+          ],
+        },
+        default: ['admin'],
+        example: ['admin'],
       },
       emailVerified: {
         type: 'boolean',
         example: false,
+      },
+      isApproved: {
+        type: 'boolean',
+        example: false,
+      },
+      status: {
+        type: 'string',
+        enum: {
+          values: ['active', 'pending', 'deleted'],
+          message: 'Allowed values: active, pending, deleted',
+        },
+        example: 'pending',
+      },
+      deletedBy: {
+        type: 'string',
+        format: 'ObjectId',
+        example: '682787f1fea3f44089558cd5',
+      },
+      deleteAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-06-02T14:20:00.000Z',
       },
       passwordChangedAt: {
         type: 'string',
         format: 'date-time',
         example: '2025-06-02T14:20:00.000Z',
       },
-
+      emailVerificationToken: {
+        type: 'string',
+        example: 'email-verification-token',
+      },
+      emailVerificationExpires: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-06-02T14:20:00.000Z',
+      },
+      passwordResetToken: {
+        type: 'string',
+        example: 'password-reset-token',
+      },
+      passwordResetExpires: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-06-02T14:20:00.000Z',
+      },
       createdAt: {
         type: 'string',
         format: 'date-time',
@@ -90,19 +136,20 @@ module.exports = {
       'email',
       'phone',
       'gender',
+      'location',
       'password',
       'passwordConfirm',
       'education',
       'specialization',
-      'experience',
-      'location',
       'visitingSchedule',
+      'experience',
       'consultationFees',
     ],
 
     properties: {
       _id: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd6',
       },
       fullName: {
@@ -119,60 +166,15 @@ module.exports = {
       },
       gender: {
         type: 'string',
-        enum: ['male', 'female', 'others', 'prefer not to say'],
+        enum: {
+          values: ['male', 'female', 'others', 'prefer not to say'],
+          message: 'Allowed values: male, female, others, prefer not to say',
+        },
         example: 'male',
-      },
-      profilePhoto: {
-        type: 'string',
-        example: 'https://cdn.example.com/images/zarif.jpg',
-      },
-      password: {
-        type: 'string',
-        format: 'password',
-        example: 'pass1234',
-      },
-      passwordConfirm: {
-        type: 'string',
-        format: 'password',
-        example: 'pass1234',
-      },
-      specialization: {
-        type: 'array',
-        items: {
-          type: 'string',
-        },
-        example: ['Cardiology', 'Internal Medicine'],
-      },
-      experience: {
-        type: 'number',
-        example: 10,
-      },
-      education: {
-        type: 'array',
-        items: {
-          type: 'object',
-          required: ['degree', 'institute'],
-          properties: {
-            degree: {
-              type: 'string',
-              example: 'MBBS',
-            },
-            institute: {
-              type: 'string',
-              example: 'Dhaka Medical College',
-            },
-          },
-        },
-      },
-      averageRating: {
-        type: 'number',
-        minimum: 1,
-        maximum: 5,
-        example: 4.8,
       },
       location: {
         type: 'object',
-        required: ['type', 'coordinates'],
+        required: ['type', 'coordinates', 'city', 'address'],
         properties: {
           type: {
             type: 'string',
@@ -196,6 +198,48 @@ module.exports = {
           },
         },
       },
+      profilePhoto: {
+        type: 'string',
+        example: 'https://cdn.example.com/images/zarif.jpg',
+      },
+      calendar: {
+        $ref: '#/components/schemas/Calendar',
+      },
+      password: {
+        type: 'string',
+        format: 'password',
+        example: 'pass1234',
+      },
+      passwordConfirm: {
+        type: 'string',
+        format: 'password',
+        example: 'pass1234',
+      },
+      education: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['degree', 'institute'],
+          properties: {
+            degree: {
+              type: 'string',
+              example: 'MBBS, MD, PhD',
+            },
+            institute: {
+              type: 'string',
+              example: 'Dhaka Medical College',
+            },
+          },
+        },
+      },
+      specialization: {
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        example: ['Cardiology', 'Internal Medicine'],
+      },
+
       visitingSchedule: {
         type: 'array',
         items: {
@@ -220,10 +264,12 @@ module.exports = {
               properties: {
                 from: {
                   type: 'string',
+                  format: 'time',
                   example: '09:00',
                 },
                 to: {
                   type: 'string',
+                  format: 'time',
                   example: '17:00',
                 },
               },
@@ -231,31 +277,83 @@ module.exports = {
           },
         },
       },
+      appointmentDuration: {
+        type: 'number',
+        example: 60, // in minutes
+      },
+      experience: {
+        type: 'number',
+        example: 10, // in years
+      },
+      averageRating: {
+        type: 'number',
+        minimum: 1,
+        maximum: 5,
+        example: 4.8,
+      },
+      numRating: {
+        type: 'number',
+        example: 10,
+      },
       consultationFees: {
         type: 'number',
         example: 1000,
-      },
-      appointmentDuration: {
-        type: 'number',
-        example: 60,
       },
       role: {
         type: 'string',
         enum: ['doctor'],
         example: 'doctor',
       },
-      isVerified: {
+
+      emailVerified: {
+        type: 'boolean',
+        example: false,
+      },
+      isApproved: {
         type: 'boolean',
         example: false,
       },
       status: {
         type: 'string',
-        enum: ['active', 'pending', 'removed'],
+        enum: {
+          values: ['active', 'pending', 'deleted'],
+          message: 'Allowed values: active, pending, deleted',
+        },
         example: 'pending',
       },
-      emailVerified: {
-        type: 'boolean',
-        example: false,
+      deletedBy: {
+        type: 'string',
+        format: 'ObjectId',
+        example: '682787f1fea3f44089558cd5',
+      },
+      deletedAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:09.776Z',
+      },
+
+      passwordChangedAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:08.776Z',
+      },
+      emailVerificationToken: {
+        type: 'string',
+        example: 'email-verification-token',
+      },
+      emailVerificationExpires: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:09.776Z',
+      },
+      passwordResetToken: {
+        type: 'string',
+        example: 'password-reset-token',
+      },
+      passwordResetExpires: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:09.776Z',
       },
       createdAt: {
         type: 'string',
@@ -267,15 +365,6 @@ module.exports = {
         format: 'date-time',
         example: '2025-05-31T02:45:43.207Z',
       },
-      passwordChangedAt: {
-        type: 'string',
-        format: 'date-time',
-        example: '2025-05-16T18:46:08.776Z',
-      },
-      numRating: {
-        type: 'number',
-        example: 10,
-      },
     },
   },
   Patient: {
@@ -285,11 +374,11 @@ module.exports = {
       'email',
       'phone',
       'gender',
-      'password',
-      'passwordConfirm',
-      'bloodGroup',
       'dateOfBirth',
       'location',
+      'bloodGroup',
+      'password',
+      'passwordConfirm',
     ],
     /*
     const testPatient = {
@@ -313,7 +402,7 @@ module.exports = {
   },
   status: "pending",
   role: "patient",
-  isVerified: false,
+  isApproved: false,
   emailVerified: false
 };
     
@@ -322,6 +411,7 @@ module.exports = {
     properties: {
       _id: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd7',
       },
       fullName: {
@@ -330,6 +420,7 @@ module.exports = {
       },
       email: {
         type: 'string',
+        format: 'email',
         example: 'sadia.rahman@example.com',
       },
       phone: {
@@ -338,8 +429,38 @@ module.exports = {
       },
       gender: {
         type: 'string',
-        enum: ['male', 'female', 'others', 'prefer not to say'],
+        enum: {
+          values: ['male', 'female', 'others', 'prefer not to say'],
+          message: 'Allowed values: male, female, others, prefer not to say',
+        },
         example: 'female',
+      },
+      dateOfBirth: {
+        type: 'string',
+        format: 'date',
+        example: '1992-03-10',
+      },
+      location: {
+        type: 'object',
+        required: ['city', 'address'],
+        properties: {
+          city: {
+            type: 'string',
+            example: 'Dhaka',
+          },
+          address: {
+            type: 'string',
+            example: 'House 12, Road 5, Dhanmondi, Dhaka 1205',
+          },
+        },
+      },
+      bloodGroup: {
+        type: 'string',
+        enum: {
+          values: ['A+', 'B+', 'O+', 'A-', 'B-', 'O-', 'AB+', 'AB-'],
+          message: 'Allowed values: A+, B+, O+, A-, B-, O-, AB+, AB-',
+        },
+        example: 'B+',
       },
       profilePhoto: {
         type: 'string',
@@ -356,29 +477,12 @@ module.exports = {
         format: 'password',
         example: 'pass1234',
       },
-      bloodGroup: {
-        type: 'string',
-        enum: ['A+', 'B+', 'O+', 'A-', 'B-', 'O-', 'AB+', 'AB-'],
-        example: 'B+',
-      },
-      dateOfBirth: {
-        type: 'string',
-        format: 'date',
-        example: '1992-03-10',
-      },
       medicalHistory: {
         type: 'array',
         items: {
           type: 'string',
         },
         example: ['Thyroid Disorder', 'Anemia'],
-      },
-      allergies: {
-        type: 'array',
-        items: {
-          type: 'string',
-        },
-        example: ['Shellfish', 'Pollen'],
       },
       currentMedications: {
         type: 'array',
@@ -387,50 +491,74 @@ module.exports = {
         },
         example: ['Levothyroxine', 'Iron Supplements'],
       },
-      // location: {
-      //   type: {
-      //     city: {
-      //       type: String,
-      //       trim: true,
-      //     },
-      //     address: {
-      //       type: String,
-      //       trim: true,
-      //     },
-      //   },
-      //   required: [true, 'Location is required.'],
-      // },
-      location: {
-        type: 'object',
-        required: ['city', 'address'],
-        properties: {
-          city: {
-            type: 'string',
-            example: 'Dhaka',
-          },
-          address: {
-            type: 'string',
-            example: 'House 12, Road 5, Dhanmondi, Dhaka 1205',
-          },
+      prescriptions: {
+        type: 'array',
+        items: {
+          type: 'string',
+          format: 'ObjectId',
         },
+        example: ['682787f1fea3f44089558cd7'],
       },
-      status: {
+      patientRecords: {
         type: 'string',
-        enum: ['active', 'pending', 'removed'],
-        example: 'pending',
+        format: 'ObjectId',
+        example: ['682787f1fea3f44089558cd7'],
       },
       role: {
         type: 'string',
         enum: ['patient'],
         example: 'patient',
       },
-      isVerified: {
-        type: 'boolean',
-        example: false,
-      },
       emailVerified: {
         type: 'boolean',
         example: false,
+      },
+      isApproved: {
+        type: 'boolean',
+        example: false,
+      },
+
+      status: {
+        type: 'string',
+        enum: {
+          values: ['active', 'pending', 'deleted'],
+          message: 'Allowed values: active, pending, deleted',
+        },
+        example: 'pending',
+      },
+      deletedBy: {
+        type: 'string',
+        format: 'ObjectId',
+        example: '682787f1fea3f44089558cd5',
+      },
+      deletedAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:09.776Z',
+      },
+
+      passwordChangedAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:08.776Z',
+      },
+      emailVerificationToken: {
+        type: 'string',
+        example: 'email-verification-token',
+      },
+      emailVerificationExpires: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:09.776Z',
+      },
+      passwordResetToken: {
+        type: 'string',
+        example: 'password-reset-token',
+      },
+      passwordResetExpires: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:09.776Z',
       },
       createdAt: {
         type: 'string',
@@ -441,11 +569,6 @@ module.exports = {
         type: 'string',
         format: 'date-time',
         example: '2025-05-31T02:45:43.207Z',
-      },
-      passwordChangedAt: {
-        type: 'string',
-        format: 'date-time',
-        example: '2025-05-16T18:46:08.776Z',
       },
     },
   },
@@ -463,8 +586,12 @@ module.exports = {
         example: '500mg',
       },
       frequency: {
-        type: 'string',
-        example: 'Twice a day',
+        type: 'array',
+        items: {
+          type: 'string',
+          format: 'time',
+        },
+        example: ['08:00', '12:00', '18:00'],
       },
       duration: {
         type: 'number',
@@ -474,28 +601,40 @@ module.exports = {
         type: 'string',
         example: 'Take with water, do not exceed the recommended dosage.',
       },
+      createdAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-16T18:46:09.776Z',
+      },
+      updatedAt: {
+        type: 'string',
+        format: 'date-time',
+        example: '2025-05-31T02:45:43.207Z',
+      },
     },
   },
   Prescription: {
     type: 'object',
     required: ['doctor', 'appointment', 'medications'],
     properties: {
+      _id: {
+        type: 'string',
+        format: 'ObjectId',
+        example: '682787f1fea3f44089558cd7',
+      },
       doctor: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd6',
       },
       appointment: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd8',
       },
       notes: {
         type: 'string',
         example: 'Take the medication after meals.',
-      },
-      status: {
-        type: 'string',
-        enum: ['active', 'expired', 'deleted'],
-        default: 'active',
       },
       medications: {
         type: 'array',
@@ -506,7 +645,7 @@ module.exports = {
           {
             name: 'Aspirin',
             dosage: '500mg',
-            frequency: 'Twice a day',
+            frequency: ['08:00', '12:00', '18:00'],
             duration: 7,
             instruction:
               'Take with water, do not exceed the recommended dosage.',
@@ -514,11 +653,19 @@ module.exports = {
           {
             name: 'Paracetamol',
             dosage: '500mg',
-            frequency: 'Once a day',
+            frequency: ['08:00', '12:00', '18:00'],
             duration: 5,
             instruction: 'Take after meals.',
           },
         ],
+      },
+      status: {
+        type: 'string',
+        enum: {
+          values: ['active', 'expired', 'deleted'],
+          message: 'Allowed values: active, expired, deleted',
+        },
+        default: 'active',
       },
       createdAt: {
         type: 'string',
@@ -534,20 +681,33 @@ module.exports = {
   },
   Appointment: {
     type: 'object',
-    required: ['doctor', 'patient', 'appointmentDate', 'appointmentSchedule'],
+    required: [
+      'doctor',
+      'patient',
+      'appointmentDate',
+      'appointmentSchedule',
+      'reason',
+    ],
     properties: {
+      _id: {
+        type: 'string',
+        format: 'ObjectId',
+        example: '682787f1fea3f44089558cd7',
+      },
       doctor: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd6',
       },
       patient: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd7',
       },
       appointmentDate: {
         type: 'string',
         format: 'date-time',
-        example: '2025-06-16T09:00:00.000Z',
+        example: '2025-06-16', // YYYY-MM-DD -> ISO 8601 Date Format
       },
       appointmentSchedule: {
         type: 'object',
@@ -555,6 +715,18 @@ module.exports = {
         properties: {
           day: {
             type: 'string',
+            enum: {
+              valus: [
+                'saturday',
+                'sunday',
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+              ],
+              message: 'Day must be a valid weekday',
+            },
             example: 'monday',
           },
           hours: {
@@ -563,21 +735,19 @@ module.exports = {
             properties: {
               from: {
                 type: 'string',
+                format: 'time',
                 example: '09:00',
               },
               to: {
                 type: 'string',
+                format: 'time',
                 example: '09:59',
               },
             },
           },
         },
       },
-      status: {
-        type: 'string',
-        enum: ['confirmed', 'cancelled', 'completed'],
-        default: 'confirmed',
-      },
+
       reason: {
         type: 'string',
         example: 'Regular blood pressure check-up and follow-up consultation',
@@ -591,23 +761,29 @@ module.exports = {
         enum: ['in-person', 'online'],
         default: 'in-person',
       },
-      paymentStatus: {
-        type: 'string',
-        enum: ['paid', 'unpaid'],
-        default: 'unpaid',
-      },
+
       paymentMethod: {
         type: 'string',
-        enum: ['card', 'cash'],
+        enum: ['card', 'cash', 'unknown'],
         default: 'card',
       },
       paymentIntent: {
         type: 'string',
         example: 'pi_1HV8XK2eZvKYlo2C5pFAKE123',
       },
+      paymentStatus: {
+        type: 'string',
+        enum: ['pending', 'paid', 'failed', 'refunded'],
+        default: 'pending',
+      },
       isPrescribed: {
         type: 'boolean',
         default: false,
+      },
+      status: {
+        type: 'string',
+        enum: ['pending', 'confirmed', 'cancelled', 'completed'],
+        default: 'confirmed',
       },
       createdAt: {
         type: 'string',
@@ -641,16 +817,24 @@ module.exports = {
     type: 'object',
     required: ['doctor', 'patient', 'appointment', 'review', 'rating'],
     properties: {
+      _id: {
+        type: 'string',
+        format: 'ObjectId',
+        example: '682787f1fea3f44089558cd7',
+      },
       doctor: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd6',
       },
       patient: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd7',
       },
       appointment: {
         type: 'string',
+        format: 'ObjectId',
         example: '682787f1fea3f44089558cd8',
       },
       review: {
@@ -673,7 +857,7 @@ module.exports = {
       },
       status: {
         type: 'string',
-        enum: ['visible', 'flagged', 'hidden'],
+        enum: ['visible', 'flagged', 'deleted'],
         default: 'visible',
       },
       createdAt: {
@@ -690,12 +874,13 @@ module.exports = {
   },
   PatientRecord: {
     type: 'object',
-    required: ['patient'],
+
     properties: {
-      patient: {
+      _id: {
         type: 'string',
-        example: '682787f1fea3f44089558cd6',
+        example: '682787f1fea3f44089558cd7',
       },
+
       allergies: {
         type: 'array',
         example: ['Peanuts', 'Penicillin'],
@@ -717,10 +902,12 @@ module.exports = {
         properties: {
           badHabits: {
             type: 'array',
+            enum: ['smoking', 'alocohol', 'drugs'],
             example: ['smoking'],
           },
           exercise: {
             type: 'string',
+            enum: ['none', 'light', 'moderate', 'intense'],
             example: 'moderate',
           },
         },
@@ -733,11 +920,16 @@ module.exports = {
         type: 'array',
         items: {
           type: 'object',
-          required: ['title', 'fileUrl', 'issuedBy', 'issuedOn'],
+          required: ['title', 'description', 'fileUrl', 'issuedBy', 'issuedOn'],
           properties: {
             title: {
               type: 'string',
               example: 'Blood Test Report',
+            },
+            description: {
+              type: 'string',
+              example:
+                'This report shows the results of a blood test conducted on January 15, 2025.',
             },
             fileUrl: {
               type: 'string',
@@ -749,6 +941,7 @@ module.exports = {
             },
             issuedOn: {
               type: 'string',
+              format: 'date-time',
               example: '2025-01-15T00:00:00.000Z',
             },
           },
@@ -768,7 +961,13 @@ module.exports = {
   },
   Calendar: {
     type: 'object',
+    required: ['calendarUID'],
     properties: {
+      _id: {
+        type: 'string',
+        format: 'ObjectId',
+        example: '682787f1fea3f44089558cd7',
+      },
       calendarUID: {
         type: 'string',
         example:

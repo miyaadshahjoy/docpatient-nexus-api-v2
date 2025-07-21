@@ -1892,7 +1892,9 @@ Allows an Admin to **update** their profile information. The Admin must be **log
                     data: {
                       type: 'object',
                       properties: {
-                        admin: { $ref: '#/components/schemas/Admin' },
+                        admin: {
+                          $ref: '#/components/schemas/Admin',
+                        },
                       },
                     },
                   },

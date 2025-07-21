@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
+// UNCAUGHT EXCEPTION
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION SHUTTING DOWN.........');
   console.log(err.name, err.message);
@@ -22,10 +23,12 @@ mongoose.connect(DB_URI).then(() => {
 const PORT = process.env.PORT || 3000;
 const app = require('./app');
 
+// SERVER
 const server = app.listen(PORT, () => {
   console.log(`🌐 SERVER IS RUNNING ON PORT: ${PORT}`);
 });
 
+// UNHANDLED REJECTION
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION Shutting down........');
   console.log(err.name, err.message);

@@ -357,7 +357,7 @@ REDIS_PASSWORD=YOUR_REDIS_PASSWORD
 </code>
 
 - Create a Redis client in your application:
-  <pre> 
+  \`\`\`javascript 
     const { Redis } = require('ioredis');
     const redisClient = new Redis({
       username: process.env.REDIS_USERNAME,
@@ -366,7 +366,7 @@ REDIS_PASSWORD=YOUR_REDIS_PASSWORD
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
     });
-  </pre>
+  \`\`\`
 
 - Go to the [Redis documentation](https://redis.io/documentation) for more information on how to set up and use Redis.
 

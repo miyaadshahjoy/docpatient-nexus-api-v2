@@ -100,6 +100,7 @@ module.exports = {
         parameters: [
           {
             name: 'adminId',
+            description: 'The ID of the Admin account to be approved.',
             in: 'path',
             required: true,
             schema: {
