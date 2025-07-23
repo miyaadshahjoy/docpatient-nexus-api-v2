@@ -21,16 +21,16 @@ exports.checkAccountEligibility = () =>
           401,
         ),
       );
-    if (!user.isVerified)
+    if (!user.isApproved)
       return next(
         new AppError('Your account is pending approval by an admin', 403),
       );
     if (user.status === 'pending')
       return next(new AppError('Your account is still under review', 403));
-    if (user.status === 'removed')
+    if (user.status === 'deleted')
       return next(
         new AppError(
-          'Your account has been removed. Please contact support',
+          'Your account has been deleted. Please contact support',
           403,
         ),
       );

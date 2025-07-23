@@ -121,11 +121,11 @@ exports.approveAccount = (Model) =>
     if (!user)
       return next(new AppError(`${resourceName} account does not exist.`, 400));
     // Check if the user is already verified
-    if (user.isVerified)
+    if (user.isApproved)
       return next(
         new AppError(`${resourceName} account is already approved.`, 400),
       );
-    user.isVerified = true;
+    user.isApproved = true;
     user.status = 'active';
     await user.save();
     res.status(200).json({

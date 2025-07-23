@@ -6,16 +6,16 @@ module.exports = (user) => {
       'Please verify your email before accessing the system.',
       401,
     );
-  if (!user.isVerified)
+  if (!user.isApproved)
     throw new AppError(
       'Your account is pending approval by an admin or super admin.',
       403,
     );
   if (user.status === 'pending')
     throw new AppError('Your account is still under review', 403);
-  if (user.status === 'removed')
+  if (user.status === 'deleted')
     throw new AppError(
-      'Your account has been removed. Please contact support',
+      'Your account has been deleted. Please contact support',
       403,
     );
 };
