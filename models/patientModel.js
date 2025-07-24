@@ -180,7 +180,6 @@ patientSchema.virtual('age').get(function () {
 });
 
 // Indexes
-patientSchema.index({ email: 1 });
 // instance methods
 addInstanceMethods(patientSchema);
 

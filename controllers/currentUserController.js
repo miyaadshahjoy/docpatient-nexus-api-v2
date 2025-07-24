@@ -14,7 +14,7 @@ exports.getCurrentUser = (Model) =>
     const user = await Model.findById(userId);
     if (!user)
       return next(new AppError('This user does not exist anymore', 400));
-    if (user.status === 'removed')
+    if (user.status === 'deleted')
       return next(new AppError('This user account has been deleted', 400));
     // 3) Send response
     const resourceName = Model.modelName;
@@ -122,7 +122,7 @@ exports.deleteCurrentUser = (Model) =>
   catchAsync(async (req, res, next) => {
     const user = await Model.findById(req.user._id);
     if (!user) return next(new AppError('User does not exist', 400));
-    user.status = 'removed';
+    user.status = 'deleted';
     await user.save();
     const resourceName = Model.modelName;
     res.status(204).json({

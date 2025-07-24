@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "set NODE_ENV=development&& nodemon server.js",
-    "start:prod": "set NODE_ENV=production&& nodemon server.js",
-    "docs:build": "node generateDocs.js"
+    "start:prod": "set NODE_ENV=production&& nodemon server.js"
   },
   "author": "Miyaad Shah Joy",
   "license": "ISC",
