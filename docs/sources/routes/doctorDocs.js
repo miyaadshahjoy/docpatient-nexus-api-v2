@@ -2397,8 +2397,9 @@ Allows Doctor to reset their password using the **token** sent to their email ad
             bearerAuth: [],
           },
         ],
-        description:
-          'Allows a Doctor to **update a patient-record** for a Patient. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing patient record. If the Patient does not have a record, use the **/doctors/patients/{patientId}/records** route to create one.',
+        description: `
+Allows a Doctor to **update a patient-record** for a Patient. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing patient record. If the Patient does not have a record, use the **/doctors/patients/{patientId}/records** route to create one.
+`,
         operationId: 'updatePatientRecord',
         parameters: [
           {
