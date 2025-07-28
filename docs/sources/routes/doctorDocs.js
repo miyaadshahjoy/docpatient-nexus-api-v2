@@ -2178,8 +2178,45 @@ Allows Doctor to reset their password using the **token** sent to their email ad
             bearerAuth: [],
           },
         ],
-        description:
-          'Allows a doctor to **create a patient-record** for a patient. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A patient-record can only be created if the patient does not already have a record. If a record already exists, the Doctor should use the **/doctors/patients/{patientId}/records** route to update the existing record.',
+        description: `
+Allows a doctor to **create a patient-record** for a patient. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A patient-record can only be created if the patient does not already have a record. If a record already exists, the Doctor should use the **/doctors/patients/{patientId}/records** route to update the existing record.<br><br>
+
+## Request Body
+
+- **allergies**: *array of strings*
+  - Allergies the patient has.
+  - Example: ["Peanuts", "Penicillin"]
+
+- **conditions**: *array of strings*
+  - Conditions the patient has.
+  - Example: ["Hypertension", "Type 2 Diabetes"]
+
+- **surgeries**: *array of strings*
+  - Surgeries the patient has had.
+  - Example: ["Appendectomy (2010)", "Gallbladder removal (2016)"]
+
+- **familyHistory**: *array of strings*
+  - Family history of the patient.
+  - Example: ["Father - Heart disease", "Mother - Type 2 Diabetes"]
+
+- **lifestyle**: *object*
+  - Lifestyle of the patient.
+  - **badHabits**: *array of strings*
+    - Bad habits the patient has.
+    - Allowed values: "smoking", "alcohol", "drugs"
+    - Example: ["smoking"]
+  - **exercise**: *string*
+    - Exercise the patient does.
+    - Allowed values: "none", "light", "moderate", "intense"
+    - Example: "moderate"
+  - Example:
+    \`\`\`json
+    {
+      "badHabits": ["smoking"],
+      "exercise": "moderate"
+    }
+    \`\`\`
+`,
         operationId: 'createPatientRecord',
         parameters: [
           {
@@ -2232,38 +2269,6 @@ Allows Doctor to reset their password using the **token** sent to their email ad
                       exercise: {
                         type: 'string',
                         example: 'moderate',
-                      },
-                    },
-                  },
-                  medications: {
-                    type: 'array',
-                    example: [
-                      '64fc8e27b12d5a9cfdcdef20',
-                      '64fc8e27b12d5a9cfdcdef21',
-                    ],
-                  },
-                  reports: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        title: {
-                          type: 'string',
-                          example: 'Blood Test Report',
-                        },
-                        fileUrl: {
-                          type: 'string',
-                          example:
-                            'https://example.com/reports/bloodtest_jan2025.pdf',
-                        },
-                        issuedBy: {
-                          type: 'string',
-                          example: 'Dr. Nafisa Rahman',
-                        },
-                        issuedOn: {
-                          type: 'string',
-                          example: '2025-01-15T00:00:00.000Z',
-                        },
                       },
                     },
                   },
@@ -2388,6 +2393,7 @@ Allows Doctor to reset their password using the **token** sent to their email ad
           500: responses.InternalServerError,
         },
       },
+      // Update a patient-record for a patient
       // PATCH/doctors/patients/{patientId}/records
       patch: {
         tags: ['Doctors'],
@@ -2398,7 +2404,43 @@ Allows Doctor to reset their password using the **token** sent to their email ad
           },
         ],
         description: `
-Allows a Doctor to **update a patient-record** for a Patient. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing patient record. If the Patient does not have a record, use the **/doctors/patients/{patientId}/records** route to create one.
+Allows a Doctor to **update a patient-record** for a Patient. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing patient record. If the Patient does not have a record, use the **/doctors/patients/{patientId}/records** route to create one.<br><br>
+
+## Request Body
+
+- **allergies**: *array of strings*
+  - Allergies the patient has.
+  - Example: ["Peanuts", "Penicillin"]
+
+- **conditions**: *array of strings*
+  - Conditions the patient has.
+  - Example: ["Hypertension", "Type 2 Diabetes"]
+
+- **surgeries**: *array of strings*
+  - Surgeries the patient has had.
+  - Example: ["Appendectomy (2010)", "Gallbladder removal (2016)"]
+
+- **familyHistory**: *array of strings*
+  - Family history of the patient.
+  - Example: ["Father - Heart disease", "Mother - Type 2 Diabetes"]
+
+- **lifestyle**: *object*
+  - Lifestyle of the patient.
+  - **badHabits**: *array of strings*
+    - Bad habits the patient has.
+    - Allowed values: "smoking", "alcohol", "drugs"
+    - Example: ["smoking"]
+  - **exercise**: *string*
+    - Exercise the patient does.
+    - Allowed values: "none", "light", "moderate", "intense"
+    - Example: "moderate"
+  - Example:
+    \`\`\`json
+    {
+      "badHabits": ["smoking"],
+      "exercise": "moderate"
+    }
+    \`\`\`
 `,
         operationId: 'updatePatientRecord',
         parameters: [
@@ -2415,26 +2457,260 @@ Allows a Doctor to **update a patient-record** for a Patient. Requires a valid *
         requestBody: {
           required: true,
           content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  allergies: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: ['Peanuts', 'Penicillin'],
+                  },
+                  conditions: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: ['Hypertension', 'Type-2 Diabetes'],
+                  },
+                  surgeries: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: [
+                      'Appendectomy (2010)',
+                      'Gallbladder removal (2016)',
+                    ],
+                  },
+                  familyHistory: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: [
+                      'Father - Heart disease',
+                      'Mother - Type 2 Diabetes',
+                    ],
+                  },
+                  lifestyle: {
+                    type: 'object',
+                    properties: {
+                      badHabits: {
+                        type: 'array',
+                        items: {
+                          type: 'string',
+                        },
+                        example: ['smoking'],
+                      },
+                      exercise: {
+                        type: 'string',
+                        example: 'moderate',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Patient-record updated successfully.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'success',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'Patient record updated successfully.',
+                    },
+                    data: {
+                      type: 'object',
+                      properties: {
+                        patientRecord: {
+                          $ref: '#/components/schemas/PatientRecord',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Bad request. Possibly due to invalid input.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'error',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No data found in the request body.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: {
+            description:
+              'Unauthorized access. Only logged-in Doctors can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'Unauthorized access. Please log in to continue.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: {
+            description:
+              'Forbidden access. Only logged-in Doctors can access this route.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example:
+                        'You do not have permission to perform this action.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: 'No patient found with the provided ID.',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: {
+                      type: 'string',
+                      example: 'fail',
+                    },
+                    message: {
+                      type: 'string',
+                      example: 'No record found for this patient.',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: responses.InternalServerError,
+        },
+      },
+    },
+
+    // Upload a report on a patient record for a patient
+    // PATCH/doctors/patients/{patientId}/records/upload-report
+    '/api/v2/doctors/patients/{patientId}/records/upload-report': {
+      patch: {
+        tags: ['Doctors'],
+        summary: 'Upload a report on a patient record for a patient.',
+        security: [
+          {
+            bearerAuth: [],
+            // This indicates that the endpoint requires authentication
+          },
+        ],
+        description: `
+Allows a doctor to **upload a report** on a patient record for a patient. The doctor must be **logged-in** and have a valid **JWT** token to access this route.<br><br>
+**Note:** The patient-record must exist for the patient to upload a report. If the patient record does not exist, an error will be returned. Use the **/doctors/patients/{patientId}/records** route to create the patient-record for the patient.<br><br>
+
+## Request Body
+
+- **title**: *string*
+  - Title of the report.
+  - Example: "MRI Scan"
+
+- **description**: *string*
+  - Description of the report.
+  - Example: "MRI scan of the brain"
+
+- **report**: *file*
+  - File of the report.
+  - Example: "MRI Scan.pdf"
+
+- **issuedBy**: *string*
+  - Name of the doctor who issued the report.
+  - Example: "Dr. Rokeya Rahman"
+
+- **issuedOn**: *date*
+  - Date when the report was issued.
+  - Example: "2025-07-28"
+`,
+        parameters: [
+          {
+            name: 'patientId',
+            in: 'path',
+            required: true,
+            description: 'ID of the patient',
+            schema: {
+              type: 'string',
+              example: '684d8f1c8feb4e2cc874c1f7',
+            },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
             'multipart/form-data': {
               schema: {
                 type: 'object',
                 properties: {
                   title: {
                     type: 'string',
-                    example: 'Hematology Analysis Report',
+                    example: 'MRI Scan',
+                  },
+                  description: {
+                    type: 'string',
+                    example: 'MRI scan of the brain',
                   },
                   issuedBy: {
                     type: 'string',
-                    example: 'Dr. Nafisa Rahman',
+                    example: 'Dr. Rokeya Rahman',
                   },
                   issuedOn: {
-                    type: 'string',
-                    formate: 'date-time',
-                    example: '2025-06-02T17:49:00+06:00',
+                    type: 'date',
+                    example: '2025-07-28',
                   },
-                  record: {
-                    type: 'string',
+                  report: {
+                    type: 'file',
                     format: 'binary',
+                    example: 'MRI Scan.pdf',
                   },
                 },
               },
@@ -2483,7 +2759,7 @@ Allows a Doctor to **update a patient-record** for a Patient. Requires a valid *
                     },
                     message: {
                       type: 'string',
-                      example: 'Missing required fields in request body.',
+                      example: 'Missing required fields.',
                     },
                   },
                 },
@@ -2569,8 +2845,48 @@ Allows a Doctor to **update a patient-record** for a Patient. Requires a valid *
             bearerAuth: [],
           },
         ],
-        description:
-          'Allows a Doctor to **create a prescription** for an appointment. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A prescription can only be created if the appointment is in a state that allows prescribing (e.g., completed or ongoing). If the appointment does not exist or is not in the correct state, an error will be returned.',
+        description: `
+Allows a Doctor to **create a prescription** for an appointment. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A prescription can only be created if the appointment is in a state that allows prescribing (e.g., completed or ongoing). If the appointment does not exist or is not in the correct state, an error will be returned.<br><br>
+
+## Request Body
+
+- **notes**: *string*
+  - Additional notes for the prescription.
+  - Example: "Patient advised to continue medications for 7 days and return for follow-up if symptoms persist."
+
+- **medications**: *array*
+  - Array of medications details.
+  - **name**: *string*, *required*
+    - Name of the medication.
+    - Example: "Paracetamol"
+  - **dosage**: *string*, *required*
+    - Dosage of the medication.
+    - Example: "500mg"
+  - **frequency**: *array*, *required*
+    - Array of times to take the medication.
+    - Example: ["08:00", "12:00", "18:00"]
+  - **duration**: *number*, *required*
+    - Duration of the medication in days.
+    - Example: 5
+  - **instruction**: *string*
+    - Additional instructions for the medication.
+    - Example: "Take after meals"
+  - Example:
+    \`\`\`json
+    {
+      "notes": "Patient advised to continue medications for 7 days and return for follow-up if symptoms persist.",
+      "medications": [
+        {
+          "name": "Paracetamol",
+          "dosage": "500mg",
+          "frequency": ["08:00", "12:00", "18:00"],
+          "duration": 5,
+          "instruction": "Take after meals"
+        }
+      ]
+    }
+    \`\`\`
+`,
         operationId: 'createPrescription',
         parameters: [
           {
@@ -2729,8 +3045,15 @@ Allows a Doctor to **update a patient-record** for a Patient. Requires a valid *
         tags: ['Doctors'],
         summary: 'Update a prescription for an appointment',
         security: [{ bearerAuth: [] }],
-        description:
-          'Allows a Doctor to **update a prescription** for an appointment. Requires a valid *JWT* token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing prescription. If the appointment does not have a prescription, use the **/doctors/appointments/{appointmentId}/prescription/** route to create one.',
+        description:`
+Allows a Doctor to **update a prescription** for an appointment. Requires a valid *JWT* token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing prescription. If the appointment does not have a prescription, use the **/doctors/appointments/{appointmentId}/prescription/** route to create one.<br><br>
+
+## Request Body
+
+- **notes**: *string*
+  - Additional notes for the prescription.
+  - Example: "Patient advised to continue medications for 7 days and return for follow-up if symptoms persist."
+`,
         operationId: 'updatePrescription',
         parameters: [
           {
@@ -2749,18 +3072,12 @@ Allows a Doctor to **update a patient-record** for a Patient. Requires a valid *
             'application/json': {
               schema: {
                 type: 'object',
-                required: ['medications'],
+                required: ['notes'],
                 properties: {
                   notes: {
                     type: 'string',
                     example:
                       'Patient advised to continue medications for 7 days and return for follow-up if symptoms persist.',
-                  },
-                  medications: {
-                    type: 'array',
-                    items: {
-                      $ref: '#/components/schemas/Medication',
-                    },
                   },
                 },
               },

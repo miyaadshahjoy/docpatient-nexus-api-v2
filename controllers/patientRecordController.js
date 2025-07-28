@@ -11,7 +11,7 @@ exports.createRecord = catchAsync(async (req, res, next) => {
   if (!patientId) return next(new AppError('No patient ID provided.', 400));
 
   // Check if the request body is empty
-  if (!req.body)
+  if (Object.keys(req.body).length === 0)
     return next(new AppError('No data found in request body.', 400));
 
   // TODO: Doctors who have no appointment with the patient should not be able to create a record.
@@ -62,7 +62,43 @@ exports.createRecord = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.uploadRecord = catchAsync(async (req, res, next) => {
+exports.updateRecord = catchAsync(async (req, res, next) => {
+
+  // Check if patient ID is provided in the request parameters
+  if (!req.params.id) return next(new AppError('No patient ID provided.', 400));
+
+  const patientId = req.params.id;
+
+  // Check if request body is empty
+  if (Object.keys(req.body).length === 0)
+    return next(new AppError('No data found in request body.', 400));
+
+  const patient = await Patient.findById(patientId);
+  if (!patient)
+    return next(new AppError('No patient found with the provided ID.', 404));
+  
+  if(!patient.patientRecords)
+    return next(new AppError('No record found for this patient.', 404));
+
+  const record = await PatientRecord.findById(patient.patientRecords);
+  if (!record)
+    return next(new AppError('No record exists for this patient.', 404));
+
+  const updatedRecord = await PatientRecord.findByIdAndUpdate(record._id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Patient record updated successfully.',
+    data: {
+      updatedRecord,
+    },
+  });
+  
+})
+exports.uploadReport = catchAsync(async (req, res, next) => {
   // Check if files are uploaded
   if (!req.file) {
     return next(new AppError('No files uploaded.', 400));
@@ -71,26 +107,34 @@ exports.uploadRecord = catchAsync(async (req, res, next) => {
   if (
     !req.body ||
     !req.body.title ||
+    !req.body.description ||
     !req.body.issuedBy ||
     !req.body.issuedOn
   ) {
     return next(new AppError('Missing required fields in request body.', 400));
   }
-  const patientId = req.params.id;
-
-  if (!patientId) {
+  
+  if (!req.params.id) {
     return next(new AppError('No patient ID provided.', 400));
   }
+  const patientId = req.params.id;
+
   // Check if the patient exists
   const patient = await Patient.findById(patientId);
   if (!patient)
     return next(new AppError('No patient found with the provided ID.', 404));
+
+  if(!patient.patientRecords)
+    return next(new AppError('No record found for this patient.', 404));
+  
   const existingRecord = await PatientRecord.findById(patient.patientRecords);
   if (!existingRecord)
-    return next(new AppError('No record found for this patient.', 404));
+    return next(new AppError('No record exists for this patient.', 404));
+
   // Add the uploaded file path to the record
   existingRecord.reports.push({
     title: req.body.title,
+    description: req.body.description,
     fileUrl: req.file.filename,
     issuedBy: req.body.issuedBy,
     issuedOn: req.body.issuedOn,

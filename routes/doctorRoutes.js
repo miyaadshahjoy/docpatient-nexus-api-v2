@@ -22,8 +22,7 @@ router.use('/:id/reviews', reviewRouter);
 // POST /doctors/me/calendar
 router.use('/me/calendar', calendarRouter);
 
-// POST /doctors/patients/{patientId}/records
-// PATCH/doctors/patients/{patientId}/records
+
 router.use('/patients/:id/records', patientRecordRouter);
 
 // POST/doctors/appointments/{appointmentId}/prescription

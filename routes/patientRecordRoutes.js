@@ -19,8 +19,17 @@ router
   .patch(
     authController.protect(),
     authController.restrictTo('doctor'),
-    upload.single('record'),
-    patientRecordController.uploadRecord,
+    patientRecordController.updateRecord,
+);
+  
+// PATCH/doctors/patients/{patientId}/records/upload-report
+router
+  .route('/upload-report')
+  .patch(
+    authController.protect(),
+    authController.restrictTo('doctor'),
+    upload.single('report'),
+    patientRecordController.uploadReport,
   );
 
 module.exports = router;

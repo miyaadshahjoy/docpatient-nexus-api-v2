@@ -8,6 +8,7 @@ exports.addInstanceMethods = (schema) => {
   };
 
   schema.methods.passwordChangedAfter = function (iat) {
+    console.log(this)
     // console.log(this.passwordChangedAt.getTime() / 1000, iat);
     return this.passwordChangedAt.getTime() / 1000 > iat + 1;
   };
