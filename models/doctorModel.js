@@ -69,9 +69,10 @@ const doctorSchema = new mongoose.Schema(
             message: 'Coordinates must be an array of two numbers',
           },
           {
-            validator: function ([lat, lng]) {
+            validator: function ([lng, lat]) {
               return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
             },
+            message: 'Coordinates must be valid latitude and longitude',
           },
         ],
       },
