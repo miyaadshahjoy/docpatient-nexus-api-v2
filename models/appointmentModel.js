@@ -28,12 +28,13 @@ const appointmentSchema = new mongoose.Schema(
     appointmentDate: {
       type: Date, // YYYY-MM-DD -> ISO 8601 Date Format
       required: [true, 'Appointment date is required'],
-      validate: [
-        {
-          validator: (date) => DateTime.fromFormat(date, 'yyyy-MM-dd').isValid,
-          message: 'Please provide a valid date',
-        },
-      ],
+      // FIXME: Validate appointment date
+      // validate: [
+      //   {
+      //     validator: (date) => DateTime.fromFormat(String(date), 'yyyy-MM-dd').isValid,
+      //     message: 'Please provide a valid date',
+      //   },
+      // ],
     },
     appointmentSchedule: {
       type: {

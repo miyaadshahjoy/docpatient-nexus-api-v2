@@ -1,4 +1,3 @@
-const email = require('../utils/email');
 const { DateTime } = require('luxon');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Appointment = require('../models/appointmentModel');
