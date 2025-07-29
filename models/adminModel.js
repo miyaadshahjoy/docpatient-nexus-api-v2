@@ -100,7 +100,7 @@ const adminSchema = new mongoose.Schema(
     // Non-selected fields
     passwordChangedAt: {
       type: Date,
-      select: false,
+      // select: false,
     },
 
     emailVerificationToken: {

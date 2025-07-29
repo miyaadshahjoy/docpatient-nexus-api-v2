@@ -144,7 +144,7 @@ const patientSchema = new mongoose.Schema(
     // Non-selected fields
     passwordChangedAt: {
       type: Date,
-      select: false,
+      // select: false,
     },
     emailVerificationToken: {
       type: String,
