@@ -57,7 +57,7 @@ router.patch(
   '/approve-doctors/:id',
   authController.protect('admin'),
   checkAccountEligibility(Admin),
-  authController.restrictTo('admin'),
+  authController.restrictTo('admin', 'doctor-manager'),
   handlerFactory.approveAccount(Doctor),
 );
 
@@ -66,7 +66,7 @@ router.patch(
   '/approve-patients/:id',
   authController.protect('admin'),
   checkAccountEligibility(Admin),
-  authController.restrictTo('admin'),
+  authController.restrictTo('admin', 'patient-manager'),
   handlerFactory.approveAccount(Patient),
 );
 // Only Super-Admin can access these routes
