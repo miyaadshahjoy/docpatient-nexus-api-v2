@@ -22,12 +22,31 @@ router.use('/:id/reviews', reviewRouter);
 // POST /doctors/me/calendar
 router.use('/me/calendar', calendarRouter);
 
-
 router.use('/patients/:id/records', patientRecordRouter);
 
 // POST/doctors/appointments/{appointmentId}/prescription
 // PATCH /api/v2/doctors/appointments/{appointmentId}/prescription
 router.use('/appointments', appointmentRouter);
+
+router.patch(
+  '/me/password',
+  authController.protect('doctor'),
+  checkAccountEligibility(Doctor),
+  currentUserController.updatePassword(Doctor),
+);
+router.patch(
+  '/me',
+  authController.protect('doctor'),
+  checkAccountEligibility(Doctor),
+  currentUserController.updateCurrentUser(Doctor),
+);
+
+router.delete(
+  '/me',
+  authController.protect('doctor'),
+  checkAccountEligibility(Doctor),
+  currentUserController.deleteCurrentUser(Doctor),
+);
 
 // GET /api/v2/doctors/doctors-within/{distance}/center/[lat, lng]/unit/{unit}
 router.get(
@@ -66,26 +85,6 @@ router.post(
 router.patch('/email-verification/:token', authController.verifyEmail(Doctor));
 
 //
-
-router.patch(
-  '/me/password',
-  authController.protect('doctor'),
-  checkAccountEligibility(Doctor),
-  currentUserController.updatePassword(Doctor),
-);
-router.patch(
-  '/me',
-  authController.protect('doctor'),
-  checkAccountEligibility(Doctor),
-  currentUserController.updateCurrentUser(Doctor),
-);
-
-router.delete(
-  '/me',
-  authController.protect('doctor'),
-  checkAccountEligibility(Doctor),
-  currentUserController.deleteCurrentUser(Doctor),
-);
 
 router
   .route('/')
