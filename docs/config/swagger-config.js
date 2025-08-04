@@ -196,7 +196,7 @@ const options = {
 ---
 
 ## 🛠️ Tech Stack & Tools
-<table>
+<table class="table">
   <tr>
     <th>Technology</th>
     <th>Usage/Purpose</th>

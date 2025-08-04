@@ -3045,7 +3045,7 @@ Allows a Doctor to **create a prescription** for an appointment. Requires a vali
         tags: ['Doctors'],
         summary: 'Update a prescription for an appointment',
         security: [{ bearerAuth: [] }],
-        description:`
+        description: `
 Allows a Doctor to **update a prescription** for an appointment. Requires a valid *JWT* token with Doctor privileges to access this route.<br><br>**Note:** This route is used to update an existing prescription. If the appointment does not have a prescription, use the **/doctors/appointments/{appointmentId}/prescription/** route to create one.<br><br>
 
 ## Request Body
@@ -3196,9 +3196,8 @@ Allows a Doctor to **update a prescription** for an appointment. Requires a vali
                 },
               },
             },
-
-            500: responses.InternalServerError,
           },
+          500: responses.InternalServerError,
         },
       },
     },

@@ -92,14 +92,14 @@ exports.createEvent = async (appointment, doctor, patient) => {
           dateTime: endDateTime,
           timeZone: 'Asia/Dhaka',
         },
-        attendees: [
-          {
-            email: doctor.email,
-          },
-          {
-            email: patient.email,
-          },
-        ],
+        // attendees: [
+        //   {
+        //     email: doctor.email,
+        //   },
+        //   {
+        //     email: patient.email,
+        //   },
+        // ],
         location: doctor.location.address,
         transparency: 'opaque',
         visibility: 'public',
