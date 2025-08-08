@@ -27,36 +27,36 @@ router.patch('/email-verification/:token', authController.verifyEmail(Admin));
 // Get Current User
 router.get(
   '/me',
-  authController.protect('admin'),
-  checkAccountEligibility(Admin),
-  currentUserController.updatePassword(Admin),
+  authController.protect(),
+  checkAccountEligibility(),
+  currentUserController.getCurrentUser(Admin),
 );
 
 router.patch(
   '/me/password',
-  authController.protect('admin'),
-  checkAccountEligibility(Admin),
+  authController.protect(),
+  checkAccountEligibility(),
   currentUserController.updatePassword(Admin),
 );
 router.patch(
   '/me',
-  authController.protect('admin'),
-  checkAccountEligibility(Admin),
+  authController.protect(),
+  checkAccountEligibility(),
   currentUserController.updateCurrentUser(Admin),
 );
 
 router.delete(
   '/me',
-  authController.protect('admin'),
-  checkAccountEligibility(Admin),
+  authController.protect(),
+  checkAccountEligibility(),
   currentUserController.deleteCurrentUser(Admin),
 );
 
 // Approve Doctor Accounts
 router.patch(
   '/approve-doctors/:id',
-  authController.protect('admin'),
-  checkAccountEligibility(Admin),
+  authController.protect(),
+  checkAccountEligibility(),
   authController.restrictTo('admin', 'doctor-manager'),
   handlerFactory.approveAccount(Doctor),
 );
@@ -64,8 +64,8 @@ router.patch(
 // Approve Patient Accounts
 router.patch(
   '/approve-patients/:id',
-  authController.protect('admin'),
-  checkAccountEligibility(Admin),
+  authController.protect(),
+  checkAccountEligibility(),
   authController.restrictTo('admin', 'patient-manager'),
   handlerFactory.approveAccount(Patient),
 );
@@ -75,7 +75,7 @@ router.get(
   '/',
   authController.protect(),
   authController.restrictTo('super-admin', 'admin'),
-  checkAccountEligibility(Admin),
+  checkAccountEligibility(),
   handlerFactory.readAll(Admin),
 );
 
@@ -85,21 +85,21 @@ router
     // Get Admin by ID
     authController.protect(),
     authController.restrictTo('super-admin', 'admin'),
-    checkAccountEligibility(Admin),
+    checkAccountEligibility(),
     handlerFactory.readOne(Admin),
   )
   .patch(
     // Update Admin by ID
     authController.protect(),
     authController.restrictTo('super-admin', 'admin'),
-    checkAccountEligibility(Admin),
+    checkAccountEligibility(),
     handlerFactory.updateOne(Admin),
   )
   .delete(
     // Delete Admin by ID
     authController.protect(),
     authController.restrictTo('super-admin', 'admin'),
-    checkAccountEligibility(Admin),
+    checkAccountEligibility(),
     handlerFactory.deleteOne(Admin),
   );
 

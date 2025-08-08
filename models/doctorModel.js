@@ -91,7 +91,11 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    calendar: calendarSchema,
+    // WARNING: Calendar field is not selected by default
+    calendar: {
+      type: calendarSchema,
+      select: false,
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],

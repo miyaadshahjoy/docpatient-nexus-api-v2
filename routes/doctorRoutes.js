@@ -30,21 +30,27 @@ router.use('/appointments', appointmentRouter);
 
 router.patch(
   '/me/password',
-  authController.protect('doctor'),
-  checkAccountEligibility(Doctor),
+  authController.protect(),
+  checkAccountEligibility(),
   currentUserController.updatePassword(Doctor),
+);
+router.get(
+  '/me',
+  authController.protect(),
+  checkAccountEligibility(),
+  currentUserController.getCurrentUser(Doctor),
 );
 router.patch(
   '/me',
-  authController.protect('doctor'),
-  checkAccountEligibility(Doctor),
+  authController.protect(),
+  checkAccountEligibility(),
   currentUserController.updateCurrentUser(Doctor),
 );
 
 router.delete(
   '/me',
-  authController.protect('doctor'),
-  checkAccountEligibility(Doctor),
+  authController.protect(),
+  checkAccountEligibility(),
   currentUserController.deleteCurrentUser(Doctor),
 );
 
@@ -57,14 +63,16 @@ router.get(
 // POST /patients/doctors/{doctorId}/available-visiting-hours
 router.post(
   '/:id/available-visiting-hours',
-  authController.protect('patient'),
+  authController.protect(),
+  checkAccountEligibility(),
   appointmentController.checkVisitingHours,
 );
 
 // POST/patients/doctors/{doctorId}/book-appointment
 router.post(
   '/:id/book-appointment',
-  authController.protect('patient'),
+  authController.protect(),
+  checkAccountEligibility(),
   appointmentController.bookAppointment,
 );
 

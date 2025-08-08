@@ -103,15 +103,15 @@ Allows a new Doctor to register by providing necessary credentials and profile d
 - **appointmentDuration**: *number*
   - The duration of an appointment in minutes.
   - Default: 60
-  - Example: 60
+  - Example: 60 (in minutes)
 
 - **experience**: *number*, *mandatory*
   - The experience of the Doctor in years.
-  - Example: 5
+  - Example: 5 (in years)
 
 - **consultationFees**: *number*, *mandatory*
   - The consultation fees of the Doctor.
-  - Example: 500
+  - Example: BDT 500
 
 `,
         operationId: 'signupDoctor',
@@ -1765,8 +1765,102 @@ Allows Doctor to reset their password using the **token** sent to their email ad
       patch: {
         tags: ['Doctors'],
         summary: 'Update currently logged-in Doctor Profile.',
-        description:
-          'Allows a Doctor to **update** their profile information. The Doctor must be **logged-in** and have a valid **JWT** token.',
+        description: `
+Allows a Doctor to **update** their profile information. The Doctor must be **logged-in** and have a valid **JWT** token. <br><br>
+
+## Request Body:
+
+- **fullName**: *string*
+  - Description: The full name of the Doctor.
+  - Example: "Ahsan Habib"
+- **email**: *string*
+  - Description: The email address of the Doctor.
+  - Format: email
+  - Example: "ahsan.habib@example.com"
+- **phone**: *string*
+  - Description: The phone number of the Doctor.
+  - Format: phone
+  - Example: "+880 1720 111234"
+- **gender**: *string*
+  - Description: The gender of the Doctor.
+  - Allowed values: **male**, **female**, **others**, **prefer not to say**
+  - Example: "male"
+- **location**: *object*
+  - Description: The location of the Doctor.
+  - Format: location
+  - Example:
+    \`\`\`json
+    {
+      "type": "Point",
+      "coordinates": [90.389, 23.746],
+      "city": "Dhaka",
+      "address": "Green Road, Dhaka"
+    }
+    \`\`\`
+- **profilePhoto**: *string*
+  - Description: The profile photo of the Doctor.
+  - Format: url
+  - Example: "https://example.com/photos/ahsan_habib.jpg"
+- **education**: *array of objects*
+  - Description: The education of the Doctor.
+  - Example:
+    \`\`\`json
+    [
+      {
+        "degree": "Bachelor of Medicine, Bachelor of Surgery",
+        "institute": "Dhaka Medical College",
+        "year": 2022
+      }
+    ]
+    \`\`\`
+- **specialization**: *array of strings*
+  - Description: The specialization of the Doctor.
+  - Example: ["Cardiology", "Internal Medicine"]
+- **visitingSchedule**: *array of objects*
+  - Description: The visiting schedule of the Doctor.
+  - Example:
+    \`\`\`json
+    [
+      {
+        "day": "Monday",
+        "time": {
+          "from": "09:00",
+          "to": "12:00"
+        }
+      },
+      {
+        "day": "Tuesday",
+        "time": {
+          "from": "09:00",
+          "to": "12:00"
+        }
+      },
+      {
+        "day": "Wednesday",
+        "time": {
+          "from": "09:00",
+          "to": "12:00"
+        }
+      },
+      {
+        "day": "Thursday",
+        "time": {
+          "from": "09:00",
+          "to": "12:00"
+        }
+      }
+    ]
+    \`\`\`
+- **appointmentDuration**: *number*
+  - Description: The appointment duration of the Doctor.
+  - Example: 60 (in minutes)
+- **experience**: *number*
+  - Description: The experience of the Doctor.
+  - Example: 5 (in years)
+- **consultationFees**: *number*
+  - Description: The consultation fees of the Doctor.
+  - Example: BDT 1000
+`,
         operationId: 'updateDoctorProfile',
         security: [
           {
@@ -2023,8 +2117,21 @@ Allows Doctor to reset their password using the **token** sent to their email ad
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
-        description:
-          'Allows a Doctor to **update** their own password. The Doctor must be **logged-in** with a valid **JWT** token.',
+        description: `
+Allows a Doctor to **update** their own password. The Doctor must be **logged-in** with a valid **JWT** token.<br><br>
+
+## Request Body:
+
+- **currentPassword**: *string*
+  - Description: The current password of the Doctor.
+  - Example: "currentPassword123"
+- **password**: *string*
+  - Description: The new password of the Doctor.
+  - Example: "newPassword123"
+- **passwordConfirm**: *string*
+  - Description: The confirmation of the new password of the Doctor.
+  - Example: "newPassword123"
+`,
         operationId: 'updateDoctorPassword',
         requestBody: {
           required: true,
@@ -3212,7 +3319,7 @@ Allows a Doctor to **update a prescription** for an appointment. Requires a vali
           },
         ],
         description: `
-Allows a doctor to **create a new calendar** in his Google Calendar. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A calendar can only be created if the doctor has not already created one. If the doctor has already created a calendar, an error will be returned.<blockquote><span>ℹ</span><p>Inorder to access your Google Calendar data you will have to create an account in *[Google Cloud Platform](https://console.cloud.google.com/)* and create a project and enable **Google Calendar API** for that project. Then create an oauth2 credentials for that project and use the credentials to authorize the app to access your Google Calendar data. You will have to use your **client ID** and **client secret** in the config.env file of the application inorder to authorize the 'DocPatient Nexus' API to access your Google Calendar data. You also need to add *./auth/calendar.events* and *./auth/calendar* scopes to the oauth2 credentials, otherwise the app will not be able to access your Google Calendar data.</p></blockquote>`,
+Allows a doctor to **create a new calendar** in his Google Calendar 📅. Requires a valid **JWT** token with Doctor privileges to access this route.<br><br>**Note:** A calendar can only be created if the doctor has not already created one. If the doctor has already created a calendar, an error will be returned.<blockquote><span>ℹ</span><p>Inorder to access your Google Calendar data you will have to create an account in *[Google Cloud Platform](https://console.cloud.google.com/)* and create a project and enable **Google Calendar API** for that project. Then create an oauth2 credentials for that project and use the credentials to authorize the app to access your Google Calendar data. You will have to use your **client ID** and **client secret** in the config.env file of the application inorder to authorize the 'DocPatient Nexus' API to access your Google Calendar data. You also need to add *./auth/calendar.events* and *./auth/calendar* scopes to the oauth2 credentials, otherwise the app will not be able to access your Google Calendar data.</p></blockquote>`,
         operationId: 'createCalendar',
         responses: {
           200: {

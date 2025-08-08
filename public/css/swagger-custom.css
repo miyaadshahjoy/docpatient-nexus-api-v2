@@ -181,3 +181,12 @@
   padding: 7px 7px;
   border-radius: 5px;
 }
+
+.swagger-ui textarea {
+  font-size: 1rem !important;
+  min-height: 320px !important;
+}
+
+.swagger-ui textarea:focus{
+  border: 2px solid #f7345e !important;
+}

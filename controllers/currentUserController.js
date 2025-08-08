@@ -8,7 +8,8 @@ const generateJWT = (id, role) =>
 exports.getCurrentUser = (Model) =>
   catchAsync(async (req, res, next) => {
     // 1) Get logged in user id
-    const userId = req.uer._id;
+
+    const userId = req.user._id;
     if (!userId) return next(new AppError('No user found.', 404));
     // 2) Get user from the collection
     const user = await Model.findById(userId);
@@ -20,9 +21,9 @@ exports.getCurrentUser = (Model) =>
     const resourceName = Model.modelName;
     res.status(200).json({
       status: 'success',
-      message: `${resourceName} account fetched successfully.`,
-      [resourceName]: {
-        user,
+      message: `${resourceName} account retrieved successfully.`,
+      data: {
+        [resourceName]: user,
       },
     });
   });
@@ -59,7 +60,7 @@ exports.updatePassword = (Model) =>
       message: `${resourceName} password updated successfully`,
       data: {
         [resourceName]: {
-          name: user.name,
+          fullName: user.fullName,
           email: user.email,
         },
       },

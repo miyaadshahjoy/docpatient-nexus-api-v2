@@ -786,6 +786,7 @@ Allows Admin to reset their password using the **token** sent to their email add
           {
             name: 'doctorId',
             in: 'path',
+            description: 'ID of the Doctor to approve',
             required: true,
             schema: {
               type: 'string',
@@ -925,6 +926,7 @@ Allows Admin to reset their password using the **token** sent to their email add
           {
             name: 'patientId',
             in: 'path',
+            description: 'ID of the Patient to approve',
             required: true,
             schema: {
               type: 'string',
