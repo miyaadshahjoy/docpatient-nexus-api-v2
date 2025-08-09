@@ -47,8 +47,66 @@ module.exports = {
       post: {
         tags: ['Patients'],
         summary: 'Register a new Patient account.',
-        description:
-          'Allows a new Patient to register by providing necessary credentials and profile details. After registration, you will have to **verify** your **email** through the **/api/v2/patients/email-verification** endpoint. Initially your account will be in a **pending** state. After **verification** or **approval**(by the Admin), your account will be **active** and you can log in.',
+        description: `
+Allows a new Patient to register by providing necessary credentials and profile details. After registration, you will have to **verify** your **email** through the **/api/v2/patients/email-verification** endpoint. Initially your account will be in a **pending** state. After **verification** or **approval**(by the Admin), your account will be **active** and you can log in.<br><br>
+
+## Request Body:
+
+- **fullName**: *string*, *required*
+  - Description: Full name of the Patient.
+  - Example: Farzana Nahar
+
+- **email**: *string*, *required*
+  - Description: Email address of the Patient.
+  - Example: farzana.nahar@example.com
+
+- **phone**: *string*, *required*
+  - Description: Phone number of the Patient.
+  - Example: +8801745123456
+
+- **gender**: *string*, *required*
+  - Description: Gender of the Patient.
+  - Example: female
+
+- **dateOfBirth**: *date*, *required*
+  - Description: Date of birth of the Patient.
+  - Example: 1992-03-15
+
+- **location**: *object*, *required*
+  - Description: Location of the Patient.
+  - Example: 
+  \`\`\`json
+  { 
+    city: "Chattogram", 
+    address: "House #22, Road #5, Nasirabad" 
+  }
+  \`\`\`
+
+- **bloodGroup**: *string*, *required*
+  - Description: Blood group of the Patient.
+  - Allowed values: A+, B+, O+, A-, B-, O-, AB+, AB-
+  - Example: O+
+
+- **profilePhoto**: *string*, *optional*
+  - Description: Profile photo of the Patient.
+  - Example: https://example.com/uploads/farzana.jpg
+
+- **password**: *string*, *required*
+  - Description: Password of the Patient.
+  - Example: pass1234
+
+- **passwordConfirm**: *string*, *required*
+  - Description: Confirm password of the Patient.
+  - Example: pass1234
+
+- **medicalHistory**: *array of strings*
+  - Description: Medical history of the Patient.
+  - Example: ["Diabetes", "Hypertension"]
+
+- **currentMedications**: *array of strings*
+  - Description: Current medications of the Patient.
+  - Example: ["Metformin", "Aspirin"]
+`,
         operationId: 'signupPatient',
         requestBody: {
           required: true,
@@ -61,13 +119,83 @@ module.exports = {
                   'email',
                   'phone',
                   'gender',
-                  'password',
-                  'passwordConfirm',
-                  'bloodGroup',
                   'dateOfBirth',
                   'location',
+                  'bloodGroup',
+                  'password',
+                  'passwordConfirm',
                 ],
-                $ref: '#/components/schemas/Patient',
+                properties: {
+                  fullName: {
+                    type: 'string',
+                    example: 'Farzana Nahar',
+                  },
+                  email: {
+                    type: 'string',
+                    format: 'email',
+                    example: 'farzana.nahar@example.com',
+                  },
+                  phone: {
+                    type: 'string',
+                    example: '+8801745123456',
+                  },
+                  gender: {
+                    type: 'string',
+                    enum: ['male', 'female', 'others', 'prefer not to say'],
+                    example: 'female',
+                  },
+                  dateOfBirth: {
+                    type: 'string',
+                    format: 'date',
+                    example: '1992-03-15',
+                  },
+                  location: {
+                    type: 'object',
+                    properties: {
+                      city: {
+                        type: 'string',
+                        example: 'Chattogram',
+                      },
+                      address: {
+                        type: 'string',
+                        example: 'House #22, Road #5, Nasirabad',
+                      },
+                    },
+                  },
+                  bloodGroup: {
+                    type: 'string',
+                    enum: ['A+', 'B+', 'O+', 'A-', 'B-', 'O-', 'AB+', 'AB-'],
+                    example: 'O+',
+                  },
+                  profilePhoto: {
+                    type: 'string',
+                    example: 'https://example.com/uploads/farzana.jpg',
+                  },
+                  password: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'pass1234',
+                  },
+                  passwordConfirm: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'pass1234',
+                  },
+                  medicalHistory: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: ['Diabetes', 'Hypertension'],
+                  },
+                  currentMedications: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    example: ['Metformin', 'Aspirin'],
+                  },
+                },
               },
             },
           },
@@ -147,7 +275,19 @@ module.exports = {
       post: {
         tags: ['Patients'],
         summary: 'Patient Sign In',
-        description: `Allows a Patient to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Patient you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p>`,
+        description: `
+Allows a Patient to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Patient you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p></blockquote><br><br>
+
+## Request Body:
+
+- **email**: *string*, *required*
+  - Description: Email address of the Patient.
+  - Example: farzana.nahar@example.com
+
+- **password**: *string*, *required*
+  - Description: Password of the Patient.
+  - Example: pass1234
+`,
         operationId: 'signinPatient',
         requestBody: {
           required: true,
@@ -276,7 +416,16 @@ module.exports = {
       post: {
         tags: ['Patients'],
         summary: 'Send email verification link',
-        description: `Sends an **email verification link** to the Patient’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/patients/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/patients/email-verification** endpoint.`,
+        description: `
+Sends an **email verification link** to the Patient’s registered email address. The email address is also sent along with the verification token. Collect the token from the email and use it to verify your email using the **/api/v2/patients/email-verification/{token}** endpoint. The verfication token is valid for 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/patients/email-verification** endpoint.<br><br>
+
+## Request Body:
+
+- **email**: *string*, *required*
+  - Description: Email address of the Patient.
+  - Example: farzana.nahar@example.com
+
+`,
         operationId: 'sendEmailVerification',
         requestBody: {
           required: true,
@@ -449,8 +598,16 @@ module.exports = {
       post: {
         tags: ['Patients'],
         summary: 'Request password reset link.',
-        description:
-          "Sends a password reset link to the Patient's email address. The Patient just have to provide their registered email address. The **password reset link** will be sent to their email address. The link contains a **token** that will be used to reset the password through the **/api/v2/patients/reset-password/{token}** endpoint. The token is valid for only 10 minutes.",
+        description: `
+Sends a password reset link to the Patient's email address. The Patient just have to provide their registered email address. The **password reset link** will be sent to their email address. The link contains a **token** that will be used to reset the password through the **/api/v2/patients/reset-password/{token}** endpoint. The token is valid for only 10 minutes.<br><br>
+
+## Request Body:
+
+- **email**: *string*, *required*
+  - Description: Email address of the Patient.
+  - Example: farzana.nahar@example.com
+
+`,
         operationId: 'requestPasswordReset',
         requestBody: {
           required: true,
@@ -543,8 +700,19 @@ module.exports = {
       post: {
         tags: ['Patients'],
         summary: 'Reset Patient password.',
-        description:
-          'Allows Patient to reset their password using the **token** sent to their email address. The token is valid for only 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/patients/forgot-password** endpoint. The Patient must provide a new password and confirm it.',
+        description: `
+Allows Patient to reset their password using the **token** sent to their email address. The token is valid for only 10 minutes. After that, the token will expire and you will have to request a new token using the **/api/v2/patients/forgot-password** endpoint. The Patient must provide a new password and confirm it.<br><br>
+
+## Request Body:
+
+- **password**: *string*, *required*
+  - Description: New password of the Patient.
+  - Example: pass1234
+
+- **passwordConfirm**: *string*, *required*
+  - Description: Confirm new password of the Patient.
+  - Example: pass1234
+`,
         operationId: 'resetPatientPassword',
         parameters: [
           {
@@ -1430,8 +1598,59 @@ module.exports = {
       patch: {
         tags: ['Patients'],
         summary: 'Update currently logged-in Patient Profile.',
-        description:
-          'Allows a Patient to **update** their profile information. The Patient must be **logged-in** and have a valid **JWT** token.',
+        description: `
+Allows a Patient to **update** their profile information. The Patient must be **logged-in** and have a valid **JWT** token.<br><br>
+
+
+## Request Body:
+
+- **fullName**: *string*
+  - Description: Full name of the Patient.
+  - Example: Farzana Nahar
+
+- **email**: *string*
+  - Description: Email address of the Patient.
+  - Example: farzana.nahar@example.com
+
+- **phone**: *string*
+  - Description: Phone number of the Patient.
+  - Example: +8801745123456
+
+- **gender**: *string*
+  - Description: Gender of the Patient.
+  - Example: female
+
+- **dateOfBirth**: *date*
+  - Description: Date of birth of the Patient.
+  - Example: 1992-03-15
+
+- **location**: *object*
+  - Description: Location of the Patient.
+  - Example: 
+  \`\`\`json
+  { 
+    city: "Chattogram", 
+    address: "House #22, Road #5, Nasirabad" 
+  }
+  \`\`\`
+
+- **bloodGroup**: *string*
+  - Description: Blood group of the Patient.
+  - Allowed values: A+, B+, O+, A-, B-, O-, AB+, AB-
+  - Example: O+
+
+- **profilePhoto**: *string*
+  - Description: Profile photo of the Patient.
+  - Example: https://example.com/uploads/farzana.jpg
+
+- **medicalHistory**: *array of strings*
+  - Description: Medical history of the Patient.
+  - Example: ["Diabetes", "Hypertension"]
+
+- **currentMedications**: *array of strings*
+  - Description: Current medications of the Patient.
+  - Example: ["Metformin", "Aspirin"]
+`,
         operationId: 'updatePatientProfile',
         security: [
           {
@@ -1448,76 +1667,60 @@ module.exports = {
                 properties: {
                   fullName: {
                     type: 'string',
-                    example: 'Ahsan Habib',
+                    example: 'Farzana Nahar',
                   },
                   email: {
                     type: 'string',
                     format: 'email',
-                    example: 'ahsan.habib@example.com',
+                    example: 'farzana.nahar@example.com',
                   },
                   phone: {
                     type: 'String',
                     pattern: '^\\+?[0-9]{10,15}$',
-                    example: '+8801712345678',
+                    example: '+8801745123456',
+                  },
+                  gender: {
+                    type: 'string',
+                    example: 'female',
+                  },
+                  dateOfBirth: {
+                    type: 'date',
+                    example: '1992-03-15',
+                  },
+                  location: {
+                    type: 'object',
+                    properties: {
+                      city: {
+                        type: 'string',
+                        example: 'Chattogram',
+                      },
+                      address: {
+                        type: 'string',
+                        example: 'House #22, Road #5, Nasirabad',
+                      },
+                    },
+                  },
+                  bloodGroup: {
+                    type: 'string',
+                    example: 'O+',
                   },
                   profilePhoto: {
                     type: 'string',
                     format: 'uri',
-                    example: 'https://example.com/photos/ahsan_habib.jpg',
+                    example: 'https://example.com/uploads/farzana.jpg',
                   },
-                  location: {
-                    type: 'object',
-                    required: ['type', 'coordinates'],
-                    properties: {
-                      type: {
-                        type: 'string',
-                        example: 'Point',
-                      },
-                      coordinates: {
-                        type: 'array',
-                        items: {
-                          type: 'number',
-                          example: [37.7749, -122.4194],
-                        },
-                      },
-                      city: {
-                        type: 'string',
-                        example: 'Dhaka',
-                      },
-                      address: {
-                        type: 'string',
-                        example: 'Block C, House 12, Dhaka, Bangladesh',
-                      },
-                    },
-                  },
-                  consultationFees: {
-                    type: 'number',
-                    example: 500, // Fees in local currency
-                  },
-                  visitingSchedule: {
+                  medicalHistory: {
                     type: 'array',
                     items: {
-                      type: 'object',
-                      properties: {
-                        day: {
-                          type: 'string',
-                          example: 'Monday',
-                        },
-                        hours: {
-                          type: 'object',
-                          required: ['from', 'to'],
-                          properties: {
-                            from: {
-                              type: 'string',
-                              example: '09:00',
-                            },
-                            to: {
-                              type: 'string',
-                              example: '17:00',
-                            },
-                          },
-                        },
-                      },
+                      type: 'string',
+                      example: 'Diabetes',
+                    },
+                  },
+                  currentMedications: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                      example: 'Metformin',
                     },
                   },
                 },
@@ -1689,8 +1892,17 @@ module.exports = {
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
-        description:
-          'Get **available visiting hours** for a Doctor. The visiting hours are displayed in 24-hour format. You have to provide a **valid date** to get available visiting hours on the provided date.<br><br>This endpoint is accessible to **logged-in** patients only.',
+        description: `
+Get **available visiting hours** for a Doctor. The visiting hours are displayed in 24-hour format. You have to provide a **valid date** to get available visiting hours on the provided date.<br><br>This endpoint is accessible to **logged-in** patients only.<br><br>
+
+## Request Body:
+
+- **date**: *required*
+  - Date for which to get available visiting hours.
+  - Format: YYYY-MM-DD (ISO 8601 Date Format)
+  - Example: 2025-08-01
+
+`,
         operationId: 'getAvailableVisitingHours',
         parameters: [
           {
@@ -1715,7 +1927,7 @@ module.exports = {
                     type: 'string',
                     format: 'date',
                     description:
-                      'Date for which to get available visiting hours. Format: YYYY-MM-DD',
+                      'Date for which to get available visiting hours. Format: YYYY-MM-DD (ISO 8601 Date Format)',
                     example: '2025-08-01',
                   },
                 },
@@ -1926,8 +2138,41 @@ module.exports = {
             bearerAuth: [],
           },
         ],
-        description:
-          'Allows a patient to **book an appointment** with a Doctor. The patient must be **logged in** to use this route. The patient enters a **valid date**, **a valid day**, and an **available time slot** to book an appointment with the Doctor.',
+        description: `
+Allows a patient to **book an appointment** with a Doctor. The patient must be **logged in** to use this route. The patient enters a **valid date**, **a valid day**, and an **available time slot** to book an appointment with the Doctor.<br><br>
+
+## Request Body:
+
+- **appointmentDate**: *date*, *required*
+  - Date for which to book an appointment.
+  - Format: YYYY-MM-DD (ISO 8601 Date Format)
+  - Example: 2025-08-01
+
+- **appointmentSchedule**: *object*, *required*
+  - Schedule for the appointment.
+  - Example:
+  \`\`\`json
+  {
+    "day": "monday",
+    "hours": {
+      "from": "09:00",
+      "to": "09:59"
+    }
+  }
+  \`\`\`
+
+- **reason**: *string*, *required*
+  - Reason for the appointment.
+  - Example: "Regular blood pressure check-up and follow-up consultation"
+
+- **notes**: *string*, *optional*
+  - Notes for the appointment.
+  - Example: "Patient has been advised to bring previous test reports."
+
+- **consultationType**: *string*, *optional*
+  - Type of consultation.
+  - Example: "in-person"
+`,
         operationId: 'bookAppointment',
         parameters: [
           {
@@ -2274,8 +2519,19 @@ module.exports = {
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
-        description:
-          'Allows a patient to **post a review** for an appointment. The patient must be **logged in** to use this route.<br><br>**Note:** The appointment must have a status of **completed**. If the appointment is not completed, the patient will not be able to post a review. A patient can only post one review for an appointment. ',
+        description: `
+Allows a patient to **post a review** for an appointment. The patient must be **logged in** to use this route.<br><br>**Note:** The appointment must have a status of **completed**. If the appointment is not completed, the patient will not be able to post a review. A patient can only post one review for an appointment.<br><br>
+
+## Request Body:
+
+- **review**: *string*, *required*
+  - Review for the appointment.
+  - Example: "The Doctor was very attentive and explained everything clearly. I felt genuinely cared for during my consultation."
+
+- **rating**: *number*, *required*
+  - Rating for the appointment.
+  - Example: 5
+`,
         operationId: 'postReview',
         parameters: [
           {
@@ -2432,8 +2688,19 @@ module.exports = {
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
-        description:
-          'Allows a Patient to **update the review** for an appointment. The Patient must be **logged in** to use this route.',
+        description: `
+Allows a Patient to **update the review** for an appointment. The Patient must be **logged in** to use this route.<br><br>
+
+## Request Body:
+
+- **review**: *string*, *required*
+  - Review for the appointment.
+  - Example: "The Doctor was very attentive and explained everything clearly. I felt genuinely cared for during my consultation. The follow-up was also excellent."
+
+- **rating**: *number*, *required*
+  - Rating for the appointment.
+  - Example: 5
+`,
         operationId: 'updateReview',
         parameters: [
           {

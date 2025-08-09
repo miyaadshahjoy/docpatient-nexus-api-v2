@@ -5,7 +5,6 @@ const currentUserController = require('../controllers/currentUserController');
 const appointmentRouter = require('./appointmentRoutes');
 const paymentRouter = require('./paymentRoutes');
 const prescriptionRouter = require('./prescriptionRoutes');
-
 const {
   checkAccountEligibility,
 } = require('../middlewares/verifyAccountStatus');
@@ -53,22 +52,26 @@ router.patch('/email-verification/:token', authController.verifyEmail(Patient));
 router.patch(
   '/me/password',
   authController.protect(),
-  checkAccountEligibility(Patient),
+  checkAccountEligibility(),
   currentUserController.updatePassword(Patient),
+);
+router.get(
+  '/me',
+  authController.protect(),
+  checkAccountEligibility(),
+  currentUserController.getCurrentUser(Patient),
 );
 router.patch(
   '/me',
   authController.protect(),
-  checkAccountEligibility(Patient),
-
+  checkAccountEligibility(),
   currentUserController.updateCurrentUser(Patient),
 );
 
 router.delete(
   '/me',
   authController.protect(),
-  checkAccountEligibility(Patient),
-
+  checkAccountEligibility(),
   currentUserController.deleteCurrentUser(Patient),
 );
 

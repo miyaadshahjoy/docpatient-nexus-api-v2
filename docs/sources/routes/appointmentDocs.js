@@ -279,8 +279,61 @@ module.exports = {
             bearerAuth: [], // This indicates that the endpoint requires authentication
           },
         ],
-        description:
-          'Allows an Admin( Appointment Manager ) to update an specific Appointment by its ID. Requires a valid *JWT* token with **Admin**  privileges to access this route.',
+        description: `
+Allows an Admin( Appointment Manager ) to update an specific Appointment by its ID. Requires a valid *JWT* token with **Admin**  privileges to access this route.
+
+## Request Body:
+
+- **appointmentDate**: *date*
+  - Description: The date of the appointment.
+  - Format: YYYY-MM-DD (ISO 8601 Date Format)
+  - Example: '2022-01-01'
+
+- **appointmentSchedule**: *object*
+  - Description: The schedule of the appointment.
+  - Example:
+  \`\`\`json
+  {
+    "day": "monday", 
+    "hours": { 
+      "from": "08:00", 
+      "to": "17:00" 
+    } 
+  }
+  \`\`\`
+
+- **reason**: *string*
+  - Description: The reason for the appointment.
+  - Example: 'Check-up'
+
+- **notes**: *string*
+  - Description: Additional notes for the appointment.
+  - Example: 'Patient advised to continue medications for 7 days and return for follow-up if symptoms persist.'
+
+- **consultationType**: *string*
+  - Description: The type of consultation.
+  - Example: 'in-person'
+
+- **paymentMethod**: *string*
+  - Description: The payment method for the appointment.
+  - Example: 'card'
+
+- **paymentIntent**: *string*
+  - Description: The payment intent for the appointment.
+  - Example: 'payment_intent_1234567890'
+
+- **paymentStatus**: *string*
+  - Description: The payment status for the appointment.
+  - Example: 'paid'
+
+- **isPrescribed**: *boolean*
+  - Description: Whether the appointment is prescribed or not.
+  - Example: true
+
+- **status**: *string*
+  - Description: The status of the appointment.
+  - Example: 'confirmed'
+`,
 
         operationId: 'updateAppointmentById',
         parameters: [
@@ -300,7 +353,83 @@ module.exports = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/Appointment',
+                type: 'object',
+                properties: {
+                  appointmentDate: {
+                    type: 'string',
+                    format: 'date',
+                    example: '2022-01-01',
+                  },
+                  appointmentSchedule: {
+                    type: 'object',
+                    properties: {
+                      day: {
+                        type: 'string',
+                        enum: [
+                          'saturday',
+                          'sunday',
+                          'monday',
+                          'tuesday',
+                          'wednesday',
+                          'thursday',
+                          'friday',
+                        ],
+                        example: 'monday',
+                      },
+                      hours: {
+                        type: 'object',
+                        properties: {
+                          from: {
+                            type: 'string',
+                            format: 'time',
+                            example: '08:00',
+                          },
+                          to: {
+                            type: 'string',
+                            format: 'time',
+                            example: '17:00',
+                          },
+                        },
+                      },
+                    },
+                  },
+                  reason: {
+                    type: 'string',
+                    example: 'Check-up',
+                  },
+                  notes: {
+                    type: 'string',
+                    example: 'No additional notes.',
+                  },
+                  consultationType: {
+                    type: 'string',
+                    enum: ['in-person', 'online'],
+                    example: 'in-person',
+                  },
+                  paymentMethod: {
+                    type: 'string',
+                    enum: ['card', 'cash', 'unknown'],
+                    example: 'card',
+                  },
+                  paymentIntent: {
+                    type: 'string',
+                    example: 'pi_1HJ2K3L4M5N6O7P8Q9R0S1T2',
+                  },
+                  paymentStatus: {
+                    type: 'string',
+                    enum: ['pending', 'paid', 'failed', 'refunded'],
+                    example: 'paid',
+                  },
+                  isPrescribed: {
+                    type: 'boolean',
+                    example: true,
+                  },
+                  status: {
+                    type: 'string',
+                    enum: ['pending', 'confirmed', 'cancelled', 'completed'],
+                    example: 'confirmed',
+                  },
+                },
               },
             },
           },

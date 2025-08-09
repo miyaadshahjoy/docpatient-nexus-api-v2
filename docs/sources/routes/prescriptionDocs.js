@@ -325,8 +325,15 @@ module.exports = {
             },
           },
         ],
-        description:
-          'Allows an Admin to update a specific prescription for a specific Patient. This endpoint is secured and requires a valid *JWT* token and Admin (Prescription Manager) privileges to access this route.',
+        description: `
+Allows an Admin to update a specific prescription for a specific Patient. This endpoint is secured and requires a valid *JWT* token and Admin (Prescription Manager) privileges to access this route.
+
+## Request Body:
+
+- **status**: *string*
+  - Description: The status of the prescription.
+  - Example: 'deleted'
+`,
         operationId: 'updatePrescriptionById',
         requestBody: {
           required: true,

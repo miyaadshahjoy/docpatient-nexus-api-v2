@@ -122,8 +122,15 @@ module.exports = {
           },
         ],
         operationId: 'createCheckoutSession',
-        description:
-          'Allows a patient to create a checkout session for an appointment. The patient must be **logged in** to use this route. Log in with a valid *jwt* token.',
+        description: `
+Allows a patient to create a checkout session for an appointment. The patient must be **logged in** to use this route. Log in with a valid *jwt* token.
+
+## Request Body:
+
+- **appointment**: *object id*
+  - Description: The ID of the appointment to create a checkout session for.
+  - Example: '64b8e3b9c1b2c4b8e3b9c1b2'
+`,
 
         requestBody: {
           required: true,
@@ -265,7 +272,7 @@ module.exports = {
           },
           401: {
             description:
-              'Unauthorized access. Only logged-in patients can access this route. Log in with a valid `jwt` token.',
+              'Unauthorized access. Only logged-in patients can access this route. Log in with a valid jwt token.',
             content: {
               'application/json': {
                 schema: {

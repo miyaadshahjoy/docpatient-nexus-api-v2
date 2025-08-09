@@ -322,8 +322,19 @@ module.exports = {
             },
           },
         ],
-        description:
-          'Allows an Admin to update a specific review for a specific Doctor. This endpoint is secured and requires a valid *JWT* token and Admin (Review Manager) privileges to access this route.',
+        description: `
+Allows an Admin to update a specific review for a specific Doctor. This endpoint is secured and requires a valid *JWT* token and Admin (Review Manager) privileges to access this route.
+
+## Request Body:
+
+- **isEdited**: *boolean*
+  - Description: Whether the review has been edited or not.
+  - Example: true
+
+- **status**: *string*
+  - Description: The status of the review.
+  - Example: 'flagged'
+`,
         operationId: 'updateReviewById',
         requestBody: {
           required: true,

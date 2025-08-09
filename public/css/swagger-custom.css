@@ -87,15 +87,27 @@
   /* font-weight: 300 !important; */
 }
 .swagger-ui em {
+  position: relative;
   font-family: 'Operator Mono', monospace !important;
   /* font-family: 'Fira Code', monospace !important; */
   color: #000 !important;
   font-style: normal !important;
-  background-color: #fa99ae;
-  border: 1px solid #f7345e;
-  border-radius: 3px;
-  padding: 0.5px 5px;
 }
+.swagger-ui em::before {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0px;
+    height: 1px;
+    width: 100%;
+    background-color: #f7345e;
+    transition: all 0.2s ease-in-out;
+}
+.swagger-ui em:hover::before {
+    height: 3px;
+}
+
+
 .swagger-ui button,
 .swagger-ui .btn,
 .swagger-ui .opblock .opblock-summary-method {
