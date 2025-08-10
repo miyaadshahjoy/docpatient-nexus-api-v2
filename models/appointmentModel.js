@@ -148,7 +148,7 @@ appointmentSchema.post('findOneAndUpdate', async function (doc) {
     // TODO: Add transactional safety with MongoDB Transactions
     // appointment confirmed
     console.log('🎉 Appointment confirmed!');
-    const doctor = await Doctor.findById(doc.doctor);
+    const doctor = await Doctor.findById(doc.doctor).select('+calendar');
     const patient = await Patient.findById(doc.patient);
     const appointment = doc;
 

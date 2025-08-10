@@ -972,6 +972,17 @@ Allows Doctor to reset their password using the **token** sent to their email ad
               default: '',
             },
           },
+          {
+            name: 'location.city',
+            in: 'query',
+            description:
+              'Filter doctors by their location(city) (e.g., Dhaka, Rajshahi, Chittagong etc.)',
+            required: false,
+            schema: {
+              type: 'string',
+              default: '',
+            },
+          },
         ],
         responses: {
           200: {

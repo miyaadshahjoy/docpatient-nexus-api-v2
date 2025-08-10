@@ -40,8 +40,7 @@
 .swagger-ui th,
 .swagger-ui a,
 .swagger-ui .parameter__name,
-.swagger-ui select,
-.swagger-ui input {
+.swagger-ui select {
   font-family: 'Source Sans 3', sans-serif !important;
   /* font-family: 'Poppins', arial-sans !important; */
   /* font-family: 'Lato', sans-serif !important; */
@@ -193,10 +192,22 @@
   padding: 7px 7px;
   border-radius: 5px;
 }
-
+.swagger-ui input{
+  font-family: 'Source Sans 3', sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  letter-spacing: 1px !important;
+  outline: none !important;
+  border: 2px solid rgba(247, 52, 94, 0.05) !important;
+}
+.swagger-ui input:focus{
+  border: 2px solid #f7345e !important;
+}
 .swagger-ui textarea {
   font-size: 1rem !important;
   min-height: 320px !important;
+  outline: none !important;
+  border: 2px solid rgba(247, 52, 94, 0.05) !important;
 }
 
 .swagger-ui textarea:focus{
