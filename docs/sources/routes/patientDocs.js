@@ -2139,7 +2139,7 @@ Get **available visiting hours** for a Doctor. The visiting hours are displayed 
           },
         ],
         description: `
-Allows a patient to **book an appointment** with a Doctor. The patient must be **logged in** to use this route. The patient enters a **valid date**, **a valid day**, and an **available time slot** to book an appointment with the Doctor.<br><br>
+Allows a patient to **book an appointment** with a Doctor. The patient must be **logged in** to use this route. The patient enters a **valid date**, **a valid day**, and an **available time slot** to book an appointment with the Doctor. After booking the appointment, the Patient will need to complete the **payment** using **/api/v2/patients/payments/checkout-session** endpoint to confirm the appointment. After the payment is successful, the appointment will be confirmed and the Patient will receive a confirmation email. The **appointment-manager** admin will receive a notification email to confirm the appointment. The admin can confirm the appointment using **PATCH/api/v2/appointments/{id}** endpoint.<br><br>
 
 ## Request Body:
 

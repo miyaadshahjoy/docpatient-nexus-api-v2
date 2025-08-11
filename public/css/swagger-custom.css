@@ -87,9 +87,8 @@
 }
 .swagger-ui em {
   position: relative;
-  font-family: 'Operator Mono', monospace !important;
-  /* font-family: 'Fira Code', monospace !important; */
-  color: #000 !important;
+  font-family: 'Source Sans 3', sans-serif !important;
+  color:#000 !important;
   font-style: normal !important;
 }
 .swagger-ui em::before {
