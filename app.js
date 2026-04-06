@@ -48,12 +48,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 3rd party middlewares
 // CORS middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'https://docpatient-nexus.onrender.com',
+];
+
 app.use(
   cors({
-    origin: '*',
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   }),
 );
+
 // body parser middleware
 app.use(express.json());
 app.use(morgan('dev'));
