@@ -28,25 +28,6 @@ const { decrypt } = require('./utils/cryptoHelper');
 // Initialize express app
 const app = express();
 
-app.get('/', (req, res) => {
-  res.status(200);
-  res.json({
-    status: 'SUCCESS',
-    message: 'DocPateint Nexus Homepage',
-  });
-});
-// Webhook Route
-app.post(
-  '/api/v2/payments/webhooks',
-  express.raw({ type: 'application/json' }),
-  paymentController.stripeWebhookHandler,
-);
-
-// middlewares
-// Serving static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// 3rd party middlewares
 // CORS middleware
 const allowedOrigins = [
   'http://localhost:3000',
@@ -67,6 +48,26 @@ app.use(
     credentials: true,
   }),
 );
+
+app.get('/', (req, res) => {
+  res.status(200);
+  res.json({
+    status: 'SUCCESS',
+    message: 'DocPateint Nexus Homepage',
+  });
+});
+// Webhook Route
+app.post(
+  '/api/v2/payments/webhooks',
+  express.raw({ type: 'application/json' }),
+  paymentController.stripeWebhookHandler,
+);
+
+// middlewares
+// Serving static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 3rd party middlewares
 
 // body parser middleware
 app.use(express.json());
