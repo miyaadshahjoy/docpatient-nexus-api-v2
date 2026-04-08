@@ -138,6 +138,7 @@ appointmentSchema.pre('findOneAndUpdate', async function (next) {
   // 'this' -> points to the current query
 
   this._oldDoc = await this.model.findOne(this.getFilter()); // this.getFilter() -> returns "{_id: '6854329adf383c789fe6d339'}"
+  console.log(this._oldDoc);
   next();
 });
 
@@ -148,10 +149,11 @@ appointmentSchema.post('findOneAndUpdate', async function (doc) {
     // TODO: Add transactional safety with MongoDB Transactions
     // appointment confirmed
     console.log('🎉 Appointment confirmed!');
+
     const doctor = await Doctor.findById(doc.doctor).select('+calendar');
     const patient = await Patient.findById(doc.patient);
     const appointment = doc;
-
+    
     try {
       // Send email notifications to the doctor and patient
       await sendAppointmentNotification(appointment, doctor, patient);

@@ -27,6 +27,9 @@
   display: none !important;
 }
 
+.swagger-ui button:focus{
+  outline: none !important;
+}
 .swagger-ui .opblock-body pre.microlight {
   /* background-color: #1e1e2e !important; */
   background-color: #0a1535 !important;

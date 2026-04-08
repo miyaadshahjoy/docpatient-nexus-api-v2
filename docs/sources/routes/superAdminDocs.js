@@ -7,7 +7,7 @@ module.exports = {
         tags: ['Super-Admins'],
         summary: 'Super-Admin signin.',
         description: `
-Allows a super-admin to **signin** using **email** and **password**. After sigining in use the **jwt** token to access the protected routes.<br><br><blockquote><span>ℹ</span><p>You cannot create a new Super-Admin account using this api. A system has only one Super-Admin account and it is embedded in the system. You can only login to the Super-Admin account using the email and password provided in the example below. For convenience, I am providing the email and password here. **email: super-admin@docpatientnexus.com** and **password: pass12345**</p></blockquote><br><br>
+Allows a super-admin to **signin** using **email** and **password**. After sigining in use the **jwt** token to access the protected routes.<br><br><blockquote>❗ <p>You cannot create a new Super-Admin account using this api. A system has only one Super-Admin account and it is embedded in the system. You can only login to the Super-Admin account using the email and password provided in the example below. For convenience, I am providing the email and password here. **email: super-admin@docpatientnexus.com** and **password: pass12345**</p></blockquote><br><br>
 
 ## Request Body:
 

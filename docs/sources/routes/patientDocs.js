@@ -2253,7 +2253,7 @@ Allows a patient to **book an appointment** with a Doctor. The patient must be *
           },
         },
         responses: {
-          200: {
+          201: {
             description: 'Appointment successfully booked.',
             content: {
               'application/json': {

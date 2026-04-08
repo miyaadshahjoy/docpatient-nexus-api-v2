@@ -146,10 +146,7 @@ exports.createNewAccessToken = async (doctor) => {
     );
     await doctor.save();
   } catch (err) {
-    console.error(
-      '❌ Error creating new access token:',
-      err?.response?.data || err?.message || err,
-    );
+    console.error('❌ Error creating new access token:', err);
 
     throw new AppError('Failed to create new access token.', 500);
   }
