@@ -36,8 +36,8 @@ sidebarScript.onload = function () {
           ////////////////////////////////////////
           const html = `
                 <div class="sidebar topbar">
-                    <a href="https://docpatient-nexus.onrender.com"><img class="topbar__logo" src="/img/docpatient-nexus-logo-2.png" alt="DocPatient Nexus Logo" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/4154/4154438.png';"></a>
-                    </div>
+                  <a href="https://docpatient-nexus.onrender.com"><img class="topbar__logo" src="/img/docpatient-nexus-icon.png" alt="DocPatient Nexus Logo" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/4154/4154438.png';"></a> DocPatient Nexus
+                </div>
                     
                     `;
           // <h3> DocPatient Nexus</h3>
@@ -49,7 +49,6 @@ sidebarScript.onload = function () {
             `,
           );
           sidebarEl.insertAdjacentHTML('afterbegin', html);
-          
 
           ////////////////////////////////////////
 
