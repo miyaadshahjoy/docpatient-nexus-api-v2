@@ -219,7 +219,7 @@ Allows a new Admin to register by providing necessary credentials and profile de
         tags: ['Admins'],
         summary: 'Admin signin',
         description: `
-Allows an admin to **signin** using **email** and **password**. After signing in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes.<br><br>**Note:** In order to signin as an Admin you have to verify your email after signing up and get your account approved by the Super-Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p></blockquote><br><br>
+Allows an admin to **signin** using **email** and **password**. After signing in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes.<br><br>**Note:** In order to signin as an Admin you have to verify your email after signing up and get your account approved by the Super-Admin.<br><br><blockquote>❗ All the protected routes have the 🔓 icon at the top right corner.</blockquote><br><br>
 
 <h2>Request Body:</h2>
 <ul>

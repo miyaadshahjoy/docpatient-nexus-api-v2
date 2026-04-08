@@ -276,7 +276,7 @@ Allows a new Patient to register by providing necessary credentials and profile 
         tags: ['Patients'],
         summary: 'Patient Sign In',
         description: `
-Allows a Patient to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Patient you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote><span>ℹ</span><p>All the protected routes have the 🔓 icon at the top right corner.</p></blockquote><br><br>
+Allows a Patient to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Patient you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote>❗ All the protected routes have the 🔓 icon at the top right corner.</blockquote><br><br>
 
 ## Request Body:
 
