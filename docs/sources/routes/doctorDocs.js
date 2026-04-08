@@ -344,7 +344,7 @@ Allows a new Doctor to register by providing necessary credentials and profile d
         tags: ['Doctors'],
         summary: 'Doctor Sign In',
         description: `
-Allows a doctor to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Doctor you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote>❗ All the protected routes have the 🔓 icon at the top right corner.</blockquote><br><br>
+Allows a doctor to **signin** using **email** and **password**.After sigining in, use the **jwt** token from the response to authenticate or authorize for accessing protected routes. <br><br>**Note:** In order to signin as a Doctor you have to verify your email after signing up and get your account approved by the Admin.<br><br><blockquote><span>❗</span><p>All the protected routes have the 🔓 icon at the top right corner.</p></blockquote><br><br>
 
 ## Request Body:
 

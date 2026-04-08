@@ -160,12 +160,11 @@
   align-items: baseline !important;
 }
 .swagger-ui blockquote span {
-  border: 2px solid #005a6f !important;
+
   padding: 3.5px 11px !important;
   border-radius: 50% !important;
-  color: #005a6f !important;
   margin-right: 10px !important;
-  font-size: 1.125rem !important;
+
 }
 
 .swagger-ui .opblock-tag {
